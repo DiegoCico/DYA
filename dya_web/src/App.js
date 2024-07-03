@@ -1,23 +1,37 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Welcome to FunLand!</h1>
+        <p>Your ultimate fun and learning destination for kids.</p>
       </header>
+      <main>
+        <section className="hero">
+          <h2>Discover and Learn</h2>
+          <p>Explore our interactive games, educational videos, and fun activities!</p>
+          <button>Get Started</button>
+        </section>
+        <section className="features">
+          <div className="feature">
+            <h3>Games</h3>
+            <p>Engage in exciting and educational games designed for kids.</p>
+          </div>
+          <div className="feature">
+            <h3>Videos</h3>
+            <p>Watch fun and educational videos that keep you entertained.</p>
+          </div>
+          <div className="feature">
+            <h3>Activities</h3>
+            <p>Participate in creative and fun activities to learn new things.</p>
+          </div>
+        </section>
+      </main>
+      <footer>
+        <p>&copy; 2024 FunLand. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
