@@ -5,6 +5,9 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <div className="auth-buttons">
+          <button className="auth-button">Log In</button>
+        </div>
         <h1>Welcome to DYA!</h1>
         <p>Your ultimate fun and learning destination for kids.</p>
       </header>
@@ -30,7 +33,7 @@ function App() {
         </section>
       </main>
       <footer>
-        <p>&copy; 2024 FunLand. All rights reserved.</p>
+        <p>&copy; 2024 DYA. All rights reserved.</p>
       </footer>
     </div>
   );

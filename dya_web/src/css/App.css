@@ -1,14 +1,37 @@
-/* App.css */
 .App {
   text-align: center;
-  background-color: #f0f8ff; /* Light background for readability */
+  background-color: #f0f8ff; 
 }
 
 .App-header {
+  position: relative;
   background-color: #1E90FF; /* Bright Blue */
-  padding: 20px;
+  padding: 100px;
   color: white;
   animation: fadeIn 2s ease-in-out;
+}
+
+.auth-buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.auth-button {
+  background-color: white;
+  color: #1E90FF; /* Bright Blue Text */
+  border: 1px solid #1E90FF;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.auth-button:hover {
+  background-color: #1E90FF;
+  color: white;
 }
 
 .hero {
