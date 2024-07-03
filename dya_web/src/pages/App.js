@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import '../css/App.css';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
         <section className="hero">
           <h2>Discover and Learn</h2>
           <p>Explore our interactive games, educational videos, and fun activities!</p>
-          <button>Get Started</button>
+          <button className="animated-button">Get Started</button>
         </section>
         <section className="features">
           <div className="feature">

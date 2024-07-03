@@ -1,0 +1,65 @@
+/* App.css */
+.App {
+  text-align: center;
+  background-color: #f0f8ff; /* Light background for readability */
+}
+
+.App-header {
+  background-color: #1E90FF; /* Bright Blue */
+  padding: 20px;
+  color: white;
+  animation: fadeIn 2s ease-in-out;
+}
+
+.hero {
+  background-color: #32CD32; /* Vibrant Green */
+  color: white;
+  padding: 40px;
+  margin: 20px 0;
+  animation: slideIn 2s ease-in-out;
+}
+
+.features {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+}
+
+.feature {
+  background-color: #FFD700; /* Sunny Yellow */
+  padding: 20px;
+  border-radius: 10px;
+  width: 30%;
+  animation: bounceIn 2s ease-in-out;
+}
+
+.animated-button {
+  background-color: #FFD700; /* Sunny Yellow */
+  color: #1E90FF; /* Bright Blue Text */
+  border: none;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.animated-button:hover {
+  transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes bounceIn {
+  from { transform: scale(0.5); }
+  to { transform: scale(1); }
+}
