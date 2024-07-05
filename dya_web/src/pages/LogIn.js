@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import '../css/LogIn.css';
 
-function LoginPage() {
+function LogIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch('http://localhost:5000/login', {
+    const response = await fetch('http://localhost:3000/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -18,11 +19,10 @@ function LoginPage() {
 
     const data = await response.json();
     if (response.ok) {
-      // handle successful login
       console.log('Login successful:', data);
+      // Redirect to a different page or handle the successful login logic
     } else {
-      // handle login error
-      console.log('Login error:', data);
+      setError(data.error || 'Login failed. Please try again.');
     }
   };
 
@@ -47,6 +47,7 @@ function LoginPage() {
             required
             className="login-input"
           />
+          {error && <p className="error-message">{error}</p>}
           <button type="submit" className="login-button">Log In</button>
         </form>
       </div>
@@ -54,4 +55,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default LogIn;

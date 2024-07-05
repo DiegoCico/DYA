@@ -15,7 +15,7 @@ function Signup() {
       return;
     }
 
-    const response = await fetch('http://localhost:5000/signup', {
+    const response = await fetch('http://localhost:3000/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -25,11 +25,10 @@ function Signup() {
 
     const data = await response.json();
     if (response.ok) {
-      // handle successful signup
       console.log('Signup successful:', data);
+      // Redirect to login page or handle successful signup logic
     } else {
-      // handle signup error
-      console.log('Signup error:', data);
+      setError(data.error || 'Signup failed. Please try again.');
     }
   };
 

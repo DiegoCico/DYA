@@ -1,5 +1,4 @@
 class Config:
-    SECRET_KEY = 'a_secret_key'
     FIREBASE_API_KEY = 'AIzaSyBI37lzWhWSv7VQif5mlNbZm0Bso5W05OA'
     FIREBASE_AUTH_DOMAIN =  'dyakidswebsite-ab5f1.firebaseapp.com'
     FIREBASE_PROJECT_ID = 'dyakidswebsite-ab5f1'

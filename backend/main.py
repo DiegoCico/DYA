@@ -4,7 +4,6 @@ import pyrebase
 app = Flask(__name__)
 app.config.from_object('config.Config')
 
-# Firebase configuration using values from the Flask app config
 firebase_config = {
     "apiKey": app.config['FIREBASE_API_KEY'],
     "authDomain": app.config['FIREBASE_AUTH_DOMAIN'],
@@ -15,17 +14,11 @@ firebase_config = {
     "measurementId": app.config['FIREBASE_MEASUREMENT_ID']
 }
 
-# Initialize Firebase and the authentication module
 firebase = pyrebase.initialize_app(firebase_config)
 auth = firebase.auth()
 
 @app.route('/login', methods=['POST'])
 def login():
-    """
-    Endpoint to handle user login.
-    Expects JSON data with 'email' and 'password' fields.
-    Returns user information if login is successful, or an error message if credentials are invalid.
-    """
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
@@ -38,11 +31,6 @@ def login():
 
 @app.route('/signup', methods=['POST'])
 def signup():
-    """
-    Endpoint to handle user signup.
-    Expects JSON data with 'email' and 'password' fields.
-    Returns user information if signup is successful, or an error message if the user could not be created.
-    """
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
@@ -55,6 +43,7 @@ def signup():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 # '''Imports of needed objects and app instance from config file'''
