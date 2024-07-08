@@ -15,20 +15,24 @@ function Signup() {
       return;
     }
 
-    const response = await fetch('http://localhost:3000/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch('http://localhost:5000/signup', {  // Updated port to 5000
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await response.json();
-    if (response.ok) {
-      console.log('Signup successful:', data);
-      // Redirect to login page or handle successful signup logic
-    } else {
-      setError(data.error || 'Signup failed. Please try again.');
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Signup successful:', data);
+        // Redirect to login page or handle successful signup logic
+      } else {
+        setError(data.error || 'Signup failed. Please try again.');
+      }
+    } catch (err) {
+      setError('Signup failed. Please try again.');
     }
   };
 
