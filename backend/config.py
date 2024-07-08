@@ -8,24 +8,3 @@ class Config:
     FIREBASE_MEASUREMENT_ID = 'G-Y106TTN34Y'
 
     
-
-
-# from flask import Flask
-# from flask_cors import CORS
-# import firebase_admin
-# from firebase_admin import credentials, firestore
-
-# app = Flask(__name__)
-# CORS(app)
-
-# cred = credentials.Certificate('path/to/your/serviceAccountKey.json')
-# firebase_admin.initialize_app(cred)
-
-# db = firestore.client()
-
-# @app.route('/')
-# def index():
-#     return "Hello, Firebase with Flask!"
-
-# if __name__ == '__main__':
-#     app.run(debug=True)

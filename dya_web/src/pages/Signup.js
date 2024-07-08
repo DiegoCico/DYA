@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { auth } from '../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import '../css/Signup.css';
 
 function Signup() {
@@ -6,6 +9,7 @@ function Signup() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,24 +20,20 @@ function Signup() {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/signup', {  // Updated port to 5000
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        console.log('Signup successful:', data);
-        // Redirect to login page or handle successful signup logic
-      } else {
-        setError(data.error || 'Signup failed. Please try again.');
-      }
+      await createUserWithEmailAndPassword(auth, email, password);
+      console.log('Signup successful');
+      // Redirect to login page or handle successful signup logic
     } catch (err) {
-      setError('Signup failed. Please try again.');
+      setError(err.message || 'Signup failed. Please try again.');
     }
+  };
+
+  const handleBackClick = () => {
+    navigate('/');
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');
   };
 
   return (
@@ -68,6 +68,8 @@ function Signup() {
           {error && <p className="error-message">{error}</p>}
           <button type="submit" className="signup-button">Sign Up</button>
         </form>
+        <button onClick={handleBackClick} className="back-button">Back</button>
+        <p>Already have an account? <button onClick={handleLoginClick} className="switch-button">Log In</button></p>
       </div>
     </div>
   );

@@ -1,29 +1,33 @@
 import React, { useState } from 'react';
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import '../css/LogIn.css';
 
 function LogIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch('http://localhost:3000/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      console.log('Login successful:', data);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log('Login successful');
       // Redirect to a different page or handle the successful login logic
-    } else {
-      setError(data.error || 'Login failed. Please try again.');
+    } catch (err) {
+      setError(err.message || 'Login failed. Please try again.');
     }
+  };
+
+  const handleBackClick = () => {
+    navigate('/');
+  };
+
+  const handleSignupClick = () => {
+    navigate('/signup');
   };
 
   return (
@@ -50,6 +54,8 @@ function LogIn() {
           {error && <p className="error-message">{error}</p>}
           <button type="submit" className="login-button">Log In</button>
         </form>
+        <button onClick={handleBackClick} className="back-button">Back</button>
+        <p>Don't have an account? <button onClick={handleSignupClick} className="switch-button">Sign Up</button></p>
       </div>
     </div>
   );

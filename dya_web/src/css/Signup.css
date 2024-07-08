@@ -73,3 +73,18 @@ body {
   color: red;
   margin-bottom: 20px;
 }
+
+.back-button,
+.switch-button {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.back-button:hover,
+.switch-button:hover {
+  background-color: #e0e0e0;
+}
