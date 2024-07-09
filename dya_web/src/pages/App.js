@@ -4,6 +4,7 @@ import '../css/App.css';
 import LoginPage from './LogIn';
 import Signup from './Signup';
 import Roadmap from './Roadmap';
+import Activity from './Activity';
 
 function App() {
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/roadmap/:uid" element={<Roadmap />} />
+        <Route path="/activity/:uid/:activityIndex" element={<Activity />} />
       </Routes>
     </div>
   );

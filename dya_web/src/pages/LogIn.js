@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import activities from './activities';
 import '../css/LogIn.css';
 
 function LogIn() {
@@ -16,6 +18,19 @@ function LogIn() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+
+      // Ensure the roadmap document exists
+      const docRef = doc(db, 'roadmaps', user.uid);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        // Create a new roadmap document if it doesn't exist
+        await setDoc(docRef, {
+          name: email,
+          currentLevel: 1,
+          activities: activities // Use imported activities
+        });
+      }
+
       console.log('Login successful');
       navigate(`/roadmap/${user.uid}`); // Redirect to the roadmap page with UID
     } catch (err) {

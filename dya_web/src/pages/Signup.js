@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import activities from './activities'; 
 import '../css/Signup.css';
 
 function Signup() {
@@ -20,9 +22,18 @@ function Signup() {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Create a roadmap document for the new user
+      await setDoc(doc(db, 'roadmaps', user.uid), {
+        name: email,
+        currentLevel: 1,
+        activities: activities // Use imported activities
+      });
+
       console.log('Signup successful');
-      // Redirect to login page or handle successful signup logic
+      navigate(`/roadmap/${user.uid}`); // Redirect to the roadmap page with UID
     } catch (err) {
       setError(err.message || 'Signup failed. Please try again.');
     }
