@@ -14,9 +14,10 @@ function LogIn() {
     e.preventDefault();
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
       console.log('Login successful');
-      // Redirect to a different page or handle the successful login logic
+      navigate(`/roadmap/${user.uid}`); // Redirect to the roadmap page with UID
     } catch (err) {
       setError(err.message || 'Login failed. Please try again.');
     }
