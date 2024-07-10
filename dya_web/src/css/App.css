@@ -71,6 +71,42 @@
   transform: scale(1.1);
 }
 
+/* New header styling */
+.header {
+  overflow: hidden;
+  background-color: #1279d1;
+  padding: 10px 40px;
+}
+
+.header button {
+  float: left;
+  color: black;
+  text-align: center;
+  padding: 12px;
+  text-decoration: none;
+  font-size: 25px; 
+  line-height: 25px;
+  font-weight: 500;
+  border: none;
+  background: none;
+  /* border-radius: 4px; */
+}
+
+.header a.home-btn {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.header button:hover {
+  background-color: none;
+  color: rgb(186, 186, 186);
+  cursor: pointer;
+}
+
+.header-right {
+  float: right;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
