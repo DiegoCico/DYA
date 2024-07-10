@@ -14,19 +14,6 @@ import NewSignup from './NewSignup';
 function App() {
   const navigate = useNavigate();
 
-  // const handleLoginClick = () => {
-  //   navigate('/login');
-  // };
-
-  // const handleSignupClick = () => {
-  //   navigate('/signup');
-  // };
-
-  // const handleNewSignupClick = () => {
-  //   navigate('/new-signup')
-  // };
-
-  // making one function to handle routing from button click
   const handleRouteChange = (route) => {
     navigate(route)
   }
