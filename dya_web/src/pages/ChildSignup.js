@@ -8,23 +8,25 @@ import { useNavigate } from 'react-router-dom';
 
 export default function ChildSignup(props) {
     const { handleRouteChange } = props;
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+    const [email, setEmail] = useState(''); // State to store email input
+    const [password, setPassword] = useState(''); // State to store password input
+    const [confirmPassword, setConfirmPassword] = useState(''); // State to store confirm password input
+    const [error, setError] = useState(''); // State to handle errors
+    const navigate = useNavigate(); // Navigation hook
 
+    // Fetch activities from Firestore
     const fetchActivities = async () => {
         const activitiesSnapshot = await getDocs(collection(db, 'activities'));
         const activitiesList = activitiesSnapshot.docs.map(doc => doc.data());
         return activitiesList;
     };
 
+    // Handle form submission for signup
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
-            setError('Passwords need to match!');
+            setError('Passwords need to match!'); // Set error message if passwords do not match
             return;
         }
 
@@ -46,7 +48,7 @@ export default function ChildSignup(props) {
             navigate(`/roadmap/${user.uid}`); // Redirect to the roadmap page with UID
 
         } catch (error) {
-            setError(error.message || 'Signup failed. Please try again.');
+            setError(error.message || 'Signup failed. Please try again.'); // Set error message
         }
     };
 
@@ -55,8 +57,8 @@ export default function ChildSignup(props) {
             <Header />
             <div className="child-main-container">
                 <div className="left-container">
-                    <p>Child account description.</p>
-                    <p>Image of a kid coding</p>
+                    <p>Child account description.</p> {/* Placeholder for child account description */}
+                    <p>Image of a kid coding</p> {/* Placeholder for an image */}
                 </div>
                 <div className="right-container">
                     <h1>Get started learning!</h1>
@@ -66,7 +68,7 @@ export default function ChildSignup(props) {
                             type="email" 
                             placeholder="Your Email" 
                             value={email} 
-                            onChange={(e) => setEmail(e.target.value)} 
+                            onChange={(e) => setEmail(e.target.value)} // Update email input
                             required
                         />
                         <input 
@@ -74,7 +76,7 @@ export default function ChildSignup(props) {
                             type="password" 
                             placeholder="Password" 
                             value={password} 
-                            onChange={(e) => setPassword(e.target.value)} 
+                            onChange={(e) => setPassword(e.target.value)} // Update password input
                             required
                         />
                         <input 
@@ -82,10 +84,10 @@ export default function ChildSignup(props) {
                             type="password" 
                             placeholder="Confirm Password" 
                             value={confirmPassword} 
-                            onChange={(e) => setConfirmPassword(e.target.value)} 
+                            onChange={(e) => setConfirmPassword(e.target.value)} // Update confirm password input
                             required
                         />
-                        {error && <p>{error}</p>}
+                        {error && <p>{error}</p>} {/* Display error message */}
                         <button className="signup-btn" type="submit">Sign Up</button>
                     </form>
                     <div className="signin-container">

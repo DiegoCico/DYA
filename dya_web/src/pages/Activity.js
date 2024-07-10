@@ -1,4 +1,4 @@
-/* global Sk */
+/* global Sk */ // This comment is for the Skulpt library, used for running Python code in the browser
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from '../firebase';
@@ -6,26 +6,27 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../css/Activity.css';
 
 function Activity() {
-  const { uid, activityIndex } = useParams();
-  const [activity, setActivity] = useState(null);
-  const [shuffledQuestions, setShuffledQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [userCode, setUserCode] = useState('');
-  const [output, setOutput] = useState('');
-  const [result, setResult] = useState(null);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const { uid, activityIndex } = useParams(); // Get URL parameters
+  const [activity, setActivity] = useState(null); // State to store activity data
+  const [shuffledQuestions, setShuffledQuestions] = useState([]); // State to store shuffled questions
+  const [loading, setLoading] = useState(true); // State to handle loading state
+  const [error, setError] = useState(null); // State to handle errors
+  const [userCode, setUserCode] = useState(''); // State to store user code input
+  const [output, setOutput] = useState(''); // State to store code output
+  const [result, setResult] = useState(null); // State to store result message
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // State to track current question index
 
+  // Fetch activity data when the component mounts
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const docRef = doc(db, 'roadmaps', uid); // Using collection ID 'roadmaps' and document ID 'uid'
-        const docSnap = await getDoc(docRef);
+        const docRef = doc(db, 'roadmaps', uid); // Reference to the Firestore document
+        const docSnap = await getDoc(docRef); // Get the document snapshot
         if (docSnap.exists()) {
-          const roadmapData = docSnap.data();
-          const activity = roadmapData.activities[activityIndex];
+          const roadmapData = docSnap.data(); // Extract data from the snapshot
+          const activity = roadmapData.activities[activityIndex]; // Get the specific activity
           setActivity(activity);
-          setShuffledQuestions(shuffleArray(activity.questions));
+          setShuffledQuestions(shuffleArray(activity.questions)); // Shuffle questions
         } else {
           setError('Activity not found');
         }
@@ -39,16 +40,18 @@ function Activity() {
     fetchActivity();
   }, [uid, activityIndex]);
 
+  // Update the progress in Firestore
   const updateRoadmapProgress = async () => {
-    const docRef = doc(db, 'roadmaps', uid);
+    const docRef = doc(db, 'roadmaps', uid); // Reference to the Firestore document
     await updateDoc(docRef, {
-      currentLevel: currentQuestionIndex + 1
+      currentLevel: currentQuestionIndex + 1 // Update the current level in Firestore
     });
   };
 
+  // Run the user's Python code
   const runCode = () => {
     const outf = (text) => {
-      setOutput((prevOutput) => prevOutput + text + '\n');
+      setOutput((prevOutput) => prevOutput + text + '\n'); // Append output text
     };
 
     const builtinRead = (x) => {
@@ -63,28 +66,30 @@ function Activity() {
 
     (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
 
-    setOutput('');
+    setOutput(''); // Clear previous output
     Sk.misceval.asyncToPromise(() => {
-      return Sk.importMainWithBody("<stdin>", false, userCode, true);
+      return Sk.importMainWithBody("<stdin>", false, userCode, true); // Execute user code
     }).catch((err) => {
-      outf(err.toString());
+      outf(err.toString()); // Display error message
     });
   };
 
+  // Submit the user's code for validation
   const submitCode = () => {
-    const currentQuestion = shuffledQuestions[currentQuestionIndex];
+    const currentQuestion = shuffledQuestions[currentQuestionIndex]; // Get the current question
     if (output.trim() === currentQuestion.requiredOutput) {
-      setResult('Success! You got it right.');
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+      setResult('Success! You got it right.'); // Display success message
+      setCurrentQuestionIndex((prevIndex) => prevIndex + 1); // Move to the next question
       setUserCode(''); // Clear the code input
       setOutput(''); // Clear the output
       setResult(null); // Clear the result
       updateRoadmapProgress(); // Update the progress in Firestore
     } else {
-      setResult('Incorrect output. Try again.');
+      setResult('Incorrect output. Try again.'); // Display error message
     }
   };
 
+  // Shuffle an array of questions
   const shuffleArray = (array) => {
     const shuffledArray = array.slice();
     for (let i = shuffledArray.length - 1; i > 0; i--) {
@@ -94,8 +99,8 @@ function Activity() {
     return shuffledArray;
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
+  if (loading) return <div className="loading">Loading...</div>; // Show loading indicator
+  if (error) return <div className="error">Error: {error}</div>; // Show error message
 
   if (activity && currentQuestionIndex >= shuffledQuestions.length) {
     return (
@@ -106,7 +111,7 @@ function Activity() {
     );
   }
 
-  const currentQuestion = shuffledQuestions[currentQuestionIndex];
+  const currentQuestion = shuffledQuestions[currentQuestionIndex]; // Get the current question
 
   return (
     <div className="activity-page">
@@ -118,7 +123,7 @@ function Activity() {
             <p className="coding-question">{currentQuestion.codingQuestion}</p>
             <textarea
               value={userCode}
-              onChange={(e) => setUserCode(e.target.value)}
+              onChange={(e) => setUserCode(e.target.value)} // Update user code input
               placeholder="Write your Python code here..."
             ></textarea>
             <button onClick={runCode}>Run</button>
