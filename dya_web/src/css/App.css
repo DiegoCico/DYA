@@ -1,14 +1,14 @@
 .App {
   text-align: center;
-  background-color: #f0f8ff; 
+  background-color: #f0f8ff;
 }
 
 .App-header {
   position: relative;
-  background-color: #1E90FF; /* Bright Blue */
+  background-color: #1E90FF;
   padding: 100px;
   color: white;
-  animation: fadeIn 2s ease-in-out;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .auth-buttons {
@@ -19,7 +19,7 @@
 
 .auth-button {
   background-color: white;
-  color: #1E90FF; /* Bright Blue Text */
+  color: #1E90FF;
   border: 1px solid #1E90FF;
   padding: 10px 20px;
   font-size: 1em;
@@ -35,11 +35,11 @@
 }
 
 .hero {
-  background-color: #32CD32; /* Vibrant Green */
+  background-color: #32CD32;
   color: white;
   padding: 40px;
   margin: 20px 0;
-  animation: slideIn 2s ease-in-out;
+  animation: slideIn 1s ease-in-out;
 }
 
 .features {
@@ -49,16 +49,40 @@
 }
 
 .feature {
-  background-color: #FFD700; /* Sunny Yellow */
+  background-color: #FFD700;
   padding: 20px;
   border-radius: 10px;
   width: 30%;
-  animation: bounceIn 2s ease-in-out;
+  animation: bounceIn 1s ease-in-out;
+}
+
+.reasons {
+  background-color: #f8f8f8;
+  color: #333;
+  padding: 40px;
+  margin: 20px 0;
+  border-radius: 10px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.reasons ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  text-align: left;
+}
+
+.sales-info {
+  background-color: #FF69B4;
+  color: white;
+  padding: 40px;
+  margin: 20px 0;
+  border-radius: 10px;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .animated-button {
-  background-color: #FFD700; /* Sunny Yellow */
-  color: #1E90FF; /* Bright Blue Text */
+  background-color: #FFD700;
+  color: #1E90FF;
   border: none;
   padding: 10px 20px;
   font-size: 1.2em;
@@ -68,7 +92,7 @@
 }
 
 .animated-button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 /* New header styling */
@@ -84,12 +108,11 @@
   text-align: center;
   padding: 12px;
   text-decoration: none;
-  font-size: 25px; 
+  font-size: 25px;
   line-height: 25px;
   font-weight: 500;
   border: none;
   background: none;
-  /* border-radius: 4px; */
 }
 
 .header a.home-btn {
@@ -119,6 +142,6 @@
 }
 
 @keyframes bounceIn {
-  from { transform: scale(0.5); }
+  from { transform: scale(0.8); }
   to { transform: scale(1); }
 }

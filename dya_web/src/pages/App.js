@@ -5,10 +5,8 @@ import LoginPage from './LogIn';
 import Signup from './Signup';
 import Roadmap from './Roadmap';
 import Activity from './Activity';
-// importing the parent sign up page and child sign up page
 import ChildSignup from './ChildSignup';
 import ParentSignup from './ParentSignup';
-// import the new sign up page
 import NewSignup from './NewSignup';
 
 function App() {
@@ -51,6 +49,21 @@ function App() {
                   <p>Participate in creative and fun activities to learn new things.</p>
                 </div>
               </section>
+              <section className="reasons">
+                <h2>Why Join DYA?</h2>
+                <ul>
+                  <li>Interactive and engaging content tailored for kids.</li>
+                  <li>Educational games and activities that make learning fun.</li>
+                  <li>Expert-designed courses to ensure quality education.</li>
+                  <li>Special offers and discounts for early sign-ups.</li>
+                  <li>Safe and secure online environment for children.</li>
+                </ul>
+              </section>
+              <section className="sales-info">
+                <h2>Join Our Course Today!</h2>
+                <p>Sign up for our comprehensive courses designed to make learning fun and engaging. Don't miss out on our special offer - enroll now and get a 20% discount!</p>
+                <button className="animated-button" onClick={() => handleRouteChange('/signup')}>Sign Up Now</button>
+              </section>
             </main>
             <footer>
               <p>&copy; 2024 DYA. All rights reserved.</p>
@@ -58,7 +71,6 @@ function App() {
           </div>
         } />
         <Route path="/login" element={<LoginPage />} />
-        {/* <Route path="/signup" element={<Signup />} /> */}
         <Route path='/signup' element={<NewSignup handleRouteChange={handleRouteChange} />} />
         <Route path='/signup/parent' element={<ParentSignup />} />
         <Route path='/signup/child' element={<ChildSignup handleRouteChange={handleRouteChange} />} />

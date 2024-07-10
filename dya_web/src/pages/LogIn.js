@@ -3,7 +3,6 @@ import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import activities from './activities';
 import '../css/LogIn.css';
 
 function LogIn() {
@@ -11,6 +10,13 @@ function LogIn() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  const initializeRoadmap = async (uid, email) => {
+    await setDoc(doc(db, 'roadmaps', uid), {
+      name: email,
+      currentLevel: 1
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,11 +30,7 @@ function LogIn() {
       const docSnap = await getDoc(docRef);
       if (!docSnap.exists()) {
         // Create a new roadmap document if it doesn't exist
-        await setDoc(docRef, {
-          name: email,
-          currentLevel: 1,
-          activities: activities // Use imported activities
-        });
+        await initializeRoadmap(user.uid, email);
       }
 
       console.log('Login successful');
