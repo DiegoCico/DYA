@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from '../firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../css/Activity.css';
 
 function Activity() {
@@ -12,6 +12,8 @@ function Activity() {
   const [error, setError] = useState(null);
   const [userCode, setUserCode] = useState('');
   const [output, setOutput] = useState('');
+  const [result, setResult] = useState(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   useEffect(() => {
     const fetchActivity = async () => {
@@ -34,14 +36,22 @@ function Activity() {
     fetchActivity();
   }, [uid, activityIndex]);
 
+  const updateRoadmapProgress = async () => {
+    const docRef = doc(db, 'roadmaps', uid);
+    await updateDoc(docRef, {
+      currentLevel: currentQuestionIndex + 1
+    });
+  };
+
   const runCode = () => {
     const outf = (text) => {
       setOutput((prevOutput) => prevOutput + text + '\n');
     };
 
     const builtinRead = (x) => {
-      if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-        throw "File not found: '" + x + "'";
+      if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
+        throw new Error("File not found: '" + x + "'");
+      }
       return Sk.builtinFiles["files"][x];
     };
 
@@ -58,39 +68,58 @@ function Activity() {
     });
   };
 
+  const submitCode = () => {
+    const currentQuestion = activity.questions[currentQuestionIndex];
+    if (output.trim() === currentQuestion.requiredOutput) {
+      setResult('Success! You got it right.');
+      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+      setUserCode(''); // Clear the code input
+      setOutput(''); // Clear the output
+      setResult(null); // Clear the result
+      updateRoadmapProgress(); // Update the progress in Firestore
+    } else {
+      setResult('Incorrect output. Try again.');
+    }
+  };
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
+  if (activity && currentQuestionIndex >= activity.questions.length) {
+    return (
+      <div className="activity-page">
+        <h2 className="activity-title">{activity.title}</h2>
+        <p className="activity-description">Congratulations! You've completed all the questions.</p>
+      </div>
+    );
+  }
+
+  const currentQuestion = activity ? activity.questions[currentQuestionIndex] : null;
+
   return (
     <div className="activity-page">
-      <h2 className="activity-title">{activity.title}</h2>
-      <p className="activity-description">{activity.description}</p>
-      <div className="question-section">
-        {activity.questions.map((q, index) => (
-          <div key={index} className="question-item">
-            <p>{q.question}</p>
-            {q.options.map((option, idx) => (
-              <div key={idx}>
-                <input type="radio" id={`option-${index}-${idx}`} name={`question-${index}`} value={option} />
-                <label htmlFor={`option-${index}-${idx}`}>{option}</label>
-              </div>
-            ))}
+      {activity && (
+        <>
+          <h2 className="activity-title">{activity.title}</h2>
+          <p className="activity-description">{activity.description}</p>
+          <div className="coding-section">
+            <p className="coding-question">{currentQuestion.codingQuestion}</p>
+            <textarea
+              value={userCode}
+              onChange={(e) => setUserCode(e.target.value)}
+              placeholder="Write your Python code here..."
+            ></textarea>
+            <button onClick={runCode}>Run</button>
+            <button onClick={submitCode}>Submit</button>
+            <div className="output-section">
+              <h3>Output:</h3>
+              <pre id="output">{output}</pre>
+            </div>
+            {result && <div className="result-section">{result}</div>}
           </div>
-        ))}
-      </div>
-      <div className="coding-section">
-        <textarea
-          value={userCode}
-          onChange={(e) => setUserCode(e.target.value)}
-          placeholder="Write your Python code here..."
-        ></textarea>
-        <button onClick={runCode}>Run</button>
-        <div className="output-section">
-          <h3>Output:</h3>
-          <pre id="output">{output}</pre>
-        </div>
-      </div>
-      <div id="mycanvas"></div>
+          <div id="mycanvas"></div>
+        </>
+      )}
     </div>
   );
 }

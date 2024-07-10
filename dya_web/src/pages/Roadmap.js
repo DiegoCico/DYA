@@ -41,15 +41,19 @@ function Roadmap() {
 
   return (
     <div className="roadmap-page">
-      <h2 className="roadmap-title">{roadmap.name}'s Roadmap</h2>
-      <div className="roadmap-container">
-        {roadmap.activities.map((activity, index) => (
-          <div key={index} className="roadmap-item" onClick={() => handleActivityClick(index)}>
-            <h3 className="roadmap-item-title">{activity.title}</h3>
-            <p className="roadmap-item-description">{activity.description}</p>
+      {roadmap && (
+        <>
+          <h2 className="roadmap-title">{roadmap.name}'s Roadmap</h2>
+          <div className="roadmap-container">
+            {roadmap.activities.slice().reverse().map((activity, index) => (
+              <div key={index} className="roadmap-item" onClick={() => handleActivityClick(roadmap.activities.length - 1 - index)}>
+                <h3 className="roadmap-item-title">{activity.title}</h3>
+                <p className="roadmap-item-description">{activity.description}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   );
 }

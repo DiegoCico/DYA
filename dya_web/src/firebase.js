@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-
+import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
+import activitiesData from './activities.json'; 
 
 const firebaseConfig = {
   apiKey: "AIzaSyBI37lzWhWSv7VQif5mlNbZm0Bso5W05OA",
@@ -15,5 +15,26 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-export const db = getFirestore(app); 
+export const db = getFirestore(app);
+
+const initializeActivities = async () => {
+  try {
+    const activitiesCollection = collection(db, 'activities');
+    const activitiesSnapshot = await getDocs(activitiesCollection);
+
+    if (activitiesSnapshot.empty) {
+      for (const activity of activitiesData.activities) {
+        await addDoc(activitiesCollection, activity);
+      }
+      console.log('Activities initialized in Firestore');
+    } else {
+      console.log('Activities already initialized in Firestore');
+    }
+  } catch (error) {
+    console.error('Error initializing activities:', error);
+  }
+};
+
+initializeActivities();
+
 export default app;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
 import '../css/LogIn.css';
 
 function LogIn() {
@@ -14,10 +14,17 @@ function LogIn() {
   const [resetMessage, setResetMessage] = useState('');
   const navigate = useNavigate();
 
-  const initializeRoadmap = async (uid, email) => {
+  const fetchActivities = async () => {
+    const activitiesSnapshot = await getDocs(collection(db, 'activities'));
+    const activitiesList = activitiesSnapshot.docs.map(doc => doc.data());
+    return activitiesList;
+  };
+
+  const initializeRoadmap = async (uid, email, activities) => {
     await setDoc(doc(db, 'roadmaps', uid), {
       name: email,
-      currentLevel: 1
+      currentLevel: 1,
+      activities: activities
     });
   };
 
@@ -28,12 +35,15 @@ function LogIn() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Ensure the roadmap document exists
+      // Fetch activities from Firestore
+      const activities = await fetchActivities();
+
+      // Ensure the roadmap document exists and is initialized properly
       const docRef = doc(db, 'roadmaps', user.uid);
       const docSnap = await getDoc(docRef);
-      if (!docSnap.exists()) {
-        // Create a new roadmap document if it doesn't exist
-        await initializeRoadmap(user.uid, email);
+      if (!docSnap.exists() || !docSnap.data().activities || docSnap.data().activities.length === 0) {
+        // Create a new roadmap document or update the existing one if activities are missing
+        await initializeRoadmap(user.uid, email, activities);
       }
 
       console.log('Login successful');
@@ -107,4 +117,3 @@ function LogIn() {
 }
 
 export default LogIn;
-  

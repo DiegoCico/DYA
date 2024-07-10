@@ -1,20 +1,43 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import '../css/App.css';
 import LoginPage from './LogIn';
-import Signup from './Signup';
+// import Signup from './Signup';
 import Roadmap from './Roadmap';
 import Activity from './Activity';
 import ChildSignup from './ChildSignup';
 import ParentSignup from './ParentSignup';
 import NewSignup from './NewSignup';
+import { db } from '../firebase';
+import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
+import activitiesData from '../activities.json'; // Import the JSON file
+
+const initializeRoadmaps = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'roadmaps'));
+    if (querySnapshot.empty) {
+      // If the collection is empty, add the initial activities data
+      const docRef = doc(db, 'roadmaps', 'default_roadmap');
+      await setDoc(docRef, activitiesData);
+      console.log('Initialized roadmaps collection with activities data.');
+    } else {
+      console.log('Roadmaps collection already initialized.');
+    }
+  } catch (error) {
+    console.error('Error initializing roadmaps collection:', error);
+  }
+};
 
 function App() {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    initializeRoadmaps();
+  }, []);
+
   const handleRouteChange = (route) => {
-    navigate(route)
-  }
+    navigate(route);
+  };
 
   return (
     <div className="App">
