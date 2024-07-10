@@ -10,7 +10,6 @@ import ChildSignup from './ChildSignup';
 import ParentSignup from './ParentSignup';
 // import the new sign up page
 import NewSignup from './NewSignup';
-import TestBoot from './TestBoot';
 
 function App() {
   const navigate = useNavigate();
