@@ -1,33 +1,136 @@
 {
-    "activities": [
-      {
-        "title": "Activity 1",
-        "description": "Complete this to proceed to the next level",
-        "questions": [
-          {
-            "codingQuestion": "Write a Python program that prints 'Hello, World!'",
-            "requiredOutput": "Hello, World!"
-          },
-          {
-            "codingQuestion": "Write a Python program that prints 'Success!'",
-            "requiredOutput": "Success!"
-          }
-        ]
-      },
-      {
-        "title": "Activity 2",
-        "description": "Complete this to proceed to the next level",
-        "questions": [
-          {
-            "codingQuestion": "Write a Python program that prints 'Completed!'",
-            "requiredOutput": "Completed!"
-          },
-          {
-            "codingQuestion": "Write a Python program that prints 'Next Step!'",
-            "requiredOutput": "Next Step!"
-          }
-        ]
-      }
-    ]
-  }
-  
+  "activities": [
+    {
+      "title": "Activity 1",
+      "description": "Complete this to proceed to the next level",
+      "questions": [
+        {
+          "codingQuestion": "Write a Python program that prints 'Hello, World!'",
+          "requiredOutput": "Hello, World!"
+        },
+        {
+          "codingQuestion": "Write a Python program that prints 'Success!'",
+          "requiredOutput": "Success!"
+        },
+        {
+          "codingQuestion": "Write a Python program that adds two numbers and prints the result.",
+          "requiredOutput": "The sum is 7"
+        },
+        {
+          "codingQuestion": "Write a Python program that multiplies two numbers and prints the result.",
+          "requiredOutput": "The product is 12"
+        },
+        {
+          "codingQuestion": "Write a Python program that prints the first 10 natural numbers.",
+          "requiredOutput": "1 2 3 4 5 6 7 8 9 10"
+        },
+        {
+          "codingQuestion": "Write a Python program that calculates the factorial of a number.",
+          "requiredOutput": "Factorial of 5 is 120"
+        },
+        {
+          "codingQuestion": "Write a Python program to check if a number is prime.",
+          "requiredOutput": "7 is a prime number"
+        },
+        {
+          "codingQuestion": "Write a Python program that prints the Fibonacci series up to 10 terms.",
+          "requiredOutput": "0 1 1 2 3 5 8 13 21 34"
+        },
+        {
+          "codingQuestion": "Write a Python program that reverses a string.",
+          "requiredOutput": "dlroW ,olleH"
+        },
+        {
+          "codingQuestion": "Write a Python program that sorts a list of numbers in ascending order.",
+          "requiredOutput": "[1, 2, 3, 4, 5]"
+        },
+        {
+          "codingQuestion": "Write a Python program to find the largest number in a list.",
+          "requiredOutput": "The largest number is 9"
+        },
+        {
+          "codingQuestion": "Write a Python program that removes duplicates from a list.",
+          "requiredOutput": "[1, 2, 3, 4, 5]"
+        },
+        {
+          "codingQuestion": "Write a Python program that counts the number of vowels in a string.",
+          "requiredOutput": "Number of vowels: 5"
+        },
+        {
+          "codingQuestion": "Write a Python program to convert a temperature from Celsius to Fahrenheit.",
+          "requiredOutput": "32°C is equal to 89.6°F"
+        },
+        {
+          "codingQuestion": "Write a Python program to calculate the area of a circle given its radius.",
+          "requiredOutput": "The area is 78.54"
+        }
+      ]
+    },
+    {
+      "title": "Activity 2",
+      "description": "Complete this to proceed to the next level",
+      "questions": [
+        {
+          "codingQuestion": "Write a Python program that prints 'Completed!'",
+          "requiredOutput": "Completed!"
+        },
+        {
+          "codingQuestion": "Write a Python program that prints 'Next Step!'",
+          "requiredOutput": "Next Step!"
+        },
+        {
+          "codingQuestion": "Write a Python program that calculates the sum of the first 10 even numbers.",
+          "requiredOutput": "The sum is 90"
+        },
+        {
+          "codingQuestion": "Write a Python program to check if a string is a palindrome.",
+          "requiredOutput": "'radar' is a palindrome"
+        },
+        {
+          "codingQuestion": "Write a Python program that converts a list of integers to a comma-separated string.",
+          "requiredOutput": "1, 2, 3, 4, 5"
+        },
+        {
+          "codingQuestion": "Write a Python program that finds the GCD (Greatest Common Divisor) of two numbers.",
+          "requiredOutput": "The GCD of 8 and 12 is 4"
+        },
+        {
+          "codingQuestion": "Write a Python program that finds the LCM (Least Common Multiple) of two numbers.",
+          "requiredOutput": "The LCM of 8 and 12 is 24"
+        },
+        {
+          "codingQuestion": "Write a Python program to calculate the square root of a number.",
+          "requiredOutput": "The square root of 16 is 4.0"
+        },
+        {
+          "codingQuestion": "Write a Python program that capitalizes the first letter of each word in a string.",
+          "requiredOutput": "Hello World"
+        },
+        {
+          "codingQuestion": "Write a Python program to find the second largest number in a list.",
+          "requiredOutput": "The second largest number is 8"
+        },
+        {
+          "codingQuestion": "Write a Python program that counts the occurrences of each word in a given sentence.",
+          "requiredOutput": "{'this': 2, 'is': 2, 'a': 1, 'test': 1}"
+        },
+        {
+          "codingQuestion": "Write a Python program that merges two dictionaries.",
+          "requiredOutput": "{'a': 1, 'b': 2, 'c': 3, 'd': 4}"
+        },
+        {
+          "codingQuestion": "Write a Python program to check if a given year is a leap year.",
+          "requiredOutput": "2024 is a leap year"
+        },
+        {
+          "codingQuestion": "Write a Python program that removes all punctuation from a string.",
+          "requiredOutput": "Hello World"
+        },
+        {
+          "codingQuestion": "Write a Python program to find the intersection of two lists.",
+          "requiredOutput": "[2, 4]"
+        }
+      ]
+    }
+  ]
+}

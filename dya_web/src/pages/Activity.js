@@ -8,6 +8,7 @@ import '../css/Activity.css';
 function Activity() {
   const { uid, activityIndex } = useParams();
   const [activity, setActivity] = useState(null);
+  const [shuffledQuestions, setShuffledQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userCode, setUserCode] = useState('');
@@ -22,7 +23,9 @@ function Activity() {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const roadmapData = docSnap.data();
-          setActivity(roadmapData.activities[activityIndex]);
+          const activity = roadmapData.activities[activityIndex];
+          setActivity(activity);
+          setShuffledQuestions(shuffleArray(activity.questions));
         } else {
           setError('Activity not found');
         }
@@ -69,7 +72,7 @@ function Activity() {
   };
 
   const submitCode = () => {
-    const currentQuestion = activity.questions[currentQuestionIndex];
+    const currentQuestion = shuffledQuestions[currentQuestionIndex];
     if (output.trim() === currentQuestion.requiredOutput) {
       setResult('Success! You got it right.');
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
@@ -82,10 +85,19 @@ function Activity() {
     }
   };
 
+  const shuffleArray = (array) => {
+    const shuffledArray = array.slice();
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+    return shuffledArray;
+  };
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
-  if (activity && currentQuestionIndex >= activity.questions.length) {
+  if (activity && currentQuestionIndex >= shuffledQuestions.length) {
     return (
       <div className="activity-page">
         <h2 className="activity-title">{activity.title}</h2>
@@ -94,7 +106,7 @@ function Activity() {
     );
   }
 
-  const currentQuestion = activity ? activity.questions[currentQuestionIndex] : null;
+  const currentQuestion = shuffledQuestions[currentQuestionIndex];
 
   return (
     <div className="activity-page">
