@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import CodeEditor from './CodeEditor';
 import '../css/Activity.css';
 
 function Activity() {
@@ -17,11 +16,11 @@ function Activity() {
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const docRef = doc(db, 'roadmaps', uid);
+        const docRef = doc(db, 'roadmaps', uid); // Using collection ID 'roadmaps' and document ID 'uid'
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          const roadmap = docSnap.data();
-          setActivity(roadmap.activities[activityIndex]);
+          const roadmapData = docSnap.data();
+          setActivity(roadmapData.activities[activityIndex]);
         } else {
           setError('Activity not found');
         }
@@ -35,29 +34,28 @@ function Activity() {
     fetchActivity();
   }, [uid, activityIndex]);
 
-  const handleRunCode = () => {
+  const runCode = () => {
+    const outf = (text) => {
+      setOutput((prevOutput) => prevOutput + text + '\n');
+    };
+
     const builtinRead = (x) => {
       if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-        throw new Error(`File not found: '${x}'`);
+        throw "File not found: '" + x + "'";
       return Sk.builtinFiles["files"][x];
     };
 
-    Sk.configure({ output: setOutput, read: builtinRead });
+    Sk.pre = "output";
+    Sk.configure({ output: outf, read: builtinRead });
 
-    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'output';
+    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
 
-    const myPromise = Sk.misceval.asyncToPromise(() => {
-      return Sk.importMainWithBody('<stdin>', false, userCode, true);
+    setOutput('');
+    Sk.misceval.asyncToPromise(() => {
+      return Sk.importMainWithBody("<stdin>", false, userCode, true);
+    }).catch((err) => {
+      outf(err.toString());
     });
-
-    myPromise.then(
-      () => {
-        console.log('success');
-      },
-      (err) => {
-        setOutput(err.toString());
-      }
-    );
   };
 
   if (loading) return <div className="loading">Loading...</div>;
@@ -67,27 +65,32 @@ function Activity() {
     <div className="activity-page">
       <h2 className="activity-title">{activity.title}</h2>
       <p className="activity-description">{activity.description}</p>
-      <div className="activity-questions">
+      <div className="question-section">
         {activity.questions.map((q, index) => (
-          <div key={index} className="question">
+          <div key={index} className="question-item">
             <p>{q.question}</p>
             {q.options.map((option, idx) => (
-              <label key={idx}>
-                <input type="radio" name={`question-${index}`} value={option} />
-                {option}
-              </label>
+              <div key={idx}>
+                <input type="radio" id={`option-${index}-${idx}`} name={`question-${index}`} value={option} />
+                <label htmlFor={`option-${index}-${idx}`}>{option}</label>
+              </div>
             ))}
           </div>
         ))}
       </div>
-      <div className="code-editor">
-        <CodeEditor code={userCode} setCode={setUserCode} />
-        <button onClick={handleRunCode}>Run Code</button>
-        <div className="output">
+      <div className="coding-section">
+        <textarea
+          value={userCode}
+          onChange={(e) => setUserCode(e.target.value)}
+          placeholder="Write your Python code here..."
+        ></textarea>
+        <button onClick={runCode}>Run</button>
+        <div className="output-section">
           <h3>Output:</h3>
-          <pre>{output}</pre>
+          <pre id="output">{output}</pre>
         </div>
       </div>
+      <div id="mycanvas"></div>
     </div>
   );
 }

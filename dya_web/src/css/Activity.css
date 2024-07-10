@@ -1,107 +1,69 @@
-/* src/css/Activity.css */
-
 .activity-page {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .activity-title {
-    font-size: 2em;
-    margin-bottom: 10px;
-    color: #333;
-    text-align: center;
-  }
-  
-  .activity-description {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-    color: #666;
-    text-align: center;
-  }
-  
-  .activity-questions {
-    margin-top: 20px;
-  }
-  
-  .question {
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .question p {
-    font-size: 1em;
-    margin-bottom: 10px;
-  }
-  
-  .question label {
-    display: block;
-    margin-bottom: 8px;
-    cursor: pointer;
-  }
-  
-  .question input[type="radio"] {
-    margin-right: 8px;
-  }
-  
-  .code-editor {
-    margin-top: 20px;
-  }
-  
-  .CodeMirror {
-    height: auto;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .code-editor button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    font-size: 1em;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .code-editor button:hover {
-    background-color: #218838;
-  }
-  
-  .output {
-    margin-top: 20px;
-  }
-  
-  .output h3 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-  }
-  
-  .output pre {
-    padding: 10px;
-    background-color: #f1f1f1;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
-  
-  .loading,
-  .error {
-    text-align: center;
-    font-size: 1.2em;
-    color: #555;
-  }
-  
-  .error {
-    color: red;
-  }
-  
+  padding: 20px;
+}
+
+.activity-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.activity-description {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.question-section {
+  margin-bottom: 20px;
+}
+
+.question-item {
+  margin-bottom: 10px;
+}
+
+.coding-section {
+  margin-top: 20px;
+}
+
+textarea {
+  width: 100%;
+  height: 200px;
+  margin-bottom: 10px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.output-section {
+  margin-top: 20px;
+}
+
+.output-section h3 {
+  margin-bottom: 10px;
+}
+
+.output-section pre {
+  background-color: #f8f8f8;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border: 1px solid #ddd;
+}
