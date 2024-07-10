@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { auth, db } from '../firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import '../css/LogIn.css';
@@ -8,7 +8,10 @@ import '../css/LogIn.css';
 function LogIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [resetEmail, setResetEmail] = useState('');
   const [error, setError] = useState('');
+  const [resetError, setResetError] = useState('');
+  const [resetMessage, setResetMessage] = useState('');
   const navigate = useNavigate();
 
   const initializeRoadmap = async (uid, email) => {
@@ -48,6 +51,17 @@ function LogIn() {
     navigate('/signup');
   };
 
+  const handleResetPassword = async () => {
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      setResetMessage('Password reset email sent successfully. Please check your inbox.');
+      setResetError('');
+    } catch (err) {
+      setResetError(err.message || 'Failed to send password reset email. Please try again.');
+      setResetMessage('');
+    }
+  };
+
   return (
     <div className="login-page">
       <div className="login-container">
@@ -74,9 +88,23 @@ function LogIn() {
         </form>
         <button onClick={handleBackClick} className="back-button">Back</button>
         <p>Don't have an account? <button onClick={handleSignupClick} className="switch-button">Sign Up</button></p>
+        <div className="forgot-password-section">
+          <h3>Forgot Password?</h3>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={resetEmail}
+            onChange={(e) => setResetEmail(e.target.value)}
+            className="login-input"
+          />
+          <button onClick={handleResetPassword} className="reset-button">Reset Password</button>
+          {resetError && <p className="error-message">{resetError}</p>}
+          {resetMessage && <p className="success-message">{resetMessage}</p>}
+        </div>
       </div>
     </div>
   );
 }
 
 export default LogIn;
+  
