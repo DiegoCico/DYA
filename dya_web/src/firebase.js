@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
 import activitiesData from './activities.json'; // Adjust the path as needed
 
 const firebaseConfig = {
@@ -22,33 +22,20 @@ export const initializeActivities = async () => {
     const activitiesCollection = collection(db, 'activities');
     const activitiesSnapshot = await getDocs(activitiesCollection);
 
-    const existingActivities = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-    // Check if activities need to be updated
-    const activitiesToUpdate = activitiesData.activities.filter(activity => {
-      return !existingActivities.some(existing => existing.title === activity.title && JSON.stringify(existing) === JSON.stringify(activity));
-    });
-
-    if (activitiesToUpdate.length > 0) {
-      // Delete all existing activities
-      await Promise.all(existingActivities.map(async (activity) => {
-        await deleteDoc(doc(db, 'activities', activity.id));
-      }));
-
-      // Add updated activities
-      await Promise.all(activitiesData.activities.map(async (activity) => {
-        await addDoc(activitiesCollection, activity);
-      }));
-
-      console.log('Activities updated in Firestore');
+    if (activitiesSnapshot.empty) {
+      // Add activities from the JSON file with an explicit order field
+      const addPromises = activitiesData.activities.map((activity, index) => {
+        const activityWithOrder = { ...activity, order: index };
+        return addDoc(activitiesCollection, activityWithOrder);
+      });
+      await Promise.all(addPromises);
+      console.log('Activities added to Firestore');
     } else {
-      console.log('Activities already up to date in Firestore');
+      console.log('Activities already exist in Firestore');
     }
   } catch (error) {
-    console.error('Error updating activities:', error);
+    console.error('Error initializing activities:', error);
   }
 };
-
-initializeActivities();
 
 export default app;

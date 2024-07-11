@@ -8,7 +8,7 @@ import Activity from './Activity';
 import ChildSignup from './ChildSignup';
 import ParentSignup from './ParentSignup';
 import NewSignup from './NewSignup';
-import { db, initializeActivities } from '../firebase'; 
+import { initializeActivities } from '../firebase'; 
 
 function App() {
   const navigate = useNavigate();

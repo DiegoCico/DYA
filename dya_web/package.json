@@ -50,6 +50,7 @@
     ]
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "esquery": "^1.6.0"
   }
 }

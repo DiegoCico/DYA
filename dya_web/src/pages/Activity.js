@@ -1,8 +1,8 @@
-/* global Sk */ // This comment is for the Skulpt library, used for running Python code in the browser
+/* global Sk */
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from '../firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import '../css/Activity.css';
 
 function Activity() {
@@ -16,36 +16,49 @@ function Activity() {
   const [result, setResult] = useState(null); // State to store result message
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // State to track current question index
 
-  // Fetch activity data when the component mounts
+  // Fetch activity and user progress when the component mounts
   useEffect(() => {
-    const fetchActivity = async () => {
+    const fetchActivityAndUserProgress = async () => {
       try {
-        const docRef = doc(db, 'roadmaps', uid); // Reference to the Firestore document
-        const docSnap = await getDoc(docRef); // Get the document snapshot
-        if (docSnap.exists()) {
-          const roadmapData = docSnap.data(); // Extract data from the snapshot
-          const activity = roadmapData.activities[activityIndex]; // Get the specific activity
-          setActivity(activity);
-          setShuffledQuestions(shuffleArray(activity.questions)); // Shuffle questions
-        } else {
-          setError('Activity not found');
+        // Fetch user data
+        const userDocRef = doc(db, 'users', uid); // Reference to the user document
+        const userDocSnap = await getDoc(userDocRef); // Get the user document snapshot
+        if (!userDocSnap.exists()) {
+          setError('User not found'); // Set error message
+          return;
         }
+        const userData = userDocSnap.data();
+
+        // Fetch activities data
+        const activitiesCollection = collection(db, 'activities'); // Reference to the activities collection
+        const activitiesSnapshot = await getDocs(activitiesCollection); // Get the activities snapshot
+        const activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        const activity = activitiesData[activityIndex]; // Get the specific activity
+        setActivity(activity);
+        setShuffledQuestions(shuffleArray(activity.questions)); // Shuffle questions
+        setCurrentQuestionIndex(0); // Set current question index
       } catch (err) {
-        setError(err.message);
+        setError(err.message); // Set error message
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false
       }
     };
 
-    fetchActivity();
+    fetchActivityAndUserProgress();
   }, [uid, activityIndex]);
 
   // Update the progress in Firestore
-  const updateRoadmapProgress = async () => {
-    const docRef = doc(db, 'roadmaps', uid); // Reference to the Firestore document
-    await updateDoc(docRef, {
-      currentLevel: currentQuestionIndex + 1 // Update the current level in Firestore
-    });
+  const updateUserProgress = async () => {
+    const userDocRef = doc(db, 'users', uid); // Reference to the user document
+    const userDocSnap = await getDoc(userDocRef);
+    const userData = userDocSnap.data();
+    
+    if (activityIndex + 1 > userData.currentActivity) {
+      await updateDoc(userDocRef, {
+        currentActivity: activityIndex + 2 // Update the current activity in Firestore
+      });
+    }
   };
 
   // Run the user's Python code
@@ -79,11 +92,15 @@ function Activity() {
     const currentQuestion = shuffledQuestions[currentQuestionIndex]; // Get the current question
     if (output.trim() === currentQuestion.requiredOutput) {
       setResult('Success! You got it right.'); // Display success message
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1); // Move to the next question
-      setUserCode(''); // Clear the code input
-      setOutput(''); // Clear the output
-      setResult(null); // Clear the result
-      updateRoadmapProgress(); // Update the progress in Firestore
+      if (currentQuestionIndex === shuffledQuestions.length - 1) {
+        // All questions completed, update user progress
+        updateUserProgress();
+      } else {
+        setCurrentQuestionIndex((prevIndex) => prevIndex + 1); // Move to the next question
+        setUserCode(''); // Clear the code input
+        setOutput(''); // Clear the output
+        setResult(null); // Clear the result
+      }
     } else {
       setResult('Incorrect output. Try again.'); // Display error message
     }

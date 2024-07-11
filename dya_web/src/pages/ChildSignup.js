@@ -3,7 +3,7 @@ import '../css/Signup.css';
 import Header from "../components/Header";
 import { auth, db } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
 export default function ChildSignup(props) {
@@ -14,11 +14,12 @@ export default function ChildSignup(props) {
     const [error, setError] = useState(''); // State to handle errors
     const navigate = useNavigate(); // Navigation hook
 
-    // Fetch activities from Firestore
-    const fetchActivities = async () => {
-        const activitiesSnapshot = await getDocs(collection(db, 'activities'));
-        const activitiesList = activitiesSnapshot.docs.map(doc => doc.data());
-        return activitiesList;
+    // Initialize user data for a new user
+    const initializeUser = async (uid, email) => {
+        await setDoc(doc(db, 'users', uid), {
+            email: email,
+            currentActivity: 1
+        });
     };
 
     // Handle form submission for signup
@@ -34,15 +35,8 @@ export default function ChildSignup(props) {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // Fetch activities from Firestore
-            const activities = await fetchActivities();
-
-            // Create a roadmap document for the new user
-            await setDoc(doc(db, 'roadmaps', user.uid), {
-                name: email,
-                currentLevel: 1,
-                activities: activities
-            });
+            // Initialize user data in Firestore
+            await initializeUser(user.uid, email);
 
             console.log('Signup successful');
             navigate(`/roadmap/${user.uid}`); // Redirect to the roadmap page with UID

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import '../css/LogIn.css';
 
 function LogIn() {
@@ -14,19 +14,11 @@ function LogIn() {
   const [resetMessage, setResetMessage] = useState(''); // State to store reset message
   const navigate = useNavigate(); // Navigation hook
 
-  // Fetch activities from Firestore
-  const fetchActivities = async () => {
-    const activitiesSnapshot = await getDocs(collection(db, 'activities'));
-    const activitiesList = activitiesSnapshot.docs.map(doc => doc.data());
-    return activitiesList;
-  };
-
-  // Initialize roadmap for a new user
-  const initializeRoadmap = async (uid, email, activities) => {
-    await setDoc(doc(db, 'roadmaps', uid), {
-      name: email,
-      currentLevel: 1,
-      activities: activities
+  // Initialize user data for a new user
+  const initializeUser = async (uid, email) => {
+    await setDoc(doc(db, 'users', uid), {
+      email: email,
+      currentActivity: 1
     });
   };
 
@@ -38,15 +30,12 @@ function LogIn() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Fetch activities from Firestore
-      const activities = await fetchActivities();
-
-      // Ensure the roadmap document exists and is initialized properly
-      const docRef = doc(db, 'roadmaps', user.uid);
+      // Ensure the user document exists and is initialized properly
+      const docRef = doc(db, 'users', user.uid);
       const docSnap = await getDoc(docRef);
-      if (!docSnap.exists() || !docSnap.data().activities || docSnap.data().activities.length === 0) {
-        // Create a new roadmap document or update the existing one if activities are missing
-        await initializeRoadmap(user.uid, email, activities);
+      if (!docSnap.exists()) {
+        // Create a new user document
+        await initializeUser(user.uid, email);
       }
 
       console.log('Login successful');

@@ -1,28 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
 import '../css/Roadmap.css';
 
 function Roadmap() {
   const { uid } = useParams(); // Get URL parameter 'uid'
-  const [roadmap, setRoadmap] = useState(null); // State to store roadmap data
+  const [userData, setUserData] = useState(null); // State to store user data
+  const [activities, setActivities] = useState([]); // State to store activities data
   const [loading, setLoading] = useState(true); // State to handle loading state
   const [error, setError] = useState(null); // State to handle errors
   const navigate = useNavigate(); // Navigation hook
 
-  // Fetch roadmap data when the component mounts
+  // Fetch user data and activities when the component mounts
   useEffect(() => {
-    const fetchRoadmap = async () => {
-      console.log("Fetching roadmap for UID: ", uid); // Debugging line
+    const fetchUserDataAndActivities = async () => {
       try {
-        const docRef = doc(db, 'roadmaps', uid); // Reference to the Firestore document
-        const docSnap = await getDoc(docRef); // Get the document snapshot
-        if (docSnap.exists()) {
-          setRoadmap(docSnap.data()); // Set roadmap data
-        } else {
-          setError('Roadmap not found'); // Set error message
+        // Fetch user data
+        const userDocRef = doc(db, 'users', uid); // Reference to the user document
+        const userDocSnap = await getDoc(userDocRef); // Get the user document snapshot
+        if (!userDocSnap.exists()) {
+          setError('User not found'); // Set error message
+          return;
         }
+        const userData = userDocSnap.data();
+
+        // Fetch activities data in order
+        const activitiesCollection = collection(db, 'activities'); // Reference to the activities collection
+        const activitiesQuery = query(activitiesCollection, orderBy('order')); // Order activities by the order field
+        const activitiesSnapshot = await getDocs(activitiesQuery); // Get the activities snapshot
+        const activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        setUserData(userData); // Set user data
+        setActivities(activitiesData); // Set activities data
       } catch (err) {
         setError(err.message); // Set error message
       } finally {
@@ -30,30 +40,35 @@ function Roadmap() {
       }
     };
 
-    fetchRoadmap();
+    fetchUserDataAndActivities();
   }, [uid]);
 
   if (loading) return <div className="loading">Loading...</div>; // Show loading indicator
   if (error) return <div className="error">Error: {error}</div>; // Show error message
 
   const handleActivityClick = (activityIndex) => {
-    navigate(`/activity/${uid}/${activityIndex}`); // Navigate to the activity page
+    if (activityIndex <= userData.currentActivity - 1) {
+      navigate(`/activity/${uid}/${activityIndex}`); // Navigate to the activity page if the user has access
+    } else {
+      alert('You need to complete the previous activities first!');
+    }
   };
 
   return (
     <div className="roadmap-page">
-      {roadmap && (
+      {userData && (
         <>
-          <h2 className="roadmap-title">{roadmap.name}'s Roadmap</h2> {/* Display roadmap title */}
+          <h2 className="roadmap-title">{userData.email}'s Roadmap</h2> {/* Display roadmap title */}
           <div className="roadmap-container">
-            {roadmap.activities.slice().reverse().map((activity, index) => (
+            {activities.map((activity, index) => (
               <div
                 key={index}
-                className="roadmap-item"
-                onClick={() => handleActivityClick(roadmap.activities.length - 1 - index)} // Handle activity click
+                className={`roadmap-item ${index > userData.currentActivity - 1 ? 'locked' : ''}`} // Add locked class if the activity is not accessible
+                onClick={() => handleActivityClick(index)} // Handle activity click
               >
                 <h3 className="roadmap-item-title">{activity.title}</h3> {/* Display activity title */}
                 <p className="roadmap-item-description">{activity.description}</p> {/* Display activity description */}
+                {index > userData.currentActivity - 1 && <p className="locked-message">Locked</p>} {/* Display locked message */}
               </div>
             ))}
           </div>
