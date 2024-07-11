@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
 import '../css/Roadmap.css';
+import UserProfileHeader from '../components/UserProfileHeader';
 
 function Roadmap() {
   const { uid } = useParams(); // Get URL parameter 'uid'
@@ -55,26 +56,29 @@ function Roadmap() {
   };
 
   return (
-    <div className="roadmap-page">
-      {userData && (
-        <>
-          <h2 className="roadmap-title">{userData.email}'s Roadmap</h2> {/* Display roadmap title */}
-          <div className="roadmap-container">
-            {activities.map((activity, index) => (
-              <div
-                key={index}
-                className={`roadmap-item ${index > userData.currentActivity - 1 ? 'locked' : ''}`} // Add locked class if the activity is not accessible
-                onClick={() => handleActivityClick(index)} // Handle activity click
-              >
-                <h3 className="roadmap-item-title">{activity.title}</h3> {/* Display activity title */}
-                <p className="roadmap-item-description">{activity.description}</p> {/* Display activity description */}
-                {index > userData.currentActivity - 1 && <p className="locked-message">Locked</p>} {/* Display locked message */}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-    </div>
+    <>
+      <UserProfileHeader />
+      <div className="roadmap-page">
+        {userData && (
+          <>
+            <h2 className="roadmap-title">{userData.email}'s Roadmap</h2> {/* Display roadmap title */}
+            <div className="roadmap-container">
+              {activities.map((activity, index) => (
+                <div
+                  key={index}
+                  className={`roadmap-item ${index > userData.currentActivity - 1 ? 'locked' : ''}`} // Add locked class if the activity is not accessible
+                  onClick={() => handleActivityClick(index)} // Handle activity click
+                >
+                  <h3 className="roadmap-item-title">{activity.title}</h3> {/* Display activity title */}
+                  <p className="roadmap-item-description">{activity.description}</p> {/* Display activity description */}
+                  {index > userData.currentActivity - 1 && <p className="locked-message">Locked</p>} {/* Display locked message */}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 }
 

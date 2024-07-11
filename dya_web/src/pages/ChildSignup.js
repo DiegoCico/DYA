@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import '../css/Signup.css';
 import Header from "../components/Header";
 import { auth, db } from '../firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, useDeviceLanguage } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +18,8 @@ export default function ChildSignup(props) {
     const initializeUser = async (uid, email) => {
         await setDoc(doc(db, 'users', uid), {
             email: email,
-            currentActivity: 1
+            currentActivity: 1,
+            programmingLanguages: ["Python"]
         });
     };
 
