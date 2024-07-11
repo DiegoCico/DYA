@@ -1,22 +1,36 @@
 /* global Sk */
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
 import { db } from '../firebase';
 import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import '../css/Activity.css';
+import { useCodeMirror } from '@uiw/react-codemirror';
+import { python } from '@codemirror/lang-python';
+import { oneDark } from '@codemirror/theme-one-dark';
 
 function Activity() {
-  const { uid, activityIndex } = useParams(); // Get URL parameters
-  const [activity, setActivity] = useState(null); // State to store activity data
-  const [shuffledQuestions, setShuffledQuestions] = useState([]); // State to store shuffled questions
-  const [loading, setLoading] = useState(true); // State to handle loading state
-  const [error, setError] = useState(null); // State to handle errors
-  const [userCode, setUserCode] = useState(''); // State to store user code input
-  const [output, setOutput] = useState(''); // State to store code output
-  const [result, setResult] = useState(null); // State to store result message
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // State to track current question index
+  const { uid, activityIndex } = useParams();
+  const navigate = useNavigate(); // Use navigate instead of useHistory
+  const [activity, setActivity] = useState(null);
+  const [shuffledQuestions, setShuffledQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [userCode, setUserCode] = useState(`# Write your code here\n# You can start coding right away\n# The editor will scroll if the content gets too long\n\n`);
+  const [output, setOutput] = useState('');
+  const [result, setResult] = useState(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  // Fetch activity and user progress when the component mounts
+  const handleCodeChange = (value, viewUpdate) => {
+    setUserCode(value);
+  };
+
+  const { setContainer } = useCodeMirror({
+    value: userCode,
+    theme: oneDark,
+    extensions: [python()],
+    onChange: handleCodeChange,
+  });
+
   useEffect(() => {
     const fetchActivityAndUserProgress = async () => {
       try {
@@ -26,7 +40,6 @@ function Activity() {
           setError('User not found');
           return;
         }
-        const userData = userDocSnap.data();
 
         const activitiesCollection = collection(db, 'activities');
         const activitiesSnapshot = await getDocs(activitiesCollection);
@@ -91,7 +104,7 @@ function Activity() {
         updateUserProgress();
       } else {
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-        setUserCode('');
+        setUserCode(`# Write your code here\n# You can start coding right away\n# The editor will scroll if the content gets too long\n\n`);
         setOutput('');
         setResult(null);
       }
@@ -107,6 +120,10 @@ function Activity() {
       [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
     }
     return shuffledArray;
+  };
+
+  const handleBackClick = () => {
+    navigate(-1); // Navigate back to the previous page
   };
 
   if (loading) return <div className="loading">Loading...</div>;

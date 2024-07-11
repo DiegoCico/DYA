@@ -22,18 +22,19 @@ export const initializeActivities = async () => {
     const activitiesCollection = collection(db, 'activities');
     const activitiesSnapshot = await getDocs(activitiesCollection);
 
-    if (activitiesSnapshot.empty) {
-      console.log('No activities found in Firestore. Adding activities from JSON file...');
-      // Add activities from the JSON file with an explicit order field
-      const addPromises = activitiesData.activities.map((activity, index) => {
-        const activityWithOrder = { ...activity, order: index };
-        return addDoc(activitiesCollection, activityWithOrder);
-      });
-      await Promise.all(addPromises);
-      console.log('Activities added to Firestore');
-    } else {
-      console.log('Activities already exist in Firestore');
+    // Check if activities are already initialized
+    if (!activitiesSnapshot.empty) {
+      console.log('Activities are already initialized in Firestore');
+      return; // Exit the function if activities already exist
     }
+
+    const addPromises = activitiesData.activities.map((activity, index) => {
+      const activityWithOrder = { ...activity, order: index };
+      return addDoc(activitiesCollection, activityWithOrder);
+    });
+
+    await Promise.all(addPromises);
+    console.log('New activities added to Firestore');
   } catch (error) {
     console.error('Error initializing activities:', error);
   }

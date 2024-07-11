@@ -130,7 +130,73 @@
           "codingQuestion": "Write a Python program to find the intersection of two lists.",
           "requiredOutput": "[2, 4]"
         }
+      ] 
+    },
+    {
+      "title": "Activity 3",
+      "description": "Complete this to proceed to the next level",
+      "questions": [
+        {
+          "codingQuestion": "Write a Python program that prints 'Well done!'",
+          "requiredOutput": "Well done!"
+        },
+        {
+          "codingQuestion": "Write a Python program that prints 'You're awesome!'",
+          "requiredOutput": "You're awesome!"
+        },
+        {
+          "codingQuestion": "Write a Python program that calculates the sum of the first 10 odd numbers.",
+          "requiredOutput": "The sum is 100"
+        },
+        {
+          "codingQuestion": "Write a Python program to reverse a list.",
+          "requiredOutput": "[5, 4, 3, 2, 1]"
+        },
+        {
+          "codingQuestion": "Write a Python program that converts a string to lowercase.",
+          "requiredOutput": "hello world"
+        },
+        {
+          "codingQuestion": "Write a Python program that finds the HCF (Highest Common Factor) of two numbers.",
+          "requiredOutput": "The HCF of 18 and 27 is 9"
+        },
+        {
+          "codingQuestion": "Write a Python program that finds the LCM (Least Common Multiple) of three numbers.",
+          "requiredOutput": "The LCM of 3, 4, and 5 is 60"
+        },
+        {
+          "codingQuestion": "Write a Python program to calculate the cube root of a number.",
+          "requiredOutput": "The cube root of 27 is 3.0"
+        },
+        {
+          "codingQuestion": "Write a Python program that capitalizes all letters in a string.",
+          "requiredOutput": "HELLO WORLD"
+        },
+        {
+          "codingQuestion": "Write a Python program to find the third largest number in a list.",
+          "requiredOutput": "The third largest number is 7"
+        },
+        {
+          "codingQuestion": "Write a Python program that counts the occurrences of each character in a given string.",
+          "requiredOutput": "{'H': 1, 'e': 1, 'l': 3, 'o': 2, ',': 1, ' ': 1, 'W': 1, 'r': 1, 'd': 1}"
+        },
+        {
+          "codingQuestion": "Write a Python program that merges two lists into a dictionary.",
+          "requiredOutput": "{1: 'a', 2: 'b', 3: 'c'}"
+        },
+        {
+          "codingQuestion": "Write a Python program to check if a given number is an Armstrong number.",
+          "requiredOutput": "153 is an Armstrong number"
+        },
+        {
+          "codingQuestion": "Write a Python program that removes all whitespace from a string.",
+          "requiredOutput": "HelloWorld"
+        },
+        {
+          "codingQuestion": "Write a Python program to find the union of two lists.",
+          "requiredOutput": "[1, 2, 3, 4, 5]"
+        }
       ]
-    }
+    }    
   ]
 }
