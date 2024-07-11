@@ -11,7 +11,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #1E90FF, #32CD32);
+  background: linear-gradient(135deg, #87CEEB, #228B22); /* Sky Blue and Forest Green */
   animation: gradientAnimation 5s ease infinite;
 }
 
@@ -51,14 +51,14 @@ body {
 }
 
 .signup-input:focus {
-  border-color: #1E90FF;
+  border-color: #87CEEB; /* Sky Blue */
 }
 
 .signup-button {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  background: #32CD32;
+  background: #228B22; /* Forest Green */
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -66,7 +66,7 @@ body {
 }
 
 .signup-button:hover {
-  background: #1E90FF;
+  background: #FF7F50; /* Coral */
 }
 
 .error-message {
@@ -89,14 +89,12 @@ body {
   background-color: #e0e0e0;
 }
 
-
 /* New sign up page CSS */
 .main-container {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 4rem;
-  /* margin: 5rem; */
   height: 50%;
   background-color: #dde0e8;
 }
@@ -111,7 +109,6 @@ body {
   width: 100%;
   height: auto;
   margin-top: 3rem;
-
 }
 
 .overlay-left {
@@ -119,7 +116,7 @@ body {
   bottom: 0;
   left: 100%;
   right: 0;
-  background-color: rgba(34, 130, 255, .8);
+  background-color: rgba(34, 130, 255, .8); /* Semi-transparent Sky Blue */
   opacity: 100%;
   overflow: hidden;
   width: 0;
@@ -135,7 +132,7 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(34, 130, 255, 0.75);
+  background-color: rgba(34, 130, 255, 0.75); /* Semi-transparent Sky Blue */
   opacity: 100%;
   overflow: hidden;
   width: 0;
@@ -156,19 +153,15 @@ body {
 }
 
 .overlay-button {
-  /* color: white; */
-  /* font-size: 50px; */
   position: absolute;
   top: 50%;
   left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   white-space: nowrap;
 }
 
 .overlay-button .signup-btn {
-  background-color: #ffc220;
+  background-color: #FF7F50; /* Coral */
   border: none;
   color: white;
   padding: 15px 32px;
@@ -181,7 +174,7 @@ body {
 }
 
 .signup-btn {
-  background-color: #ffc220;
+  background-color: #FF7F50; /* Coral */
   border: none;
   color: white;
   font-size: 20px;
@@ -209,7 +202,7 @@ body {
 
 .container:hover .overlay-left h3, .container:hover .overlay-right h3 {
   opacity: 1;
-  white-space:normal;
+  white-space: normal;
   overflow: visible;
   text-overflow: unset;
 }
@@ -222,8 +215,8 @@ body {
   justify-content: center;
 }
 
-.left-container, .right-container{
-  background-color: #788cb6;
+.left-container, .right-container {
+  background-color: #228B22; /* Forest Green */
   width: 30%;
   height: 75%;
   margin: 5rem;

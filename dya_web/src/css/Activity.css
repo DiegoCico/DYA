@@ -1,3 +1,4 @@
+/* Activity Page */
 .activity-page {
   padding: 20px;
   background-color: #f0f4f8;
@@ -15,7 +16,7 @@
   padding: 10px;
   font-size: 18px;
   cursor: pointer;
-  background-color: #3498db;
+  background-color: #228B22; /* Forest Green */
   color: white;
   border: none;
   border-radius: 50%;
@@ -24,12 +25,12 @@
 }
 
 .back-btn:hover {
-  background-color: #2980b9;
+  background-color: #1B5E20; /* Darker Green */
 }
 
 .activity-title {
   font-size: 28px;
-  color: #2c3e50;
+  color: #228B22; /* Forest Green */
   margin-bottom: 10px;
 }
 
@@ -51,12 +52,12 @@
 }
 
 .correct-count {
-  background-color: #2ecc71;
+  background-color: #2ecc71; /* Green */
   color: white;
 }
 
 .incorrect-count {
-  background-color: #e74c3c;
+  background-color: #e74c3c; /* Red */
   color: white;
 }
 
@@ -72,7 +73,7 @@
 .coding-question {
   font-size: 18px;
   margin-bottom: 10px;
-  color: #2980b9;
+  color: #2980b9; /* Sky Blue */
 }
 
 .code-editor {
@@ -91,7 +92,7 @@ button {
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
-  background-color: #2ecc71;
+  background-color: #FF7F50; /* Coral */
   color: white;
   border: none;
   border-radius: 5px;
@@ -100,7 +101,7 @@ button {
 }
 
 button:hover {
-  background-color: #27ae60;
+  background-color: #E6735A; /* Darker Coral */
 }
 
 .output-section {
@@ -124,10 +125,10 @@ button:hover {
 .result-section {
   margin-top: 20px;
   font-size: 18px;
-  color: #e74c3c;
+  color: #e74c3c; /* Red */
 }
 
 .loading, .error {
   font-size: 20px;
-  color: #e74c3c;
+  color: #e74c3c; /* Red */
 }
