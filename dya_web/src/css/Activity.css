@@ -2,9 +2,16 @@
   padding: 20px;
 }
 
+.activity-header {
+  display: flex;
+  align-items: center;
+}
+
 .activity-title {
   font-size: 24px;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
+  margin: auto;
+  /* margin-right: 49rem; */
 }
 
 .activity-description {
@@ -44,6 +51,11 @@ button {
   border: none;
   border-radius: 5px;
   transition: background-color 0.3s;
+}
+
+.back-btn {
+  height: 1.5em;
+  padding-top: 4px;
 }
 
 button:hover {
