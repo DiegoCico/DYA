@@ -1,6 +1,6 @@
 /* global Sk */
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
+import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import '../css/Activity.css';
@@ -10,7 +10,7 @@ import { oneDark } from '@codemirror/theme-one-dark';
 
 function Activity() {
   const { uid, activityIndex } = useParams();
-  const navigate = useNavigate(); // Use navigate instead of useHistory
+  const navigate = useNavigate();
   const [activity, setActivity] = useState(null);
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +19,8 @@ function Activity() {
   const [output, setOutput] = useState('');
   const [result, setResult] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [incorrectCount, setIncorrectCount] = useState(0);
 
   const handleCodeChange = (value, viewUpdate) => {
     setUserCode(value);
@@ -100,8 +102,11 @@ function Activity() {
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
     if (output.trim() === currentQuestion.requiredOutput) {
       setResult('Success! You got it right.');
-      if (currentQuestionIndex === shuffledQuestions.length - 1) {
+      setCorrectCount(correctCount + 1);
+      if (correctCount + 1 === 5) {
         updateUserProgress();
+        alert('Congratulations! You have completed this phase.');
+        setCurrentQuestionIndex(shuffledQuestions.length); // to end the activity
       } else {
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
         setUserCode(`# Write your code here\n# You can start coding right away\n# The editor will scroll if the content gets too long\n\n`);
@@ -110,6 +115,17 @@ function Activity() {
       }
     } else {
       setResult('Incorrect output. Try again.');
+      setIncorrectCount(incorrectCount + 1);
+      if (incorrectCount + 1 === 3) {
+        alert('You have 3 incorrect answers. Restarting...');
+        setCorrectCount(0);
+        setIncorrectCount(0);
+        setCurrentQuestionIndex(0);
+        setShuffledQuestions(shuffleArray(activity.questions));
+        setUserCode(`# Write your code here\n# You can start coding right away\n# The editor will scroll if the content gets too long\n\n`);
+        setOutput('');
+        setResult(null);
+      }
     }
   };
 
@@ -123,7 +139,7 @@ function Activity() {
   };
 
   const handleBackClick = () => {
-    navigate(-1); // Navigate back to the previous page
+    navigate(-1);
   };
 
   if (loading) return <div className="loading">Loading...</div>;
@@ -151,6 +167,10 @@ function Activity() {
             <h2 className="activity-title">{activity.title}</h2>
           </div>
           <p className="activity-description">{activity.description}</p>
+          <div className="status-section">
+            <div className="status correct-count">Correct: {correctCount}</div>
+            <div className="status incorrect-count">Incorrect: {incorrectCount}</div>
+          </div>
           <div className="coding-section">
             <p className="coding-question">{currentQuestion.codingQuestion}</p>
             <div ref={setContainer} className="code-editor" />
