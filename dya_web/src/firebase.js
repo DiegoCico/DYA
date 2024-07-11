@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, collection, getDocs, addDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
-import activitiesData from './activities.json'; // Adjust the path as needed
+import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
+import activitiesData from './activities.json'; 
 
 const firebaseConfig = {
   apiKey: "AIzaSyBI37lzWhWSv7VQif5mlNbZm0Bso5W05OA",
@@ -23,6 +23,7 @@ export const initializeActivities = async () => {
     const activitiesSnapshot = await getDocs(activitiesCollection);
 
     if (activitiesSnapshot.empty) {
+      console.log('No activities found in Firestore. Adding activities from JSON file...');
       // Add activities from the JSON file with an explicit order field
       const addPromises = activitiesData.activities.map((activity, index) => {
         const activityWithOrder = { ...activity, order: index };
