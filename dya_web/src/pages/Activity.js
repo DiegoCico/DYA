@@ -4,32 +4,19 @@ import { useParams } from 'react-router-dom';
 import { db } from '../firebase';
 import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import '../css/Activity.css';
-import { useCodeMirror } from '@uiw/react-codemirror';
-import { python } from '@codemirror/lang-python';
-import { oneDark } from '@codemirror/theme-one-dark';
 
 function Activity() {
-  const { uid, activityIndex } = useParams();
-  const [activity, setActivity] = useState(null);
-  const [shuffledQuestions, setShuffledQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [userCode, setUserCode] = useState('');
-  const [output, setOutput] = useState('');
-  const [result, setResult] = useState(null);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const { uid, activityIndex } = useParams(); // Get URL parameters
+  const [activity, setActivity] = useState(null); // State to store activity data
+  const [shuffledQuestions, setShuffledQuestions] = useState([]); // State to store shuffled questions
+  const [loading, setLoading] = useState(true); // State to handle loading state
+  const [error, setError] = useState(null); // State to handle errors
+  const [userCode, setUserCode] = useState(''); // State to store user code input
+  const [output, setOutput] = useState(''); // State to store code output
+  const [result, setResult] = useState(null); // State to store result message
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // State to track current question index
 
-  const handleCodeChange = (value, viewUpdate) => {
-    setUserCode(value);
-  };
-
-  const { setContainer } = useCodeMirror({
-    value: userCode,
-    theme: oneDark,
-    extensions: [python()],
-    onChange: handleCodeChange,
-  });
-
+  // Fetch activity and user progress when the component mounts
   useEffect(() => {
     const fetchActivityAndUserProgress = async () => {
       try {
@@ -140,7 +127,12 @@ function Activity() {
     <div className="activity-page">
       {activity && (
         <>
-          <h2 className="activity-title">{activity.title}</h2>
+          <div className='activity-header'>
+            <button onClick={handleBackClick} className='back-btn'>
+              <i className="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 className="activity-title">{activity.title}</h2>
+          </div>
           <p className="activity-description">{activity.description}</p>
           <div className="coding-section">
             <p className="coding-question">{currentQuestion.codingQuestion}</p>

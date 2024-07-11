@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
 import '../css/Roadmap.css';
-import UserProfileHeader from '../components/UserProfileHeader';
+import UserProfileSidebar from '../components/UserProfileSidebar';
 
 function Roadmap() {
   const { uid } = useParams(); // Get URL parameter 'uid'
@@ -57,7 +57,7 @@ function Roadmap() {
 
   return (
     <>
-      <UserProfileHeader />
+      <UserProfileSidebar />
       <div className="roadmap-page">
         {userData && (
           <>
