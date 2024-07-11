@@ -18,7 +18,8 @@ function LogIn() {
   const initializeUser = async (uid, email) => {
     await setDoc(doc(db, 'users', uid), {
       email: email,
-      currentActivity: 1
+      currentActivity: 1,
+      programmingLanguages: ["Python"]
     });
   };
 

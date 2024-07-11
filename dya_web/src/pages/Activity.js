@@ -4,67 +4,76 @@ import { useParams } from 'react-router-dom';
 import { db } from '../firebase';
 import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import '../css/Activity.css';
+import { useCodeMirror } from '@uiw/react-codemirror';
+import { python } from '@codemirror/lang-python';
+import { oneDark } from '@codemirror/theme-one-dark';
 
 function Activity() {
-  const { uid, activityIndex } = useParams(); // Get URL parameters
-  const [activity, setActivity] = useState(null); // State to store activity data
-  const [shuffledQuestions, setShuffledQuestions] = useState([]); // State to store shuffled questions
-  const [loading, setLoading] = useState(true); // State to handle loading state
-  const [error, setError] = useState(null); // State to handle errors
-  const [userCode, setUserCode] = useState(''); // State to store user code input
-  const [output, setOutput] = useState(''); // State to store code output
-  const [result, setResult] = useState(null); // State to store result message
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // State to track current question index
+  const { uid, activityIndex } = useParams();
+  const [activity, setActivity] = useState(null);
+  const [shuffledQuestions, setShuffledQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [userCode, setUserCode] = useState('');
+  const [output, setOutput] = useState('');
+  const [result, setResult] = useState(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  // Fetch activity and user progress when the component mounts
+  const handleCodeChange = (value, viewUpdate) => {
+    setUserCode(value);
+  };
+
+  const { setContainer } = useCodeMirror({
+    value: userCode,
+    theme: oneDark,
+    extensions: [python()],
+    onChange: handleCodeChange,
+  });
+
   useEffect(() => {
     const fetchActivityAndUserProgress = async () => {
       try {
-        // Fetch user data
-        const userDocRef = doc(db, 'users', uid); // Reference to the user document
-        const userDocSnap = await getDoc(userDocRef); // Get the user document snapshot
+        const userDocRef = doc(db, 'users', uid);
+        const userDocSnap = await getDoc(userDocRef);
         if (!userDocSnap.exists()) {
-          setError('User not found'); // Set error message
+          setError('User not found');
           return;
         }
         const userData = userDocSnap.data();
 
-        // Fetch activities data
-        const activitiesCollection = collection(db, 'activities'); // Reference to the activities collection
-        const activitiesSnapshot = await getDocs(activitiesCollection); // Get the activities snapshot
+        const activitiesCollection = collection(db, 'activities');
+        const activitiesSnapshot = await getDocs(activitiesCollection);
         const activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        const activity = activitiesData[activityIndex]; // Get the specific activity
+        const activity = activitiesData[activityIndex];
         setActivity(activity);
-        setShuffledQuestions(shuffleArray(activity.questions)); // Shuffle questions
-        setCurrentQuestionIndex(0); // Set current question index
+        setShuffledQuestions(shuffleArray(activity.questions));
+        setCurrentQuestionIndex(0);
       } catch (err) {
-        setError(err.message); // Set error message
+        setError(err.message);
       } finally {
-        setLoading(false); // Set loading to false
+        setLoading(false);
       }
     };
 
     fetchActivityAndUserProgress();
   }, [uid, activityIndex]);
 
-  // Update the progress in Firestore
   const updateUserProgress = async () => {
-    const userDocRef = doc(db, 'users', uid); // Reference to the user document
+    const userDocRef = doc(db, 'users', uid);
     const userDocSnap = await getDoc(userDocRef);
     const userData = userDocSnap.data();
-    
+
     if (activityIndex + 1 > userData.currentActivity) {
       await updateDoc(userDocRef, {
-        currentActivity: activityIndex + 2 // Update the current activity in Firestore
+        currentActivity: activityIndex + 2
       });
     }
   };
 
-  // Run the user's Python code
   const runCode = () => {
     const outf = (text) => {
-      setOutput((prevOutput) => prevOutput + text + '\n'); // Append output text
+      setOutput((prevOutput) => prevOutput + text + '\n');
     };
 
     const builtinRead = (x) => {
@@ -79,34 +88,31 @@ function Activity() {
 
     (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
 
-    setOutput(''); // Clear previous output
+    setOutput('');
     Sk.misceval.asyncToPromise(() => {
-      return Sk.importMainWithBody("<stdin>", false, userCode, true); // Execute user code
+      return Sk.importMainWithBody("<stdin>", false, userCode, true);
     }).catch((err) => {
-      outf(err.toString()); // Display error message
+      outf(err.toString());
     });
   };
 
-  // Submit the user's code for validation
   const submitCode = () => {
-    const currentQuestion = shuffledQuestions[currentQuestionIndex]; // Get the current question
+    const currentQuestion = shuffledQuestions[currentQuestionIndex];
     if (output.trim() === currentQuestion.requiredOutput) {
-      setResult('Success! You got it right.'); // Display success message
+      setResult('Success! You got it right.');
       if (currentQuestionIndex === shuffledQuestions.length - 1) {
-        // All questions completed, update user progress
         updateUserProgress();
       } else {
-        setCurrentQuestionIndex((prevIndex) => prevIndex + 1); // Move to the next question
-        setUserCode(''); // Clear the code input
-        setOutput(''); // Clear the output
-        setResult(null); // Clear the result
+        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+        setUserCode('');
+        setOutput('');
+        setResult(null);
       }
     } else {
-      setResult('Incorrect output. Try again.'); // Display error message
+      setResult('Incorrect output. Try again.');
     }
   };
 
-  // Shuffle an array of questions
   const shuffleArray = (array) => {
     const shuffledArray = array.slice();
     for (let i = shuffledArray.length - 1; i > 0; i--) {
@@ -116,8 +122,8 @@ function Activity() {
     return shuffledArray;
   };
 
-  if (loading) return <div className="loading">Loading...</div>; // Show loading indicator
-  if (error) return <div className="error">Error: {error}</div>; // Show error message
+  if (loading) return <div className="loading">Loading...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
 
   if (activity && currentQuestionIndex >= shuffledQuestions.length) {
     return (
@@ -128,7 +134,7 @@ function Activity() {
     );
   }
 
-  const currentQuestion = shuffledQuestions[currentQuestionIndex]; // Get the current question
+  const currentQuestion = shuffledQuestions[currentQuestionIndex];
 
   return (
     <div className="activity-page">
@@ -138,11 +144,7 @@ function Activity() {
           <p className="activity-description">{activity.description}</p>
           <div className="coding-section">
             <p className="coding-question">{currentQuestion.codingQuestion}</p>
-            <textarea
-              value={userCode}
-              onChange={(e) => setUserCode(e.target.value)} // Update user code input
-              placeholder="Write your Python code here..."
-            ></textarea>
+            <div ref={setContainer} className="code-editor" />
             <button onClick={runCode}>Run</button>
             <button onClick={submitCode}>Submit</button>
             <div className="output-section">
