@@ -121,8 +121,8 @@
 }
 
 .header button:hover {
-  background-color: none;
-  color: rgb(186, 186, 186);
+  background-color: rgb(119, 178, 255);
+  color: black;
   cursor: pointer;
 }
 

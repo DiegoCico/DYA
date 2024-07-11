@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import '../css/App.css';
 import LoginPage from './LogIn';
-import Signup from './Signup';
 import Roadmap from './Roadmap';
 import Activity from './Activity';
 import ChildSignup from './ChildSignup';
