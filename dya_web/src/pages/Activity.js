@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { db } from '../firebase';
 import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import '../css/Activity.css';
+import { useNavigate } from 'react-router-dom';
 
 function Activity() {
   const { uid, activityIndex } = useParams(); // Get URL parameters
@@ -15,6 +16,11 @@ function Activity() {
   const [output, setOutput] = useState(''); // State to store code output
   const [result, setResult] = useState(null); // State to store result message
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // State to track current question index
+  const navigate = useNavigate()
+
+  const handleBackClick = () => {
+    navigate(`/roadmap/${uid}`)
+    }
 
   // Fetch activity and user progress when the component mounts
   useEffect(() => {
@@ -134,7 +140,12 @@ function Activity() {
     <div className="activity-page">
       {activity && (
         <>
-          <h2 className="activity-title">{activity.title}</h2>
+          <div className='activity-header'>
+            <button onClick={handleBackClick} className='back-btn'>
+              <i className="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 className="activity-title">{activity.title}</h2>
+          </div>
           <p className="activity-description">{activity.description}</p>
           <div className="coding-section">
             <p className="coding-question">{currentQuestion.codingQuestion}</p>

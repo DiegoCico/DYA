@@ -39,7 +39,7 @@ export default function ChildSignup(props) {
             // Initialize user data in Firestore
             await initializeUser(user.uid, email);
 
-            console.log('Signup successful');
+            console.log('Signup successful', user.uid);
             navigate(`/roadmap/${user.uid}`); // Redirect to the roadmap page with UID
 
         } catch (error) {
