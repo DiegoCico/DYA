@@ -7,6 +7,7 @@ import Activity from './Activity';
 import ChildSignup from './ChildSignup';
 import ParentSignup from './ParentSignup';
 import NewSignup from './NewSignup';
+import AdditionalInfo from './ChildAdditionalInfo';
 import { initializeActivities } from '../firebase'; 
 
 function App() {
@@ -80,6 +81,7 @@ function App() {
         <Route path='/signup/child' element={<ChildSignup handleRouteChange={handleRouteChange} />} />
         <Route path="/roadmap/:uid" element={<Roadmap />} />
         <Route path="/activity/:uid/:activityIndex" element={<Activity />} />
+        <Route path="/signupInfo/:userId" element={<AdditionalInfo />} />
       </Routes>
     </div>
   );

@@ -61,7 +61,7 @@ function Roadmap() {
       <div className="roadmap-page">
         {userData && (
           <>
-            <h2 className="roadmap-title">{userData.email}'s Roadmap</h2> {/* Display roadmap title */}
+            <h2 className="roadmap-title">{userData.username}'s Roadmap</h2> {/* Display roadmap title */}
             <div className="roadmap-container">
               {activities.map((activity, index) => (
                 <div

@@ -5,6 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import '../css/LogIn.css';
 
+const generateUniqueId = () => {
+    return Math.random().toString(36).substring(2, 12);
+};
+
 function LogIn() {
   const [email, setEmail] = useState(''); // State to store email input
   const [password, setPassword] = useState(''); // State to store password input
@@ -16,10 +20,15 @@ function LogIn() {
 
   // Initialize user data for a new user
   const initializeUser = async (uid, email) => {
+    const nameAndUsername = email.split('@')[0];
+    const uniqueId = generateUniqueId();
     await setDoc(doc(db, 'users', uid), {
       email: email,
       currentActivity: 1,
-      programmingLanguages: ["Python"]
+      programmingLanguages: ["Python"],
+      name: nameAndUsername,
+      username: nameAndUsername,
+      uniqueId: uniqueId
     });
   };
 
@@ -37,6 +46,22 @@ function LogIn() {
       if (!docSnap.exists()) {
         // Create a new user document
         await initializeUser(user.uid, email);
+      } else {
+        // Check if uniqueId, name, and username are missing and set them if necessary
+        const userData = docSnap.data();
+        const updates = {};
+        if (!userData.uniqueId) {
+          updates.uniqueId = generateUniqueId();
+        }
+        if (!userData.name) {
+          updates.name = email.split('@')[0];
+        }
+        if (!userData.username) {
+          updates.username = email.split('@')[0];
+        }
+        if (Object.keys(updates).length > 0) {
+          await setDoc(doc(db, 'users', user.uid), updates, { merge: true });
+        }
       }
 
       console.log('Login successful');
