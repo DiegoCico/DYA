@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import '../css/Signup.css';
 import Header from '../components/Header';
 import { auth, db } from '../firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
 const generateUniqueId = () => {
@@ -17,14 +17,25 @@ export default function ChildSignup() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const initializeUser = async (uid, email) => {
+    const initializeUser = async (user, google) => {
         const uniqueId = generateUniqueId();
-        await setDoc(doc(db, 'users', uid), {
-            email: email,
-            currentActivity: 1,
-            programmingLanguages: ["Python"],
-            uniqueId: uniqueId
-        });
+        if (google) {
+            await setDoc(doc(db, 'users', user.uid), {
+                email: user.email,
+                currentActivity: 1,
+                programmingLanguages: ["Python"],
+                name: user.displayName || user.email.split('@')[0],
+                username: user.email.split('@')[0],
+                uniqueId: uniqueId
+            })
+        } else {
+            await setDoc(doc(db, 'users', user.uid), {
+                email: user.email,
+                currentActivity: 1,
+                programmingLanguages: ["Python"],
+                uniqueId: uniqueId
+            })
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -39,7 +50,7 @@ export default function ChildSignup() {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            await initializeUser(user.uid, email);
+            await initializeUser(user, false);
 
             console.log('Signup successful', user.uid);
             navigate(`/signupInfo/${user.uid}`); // Navigate to additional info page
@@ -48,6 +59,25 @@ export default function ChildSignup() {
             setError(error.message || 'Signup failed. Please try again.');
         }
     };
+
+    const googleProvider = new GoogleAuthProvider()
+    const handleGoogleSignUp = async() => {
+        try {
+            const res = await signInWithPopup(auth, googleProvider)
+            const userCredential = GoogleAuthProvider.credentialFromResult(res)
+            const user = res.user 
+
+            const docRef = doc(db, 'users', user.uid)
+            const docSnap = await getDoc(docRef)
+            if (!docSnap.exists()) {
+                initializeUser(user, true)
+            }
+            navigate(`/roadmap/${user.uid}`)
+        } catch (error) {
+            const errorMessage = error.message
+            setError(errorMessage)
+        }
+    }
 
     return (
         <>
@@ -59,42 +89,48 @@ export default function ChildSignup() {
                 </div>
                 <div className="right-container">
                     <h1>Get started learning!</h1>
-                    <form onSubmit={handleSubmit}>
-                        <input
-                            className="signup-input"
-                            type="email"
-                            placeholder="Your Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                        <input
-                            className="signup-input"
-                            type="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                        <input
-                            className="signup-input"
-                            type="password"
-                            placeholder="Confirm Password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            required
-                        />
-                        {error && <p>{error}</p>}
-                        <button className="signup-btn" type="submit">Sign Up</button>
-                    </form>
-                    <div className="signin-container">
-                        <p>Already joined?</p>
+                    <div className="signup-login-container">
+                        <h3>Already joined?</h3>
                         <button
                             className="signin-button"
                             onClick={() => navigate('/login')}
                         >
                             Log In
                         </button>
+                    </div>
+                    <div className="signup-box">
+                        <form onSubmit={handleSubmit}>
+                            <input
+                                className="signup-input"
+                                type="email"
+                                placeholder="Your Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                            <input
+                                className="signup-input"
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <input
+                                className="signup-input"
+                                type="password"
+                                placeholder="Confirm Password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                            />
+                            {error && <p>{error}</p>}
+                            <div className="signup-form-buttons">
+                                <button className="signup-form-submit-btn" type="submit">Sign Up</button>
+                                <h2 className="signup-form-or">or</h2>
+                                <button onClick={handleGoogleSignUp} className="signup-form-google-btn"><i className="fa-brands fa-google"></i></button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

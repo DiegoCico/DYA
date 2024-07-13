@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Header from "../components/Header";
 import { auth, db } from '../firebase'
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import '../css/NewLogin.css';
 
@@ -16,15 +16,15 @@ export default function NewLogin(props) {
     const [password, setPassword] = useState()
     const [error, setError] = useState()
 
-    const initializeUser = async (uid, email) => {
+    const initializeUser = async (uid, email, user) => {
         const nameAndUsername = email.split('@')[0]
         const uniqueId = generateUniqueId()
         await setDoc(doc(db, 'users', uid), {
             email: email,
             currentActivity: 1,
             programmingLanguages: ["Python"],
-            name: nameAndUsername,
-            username: nameAndUsername,
+            name: user.displayName,
+            username: user.username|| nameAndUsername,
             uniqueId: uniqueId
         })
     }
@@ -40,7 +40,7 @@ export default function NewLogin(props) {
             const docSnap = await getDoc(docRef);
             if (!docSnap.exists()) {
                 // Create a new user document
-                await initializeUser(user.uid, email);
+                await initializeUser(user.uid, email, user);
             } else {
                 // Check if uniqueId, name, and username are missing and set them if necessary
                 const userData = docSnap.data();
@@ -61,9 +61,23 @@ export default function NewLogin(props) {
 
         console.log('Login successful');
         handleRouteChange(`/roadmap/${user.uid}`)
-        } catch (err) {
+    } catch (err) {
         setError(err.message || 'Login failed. Please try again.'); // Set error message
-        }
+    }
+}
+
+const googleProvider = new GoogleAuthProvider()
+const handleGoogleSignUp = () => {
+    signInWithPopup(auth, googleProvider).then((res) => {
+            const userCredential = GoogleAuthProvider.credentialFromResult(res)
+            const user = res.user 
+            initializeUser(user.uid, user.email, user)
+            handleRouteChange(`/roadmap/${user.uid}`)
+
+            }).catch((error) => {
+                const errorMessage = error.message
+                setError(errorMessage)
+            })
     }
 
     return (
@@ -87,7 +101,7 @@ export default function NewLogin(props) {
                                 <div className="login-form-buttons">
                                     <button type="submit" className="login-form-submit-btn">Login</button>
                                     <h2 className="login-form-or">or</h2>
-                                    <button className="login-form-google-btn"><i className="fa-brands fa-google"></i></button>
+                                    <button onClick={handleGoogleSignUp} className="login-form-google-btn"><i className="fa-brands fa-google"></i></button>
                                 </div>
                             </form>
                         </div>
