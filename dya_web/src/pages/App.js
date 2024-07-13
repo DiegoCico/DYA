@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import '../css/App.css';
-import LoginPage from './LogIn';
 import Roadmap from './Roadmap';
 import Activity from './Activity';
 import ChildSignup from './ChildSignup';
 import ParentSignup from './ParentSignup';
 import NewSignup from './NewSignup';
+import NewLogin from './NewLogin';
 import AdditionalInfo from './ChildAdditionalInfo';
 import { initializeActivities } from '../firebase'; 
 
@@ -35,11 +35,6 @@ function App() {
               <p>Your ultimate fun and learning destination for kids.</p>
             </header>
             <main>
-              <section className="hero">
-                <h2>Discover and Learn</h2>
-                <p>Explore our interactive games, educational videos, and fun activities!</p>
-                <button className="animated-button">Get Started</button>
-              </section>
               <section className="features">
                 <div className="feature">
                   <h3>Games</h3>
@@ -53,6 +48,11 @@ function App() {
                   <h3>Activities</h3>
                   <p>Participate in creative and fun activities to learn new things.</p>
                 </div>
+              </section>
+              <section className="hero">
+                <h2>Discover and Learn</h2>
+                <p>Explore our interactive games, educational videos, and fun activities!</p>
+                <button className="animated-button">Get Started</button>
               </section>
               <section className="reasons">
                 <h2>Why Join DYA?</h2>
@@ -75,7 +75,7 @@ function App() {
             </footer>
           </div>
         } />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<NewLogin handleRouteChange={handleRouteChange} />} />
         <Route path='/signup' element={<NewSignup handleRouteChange={handleRouteChange} />} />
         <Route path='/signup/parent' element={<ParentSignup />} />
         <Route path='/signup/child' element={<ChildSignup handleRouteChange={handleRouteChange} />} />

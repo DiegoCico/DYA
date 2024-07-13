@@ -1,0 +1,110 @@
+.login-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header-container {
+    width: 100%;
+}
+  
+.login-main-content {
+    display: flex;
+    width: 90%;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+  
+.login-left, .login-right {
+    width: 500px;
+    height: 500px;
+    padding: 20px;
+    box-sizing: border-box;
+    margin: 10px;
+}
+  
+.login-left {
+    background-color: #57bbda;
+}
+  
+.login-right {
+    background-color: #d68a52;
+}
+  
+.login-container-title {
+    font-size: 35px;
+    margin-bottom: 20px;
+}
+  
+.login-container {
+    display: flex;
+    flex-direction: column;
+}
+  
+.login-signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.login-signup-container h3 {
+    margin-right: 10px;
+}
+  
+.login-signup-btn {
+    background-color: #d68a52;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+  
+.login-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; 
+    align-items: center;
+}
+  
+.login-form-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 80%;
+    height: 60px;
+    box-sizing: border-box;
+    font-size: x-large;
+    margin-bottom: 20px;
+}
+  
+.login-form-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+  
+.login-form-submit-btn, .login-form-google-btn {
+    background-color: #d68a52;
+    color: white;
+    border: none;
+    padding: 20px 60px 20px 60px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0px 12px 0px 12px;
+}
+  
+.login-form-google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+  
+.login-form-or {
+    margin: 10px;
+}
