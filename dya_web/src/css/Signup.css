@@ -40,7 +40,7 @@ body {
   flex-direction: column;
 }
 
-.signup-input {
+/* .signup-input {
   margin-bottom: 20px;
   padding: 10px;
   border: 1px solid #ddd;
@@ -51,8 +51,8 @@ body {
 }
 
 .signup-input:focus {
-  border-color: #87CEEB; /* Sky Blue */
-}
+  border-color: #87CEEB;
+} */
 
 .signup-button {
   padding: 10px 20px;
@@ -132,7 +132,7 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(34, 130, 255, 0.75); /* Semi-transparent Sky Blue */
+  background-color: rgba(34, 130, 255, 0.75);
   opacity: 100%;
   overflow: hidden;
   width: 0;
@@ -160,8 +160,8 @@ body {
   white-space: nowrap;
 }
 
-.overlay-button .signup-btn {
-  background-color: #FF7F50; /* Coral */
+/* .overlay-button .signup-btn {
+  background-color: #FF7F50;
   border: none;
   color: white;
   padding: 15px 32px;
@@ -171,10 +171,10 @@ body {
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
-}
+} */
 
-.signup-btn {
-  background-color: #FF7F50; /* Coral */
+/* .signup-btn {
+  background-color: #FF7F50;
   border: none;
   color: white;
   font-size: 20px;
@@ -185,7 +185,7 @@ body {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-}
+} */
 
 .overlay-left h3, .overlay-right h3 {
   color: white;
@@ -216,8 +216,63 @@ body {
 }
 
 .left-container, .right-container {
-  background-color: #228B22; /* Forest Green */
+  background-color: #228B22; 
   width: 30%;
   height: 75%;
   margin: 5rem;
+}
+
+.signup-login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.signup-login-container h3 {
+  margin-right: 10px;
+}
+
+.signup-box {
+    display: flex;
+    flex-direction: center;
+    gap: 15px; 
+    align-items: center;
+}
+
+.signup-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 80%;
+  height: 60px;
+  box-sizing: border-box;
+  font-size: x-large;
+  margin-bottom: 20px;
+}
+
+.signup-form-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.signup-form-submit-btn, .signup-form-google-btn {
+  background-color: #d68a52;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0px 27px 0px 27px;
+}
+.signup-form-submit-btn {
+  padding: 20px 50px 20px 50px;
+}
+.signup-form-google-btn {
+  padding: 20px 70px 20px 70px;
+}
+
+.signup-form-or {
+  margin: 10px;
 }

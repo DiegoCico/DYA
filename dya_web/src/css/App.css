@@ -5,6 +5,9 @@
 }
 
 .App-header {
+  background-image: url(/public/homepage-banner.jpeg);
+  background-size: cover;
+  background-position: center;
   position: relative;
   background-color: #228B22; /* Forest Green */
   padding: 100px;
