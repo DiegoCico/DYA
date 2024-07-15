@@ -132,3 +132,20 @@ button:hover {
   font-size: 20px;
   color: #e74c3c; /* Red */
 }
+
+.completion-buttons {
+  margin-top: 20px;
+}
+
+.animation {
+  font-size: 24px;
+  color: #2ecc71;
+  text-align: center;
+  margin: 20px 0;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}

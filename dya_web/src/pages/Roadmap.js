@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { db } from '../firebase';
-import { collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
+import { db, initializeActivities } from '../firebase';
+import { collection, getDocs, query, orderBy, doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../css/Roadmap.css';
 import UserProfileSidebar from '../components/UserProfileSidebar';
 
@@ -11,11 +11,29 @@ function Roadmap() {
   const [activities, setActivities] = useState([]); // State to store activities data
   const [loading, setLoading] = useState(true); // State to handle loading state
   const [error, setError] = useState(null); // State to handle errors
+  const [showAnimation, setShowAnimation] = useState(false); // State to handle animation display
+  const [initializing, setInitializing] = useState(true); // State to track initialization of activities
   const navigate = useNavigate(); // Navigation hook
 
-  // Fetch user data and activities when the component mounts
+  // Initialize activities on component mount
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        await initializeActivities(); // Call function to initialize activities
+        setInitializing(false); // Set initializing to false once initialization is complete
+      } catch (err) {
+        setError('Error initializing activities: ' + err.message); // Set error message if initialization fails
+      }
+    };
+
+    initialize();
+  }, []);
+
+  // Fetch user data and activities when the component mounts and after initialization
   useEffect(() => {
     const fetchUserDataAndActivities = async () => {
+      if (initializing) return; // Wait until initialization is complete
+
       try {
         // Fetch user data
         const userDocRef = doc(db, 'users', uid); // Reference to the user document
@@ -34,6 +52,19 @@ function Roadmap() {
 
         setUserData(userData); // Set user data
         setActivities(activitiesData); // Set activities data
+
+        // Check if a new activity is unlocked
+        const lastActivityIndex = userData.currentActivity - 1;
+        if (lastActivityIndex >= 0 && lastActivityIndex < activitiesData.length) {
+          const lastActivity = activitiesData[lastActivityIndex];
+          if (lastActivity && !lastActivity.unlocked) {
+            setShowAnimation(true);
+            // Mark the activity as unlocked
+            const activityDocRef = doc(db, 'activities', lastActivity.id);
+            await updateDoc(activityDocRef, { unlocked: true });
+            setTimeout(() => setShowAnimation(false), 3000); // Hide animation after 3 seconds
+          }
+        }
       } catch (err) {
         setError(err.message); // Set error message
       } finally {
@@ -42,13 +73,14 @@ function Roadmap() {
     };
 
     fetchUserDataAndActivities();
-  }, [uid]);
+  }, [uid, initializing]);
 
-  if (loading) return <div className="loading">Loading...</div>; // Show loading indicator
+  if (loading || initializing) return <div className="loading">Loading...</div>; // Show loading indicator while loading or initializing
   if (error) return <div className="error">Error: {error}</div>; // Show error message
 
-  const handleActivityClick = (activityIndex) => {
-    if (activityIndex <= userData.currentActivity - 1) {
+  const handleActivityClick = (activityId) => {
+    const activityIndex = activities.findIndex(activity => activity.id === activityId);
+    if (activityIndex < userData.currentActivity) {
       navigate(`/activity/${uid}/${activityIndex}`); // Navigate to the activity page if the user has access
     } else {
       alert('You need to complete the previous activities first!');
@@ -59,19 +91,20 @@ function Roadmap() {
     <>
       <UserProfileSidebar />
       <div className="roadmap-page">
+        {showAnimation && <div className="unlock-animation">New Activity Unlocked!</div>}
         {userData && (
           <>
             <h2 className="roadmap-title">{userData.username}'s Roadmap</h2> {/* Display roadmap title */}
             <div className="roadmap-container">
-              {activities.map((activity, index) => (
+              {activities.map((activity) => (
                 <div
-                  key={index}
-                  className={`roadmap-item ${index > userData.currentActivity - 1 ? 'locked' : ''}`} // Add locked class if the activity is not accessible
-                  onClick={() => handleActivityClick(index)} // Handle activity click
+                  key={activity.id} // Use activity.id as the key
+                  className={`roadmap-item ${activity.order > userData.currentActivity ? 'locked' : ''}`} // Add locked class if the activity is not accessible
+                  onClick={() => handleActivityClick(activity.id)} // Handle activity click
                 >
                   <h3 className="roadmap-item-title">{activity.title}</h3> {/* Display activity title */}
                   <p className="roadmap-item-description">{activity.description}</p> {/* Display activity description */}
-                  {index > userData.currentActivity - 1 && <p className="locked-message">Locked</p>} {/* Display locked message */}
+                  {activity.order > userData.currentActivity && <p className="locked-message">Locked</p>} {/* Display locked message */}
                 </div>
               ))}
             </div>

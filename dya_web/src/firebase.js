@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc, deleteDoc } from 'firebase/firestore';
 import activitiesData from './activities.json'; 
 
 const firebaseConfig = {
@@ -20,20 +20,24 @@ export const db = getFirestore(app);
 export const initializeActivities = async () => {
   try {
     const activitiesCollection = collection(db, 'activities');
+
+    // Fetch all existing activities
     const activitiesSnapshot = await getDocs(activitiesCollection);
+    const deletePromises = activitiesSnapshot.docs.map(doc => deleteDoc(doc.ref));
+    
+    // Wait for all delete operations to complete
+    await Promise.all(deletePromises);
 
-    // Check if activities are already initialized
-    if (!activitiesSnapshot.empty) {
-      console.log('Activities are already initialized in Firestore');
-      return; // Exit the function if activities already exist
-    }
+    console.log('All existing activities deleted');
 
+    // Add activities from JSON with order field starting from 1
     const addPromises = activitiesData.activities.map((activity, index) => {
-      const activityWithOrder = { ...activity, order: index };
+      const activityWithOrder = { ...activity, order: index + 1 };
       return addDoc(activitiesCollection, activityWithOrder);
     });
 
     await Promise.all(addPromises);
+
     console.log('New activities added to Firestore');
   } catch (error) {
     console.error('Error initializing activities:', error);

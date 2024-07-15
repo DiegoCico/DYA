@@ -21,6 +21,7 @@ function Activity() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [incorrectCount, setIncorrectCount] = useState(0);
+  const [showAnimation, setShowAnimation] = useState(false);
 
   const handleCodeChange = (value, viewUpdate) => {
     setUserCode(value);
@@ -105,8 +106,12 @@ function Activity() {
       setCorrectCount(correctCount + 1);
       if (correctCount + 1 === 5) {
         updateUserProgress();
-        alert('Congratulations! You have completed this phase.');
-        setCurrentQuestionIndex(shuffledQuestions.length); // to end the activity
+        setShowAnimation(true);
+        setTimeout(() => {
+          setShowAnimation(false);
+          alert('Congratulations! You have completed this phase.');
+          setCurrentQuestionIndex(shuffledQuestions.length); // to end the activity
+        }, 3000); // duration of the animation
       } else {
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
         setUserCode(`# Write your code here\n# You can start coding right away\n# The editor will scroll if the content gets too long\n\n`);
@@ -142,6 +147,14 @@ function Activity() {
     navigate(-1);
   };
 
+  const handleNextActivity = () => {
+    navigate(`/activities/${uid}/${parseInt(activityIndex) + 1}`);
+  };
+
+  const handleMainMenu = () => {
+    navigate(`/roadmap/${uid}`);
+  };
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
@@ -150,6 +163,11 @@ function Activity() {
       <div className="activity-page">
         <h2 className="activity-title">{activity.title}</h2>
         <p className="activity-description">Congratulations! You've completed all the questions.</p>
+        {showAnimation && <div className="animation">Next Activity Unlocked!</div>}
+        <div className="completion-buttons">
+          <button onClick={handleNextActivity}>Next Activity</button>
+          <button onClick={handleMainMenu}>Main Menu</button>
+        </div>
       </div>
     );
   }

@@ -13,10 +13,6 @@ import { initializeActivities } from '../firebase';
 function App() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    initializeActivities();
-  }, []);
-
   const handleRouteChange = (route) => {
     navigate(route);
   };
