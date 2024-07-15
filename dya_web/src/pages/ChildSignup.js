@@ -25,7 +25,6 @@ export default function ChildSignup() {
                 currentActivity: 1,
                 programmingLanguages: ["Python"],
                 name: user.displayName || user.email.split('@')[0],
-                username: user.email.split('@')[0],
                 uniqueId: uniqueId
             })
         } else {
@@ -53,26 +52,29 @@ export default function ChildSignup() {
             await initializeUser(user, false);
 
             console.log('Signup successful', user.uid);
-            navigate(`/signupInfo/${user.uid}`); // Navigate to additional info page
-
+            navigate(`/signupInfo/${user.uid}/1`); // Navigate to additional info page
+            
         } catch (error) {
             setError(error.message || 'Signup failed. Please try again.');
         }
     };
-
+    
     const googleProvider = new GoogleAuthProvider()
     const handleGoogleSignUp = async() => {
         try {
             const res = await signInWithPopup(auth, googleProvider)
             const userCredential = GoogleAuthProvider.credentialFromResult(res)
             const user = res.user 
-
+            
             const docRef = doc(db, 'users', user.uid)
             const docSnap = await getDoc(docRef)
             if (!docSnap.exists()) {
                 initializeUser(user, true)
+                navigate(`/signupInfo/${user.uid}/2`); // Navigate to additional info page
+
+            } else {
+                navigate(`/roadmap/${user.uid}`)
             }
-            navigate(`/roadmap/${user.uid}`)
         } catch (error) {
             const errorMessage = error.message
             setError(errorMessage)
