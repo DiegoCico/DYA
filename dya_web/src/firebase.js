@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, getDocs, addDoc, deleteDoc } from 'firebase/firestore';
-import activitiesData from './activities.json'; 
+import activitiesData from './activities.json';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBI37lzWhWSv7VQif5mlNbZm0Bso5W05OA",
@@ -26,7 +26,7 @@ export const initializeActivities = async () => {
     console.log(`Found ${activitiesSnapshot.docs.length} existing activities. Deleting them...`);
 
     const deletePromises = activitiesSnapshot.docs.map(doc => deleteDoc(doc.ref));
-    
+
     // Wait for all delete operations to complete
     await Promise.all(deletePromises);
 

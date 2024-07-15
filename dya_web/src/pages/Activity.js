@@ -1,12 +1,10 @@
-/* global Sk */
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import '../css/Activity.css';
-import { useCodeMirror } from '@uiw/react-codemirror';
-import { python } from '@codemirror/lang-python';
-import { oneDark } from '@codemirror/theme-one-dark';
+import CodeEditor from '../components/CodeEditor';
+import axios from 'axios';
 
 function Activity() {
   const { uid, activityIndex } = useParams();
@@ -15,7 +13,6 @@ function Activity() {
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [userCode, setUserCode] = useState(`# Write your code here\n# You can start coding right away\n# The editor will scroll if the content gets too long\n\n`);
   const [output, setOutput] = useState('');
   const [result, setResult] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -23,17 +20,7 @@ function Activity() {
   const [incorrectCount, setIncorrectCount] = useState(0);
   const [showAnimation, setShowAnimation] = useState(false);
   const [completed, setCompleted] = useState(false);
-
-  const handleCodeChange = (value, viewUpdate) => {
-    setUserCode(value);
-  };
-
-  const { setContainer } = useCodeMirror({
-    value: userCode,
-    theme: oneDark,
-    extensions: [python()],
-    onChange: handleCodeChange,
-  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchActivityAndUserProgress = async () => {
@@ -75,65 +62,59 @@ function Activity() {
     }
   };
 
-  const runCode = () => {
-    const outf = (text) => {
-      setOutput((prevOutput) => prevOutput + text + '\n');
-    };
-
-    const builtinRead = (x) => {
-      if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
-        throw new Error("File not found: '" + x + "'");
-      }
-      return Sk.builtinFiles["files"][x];
-    };
-
-    Sk.pre = "output";
-    Sk.configure({ output: outf, read: builtinRead });
-
-    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
-
-    setOutput('');
-    Sk.misceval.asyncToPromise(() => {
-      return Sk.importMainWithBody("<stdin>", false, userCode, true);
-    }).catch((err) => {
-      outf(err.toString());
-    });
+  const handleCodeRun = (text) => {
+    setOutput((prevOutput) => prevOutput + text + '\n');
   };
 
-  const submitCode = () => {
+  const handleCodeSubmit = async (userCode) => {
+    setIsSubmitting(true); // Start loading
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
-    if (output.trim() === currentQuestion.requiredOutput) {
-      setResult('Success! You got it right.');
-      setCorrectCount(correctCount + 1);
-      if (correctCount + 1 === 5) {
-        updateUserProgress();
-        setShowAnimation(true);
-        setCompleted(true);
-        setTimeout(() => {
-          setShowAnimation(false);
-          alert('Congratulations! You have completed this phase.');
-          setCurrentQuestionIndex(shuffledQuestions.length); // to end the activity
-        }, 3000); // duration of the animation
+    const funcName = currentQuestion.functionName;
+
+    try {
+      const response = await axios.post('http://localhost:5000/test-function', {
+        functionName: funcName,
+        userCode,
+      });
+      if (response.data.success) {
+        setResult('Success! You got it right.');
+        setCorrectCount(correctCount + 1);
+        if (correctCount + 1 === 5) {
+          updateUserProgress();
+          setShowAnimation(true);
+          setCompleted(true);
+          setTimeout(() => {
+            setShowAnimation(false);
+            alert('Congratulations! You have completed this phase.');
+            setCurrentQuestionIndex(shuffledQuestions.length); // to end the activity
+          }, 3000); // duration of the animation
+        } else {
+          setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+          setOutput('');
+          setResult(null);
+        }
       } else {
-        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-        setUserCode(`# Write your code here\n# You can start coding right away\n# The editor will scroll if the content gets too long\n\n`);
-        setOutput('');
-        setResult(null);
+        setResult(`Incorrect output: ${response.data.message}`);
+        setIncorrectCount(incorrectCount + 1);
+        if (incorrectCount + 1 === 3) {
+          alert('You have 3 incorrect answers. Restarting...');
+          setCorrectCount(0);
+          setIncorrectCount(0);
+          setCurrentQuestionIndex(0);
+          setShuffledQuestions(shuffleArray(activity.questions));
+          setOutput('');
+          setResult(null);
+        }
       }
-    } else {
-      setResult('Incorrect output. Try again.');
-      setIncorrectCount(incorrectCount + 1);
-      if (incorrectCount + 1 === 3) {
-        alert('You have 3 incorrect answers. Restarting...');
-        setCorrectCount(0);
-        setIncorrectCount(0);
-        setCurrentQuestionIndex(0);
-        setShuffledQuestions(shuffleArray(activity.questions));
-        setUserCode(`# Write your code here\n# You can start coding right away\n# The editor will scroll if the content gets too long\n\n`);
-        setOutput('');
-        setResult(null);
-      }
+    } catch (error) {
+      console.error(`Error testing ${funcName}:`, error);
+    } finally {
+      setIsSubmitting(false); // End loading
     }
+  };
+
+  const handleCodeChange = (value) => {
+    // Update code as needed when user types
   };
 
   const shuffleArray = (array) => {
@@ -155,6 +136,28 @@ function Activity() {
 
   const handleMainMenu = () => {
     navigate(`/roadmap/${uid}`);
+  };
+
+  useEffect(() => {
+    if (shuffledQuestions.length > 0) {
+      const currentQuestion = shuffledQuestions[currentQuestionIndex];
+      testFunction(currentQuestion.functionName);
+    }
+  }, [activityIndex, currentQuestionIndex, shuffledQuestions]);
+
+  const testFunction = async (funcName) => {
+    try {
+      const response = await axios.post('http://localhost:5000/test-function', {
+        functionName: funcName,
+      });
+      if (response.data.success) {
+        console.log(`${funcName} tests passed successfully!`);
+      } else {
+        console.error(`${funcName} tests failed. Output: ${response.data.output}`);
+      }
+    } catch (error) {
+      console.error(`Error testing ${funcName}:`, error);
+    }
   };
 
   if (loading) return <div className="loading">Loading...</div>;
@@ -191,17 +194,18 @@ function Activity() {
             <div className="status correct-count">Correct: {correctCount}</div>
             <div className="status incorrect-count">Incorrect: {incorrectCount}</div>
           </div>
-          <div className="coding-section">
-            <p className="coding-question">{currentQuestion.codingQuestion}</p>
-            <div ref={setContainer} className="code-editor" />
-            <button onClick={runCode}>Run</button>
-            <button onClick={submitCode}>Submit</button>
-            <div className="output-section">
-              <h3>Output:</h3>
-              <pre id="output">{output}</pre>
-            </div>
-            {result && <div className="result-section">{result}</div>}
+          <CodeEditor 
+            currentQuestion={currentQuestion} 
+            onCodeRun={handleCodeRun}
+            onCodeSubmit={handleCodeSubmit}
+            onCodeChange={handleCodeChange}
+          />
+          <div className="output-section">
+            <h3>Output:</h3>
+            <pre id="output">{output}</pre>
           </div>
+          {result && <div className="result-section">{result}</div>}
+          {isSubmitting && <div className="loading">Submitting...</div>}
           <div id="mycanvas"></div>
         </>
       )}
