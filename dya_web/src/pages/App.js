@@ -77,7 +77,7 @@ function App() {
         <Route path='/signup/child' element={<ChildSignup handleRouteChange={handleRouteChange} />} />
         <Route path="/roadmap/:uid" element={<Roadmap />} />
         <Route path="/activity/:uid/:activityIndex" element={<Activity />} />
-        <Route path="/signupInfo/:userId" element={<AdditionalInfo />} />
+        <Route path="/signupInfo/:userId/:startingStep" element={<AdditionalInfo />} />
       </Routes>
     </div>
   );

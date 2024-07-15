@@ -1,16 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db } from '../firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import '../css/SignupInfo.css';
 
 export default function AdditionalInfo() {
-    const { userId } = useParams();
-    const [step, setStep] = useState(1);
+    const { userId, startingStep } = useParams();
+    // take in 'step' as a parameter in the url for this function
+    // if Google sign up, step = 2
+    // if reg sign up, step = 1
+    const [step, setStep] = useState(parseInt(startingStep, 10));
     const [name, setName] = useState('');
+    const [error, setError] = useState('');
+    useEffect(() => {
+        if (step === 2) {
+            const docRef = doc(db, 'users', userId)
+            getDoc(docRef).then((docRef) => {
+                if (docRef.exists()) {
+                    setName(docRef.data().name)
+                }
+            }).catch((error) => {
+                setError(error.message)
+            })
+        }
+
+    }, [])
+
     const [username, setUsername] = useState('');
     const [age, setAge] = useState('');
-    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleNext = () => setStep(step + 1);
