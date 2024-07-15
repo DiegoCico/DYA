@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import '../css/App.css';
 import Roadmap from './Roadmap';
@@ -8,7 +8,6 @@ import ParentSignup from './ParentSignup';
 import NewSignup from './NewSignup';
 import NewLogin from './NewLogin';
 import AdditionalInfo from './ChildAdditionalInfo';
-import { initializeActivities } from '../firebase'; 
 
 function App() {
   const navigate = useNavigate();
@@ -32,15 +31,18 @@ function App() {
             </header>
             <main>
               <section className="features">
-                <div className="feature">
+                <div className="feature feature-games">
+                  <img src="game.jpg" alt="Games" className="feature-image" />
                   <h3>Games</h3>
                   <p>Engage in exciting and educational games designed for kids.</p>
                 </div>
-                <div className="feature">
+                <div className="feature feature-videos">
+                  <img src="videos.jpg" alt="Videos" className="feature-image" />
                   <h3>Videos</h3>
                   <p>Watch fun and educational videos that keep you entertained.</p>
                 </div>
-                <div className="feature">
+                <div className="feature feature-activities">
+                  <img src="activities.jpg" alt="Activities" className="feature-image" />
                   <h3>Activities</h3>
                   <p>Participate in creative and fun activities to learn new things.</p>
                 </div>

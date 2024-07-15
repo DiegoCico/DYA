@@ -73,16 +73,43 @@
 .features {
   display: flex;
   justify-content: space-around;
-  padding: 20px;
+  padding: 40px 20px; /* Increased padding for more space */
 }
 
 .feature {
-  background-color: #FF7F50; /* Coral */
-  padding: 20px;
-  border-radius: 10px;
-  width: 30%;
-  animation: bounceIn 1s ease-in-out;
+  width: 25%;
+  text-align: center;
   color: white;
+}
+
+.feature-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.feature h3 {
+  margin-top: 10px;
+  font-size: 1.5em;
+  color: #333; /* Dark text color */
+}
+
+.feature p {
+  font-size: 1em;
+  color: #555; /* Slightly lighter text color */
+}
+
+.feature-games {
+  background-color: #32CD32; /* Lime Green */
+}
+
+.feature-videos {
+  background-color: #1E90FF; /* Dodger Blue */
+}
+
+.feature-activities {
+  background-color: #FF69B4; /* Hot Pink */
 }
 
 .reasons {

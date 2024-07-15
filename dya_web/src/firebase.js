@@ -23,6 +23,8 @@ export const initializeActivities = async () => {
 
     // Fetch all existing activities
     const activitiesSnapshot = await getDocs(activitiesCollection);
+    console.log(`Found ${activitiesSnapshot.docs.length} existing activities. Deleting them...`);
+
     const deletePromises = activitiesSnapshot.docs.map(doc => deleteDoc(doc.ref));
     
     // Wait for all delete operations to complete
@@ -43,5 +45,7 @@ export const initializeActivities = async () => {
     console.error('Error initializing activities:', error);
   }
 };
+
+initializeActivities();
 
 export default app;

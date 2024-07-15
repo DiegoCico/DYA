@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { db, initializeActivities } from '../firebase';
+import { db } from '../firebase';
 import { collection, getDocs, query, orderBy, doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../css/Roadmap.css';
 import UserProfileSidebar from '../components/UserProfileSidebar';
@@ -12,28 +12,11 @@ function Roadmap() {
   const [loading, setLoading] = useState(true); // State to handle loading state
   const [error, setError] = useState(null); // State to handle errors
   const [showAnimation, setShowAnimation] = useState(false); // State to handle animation display
-  const [initializing, setInitializing] = useState(true); // State to track initialization of activities
   const navigate = useNavigate(); // Navigation hook
 
-  // Initialize activities on component mount
-  useEffect(() => {
-    const initialize = async () => {
-      try {
-        await initializeActivities(); // Call function to initialize activities
-        setInitializing(false); // Set initializing to false once initialization is complete
-      } catch (err) {
-        setError('Error initializing activities: ' + err.message); // Set error message if initialization fails
-      }
-    };
-
-    initialize();
-  }, []);
-
-  // Fetch user data and activities when the component mounts and after initialization
+  // Fetch user data and activities when the component mounts
   useEffect(() => {
     const fetchUserDataAndActivities = async () => {
-      if (initializing) return; // Wait until initialization is complete
-
       try {
         // Fetch user data
         const userDocRef = doc(db, 'users', uid); // Reference to the user document
@@ -72,15 +55,19 @@ function Roadmap() {
       }
     };
 
-    fetchUserDataAndActivities();
-  }, [uid, initializing]);
+    // Add delay before fetching data
+    const timer = setTimeout(fetchUserDataAndActivities, 500); // .5-second delay
 
-  if (loading || initializing) return <div className="loading">Loading...</div>; // Show loading indicator while loading or initializing
+    // Cleanup the timer if the component unmounts
+    return () => clearTimeout(timer);
+  }, [uid]);
+
+  if (loading) return <div className="loading">Loading...</div>; // Show loading indicator while loading
   if (error) return <div className="error">Error: {error}</div>; // Show error message
 
   const handleActivityClick = (activityId) => {
-    const activityIndex = activities.findIndex(activity => activity.id === activityId);
-    if (activityIndex < userData.currentActivity) {
+    const activityIndex = activities.findIndex(activity => activity.id === activityId) + 1;
+    if (activityIndex <= userData.currentActivity) {
       navigate(`/activity/${uid}/${activityIndex}`); // Navigate to the activity page if the user has access
     } else {
       alert('You need to complete the previous activities first!');
