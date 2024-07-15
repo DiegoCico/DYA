@@ -66,9 +66,9 @@ function Roadmap() {
   if (error) return <div className="error">Error: {error}</div>; // Show error message
 
   const handleActivityClick = (activityId) => {
-    const activityIndex = activities.findIndex(activity => activity.id === activityId) + 1;
-    if (activityIndex <= userData.currentActivity) {
-      navigate(`/activity/${uid}/${activityIndex}`); // Navigate to the activity page if the user has access
+    const activityIndex = activities.findIndex(activity => activity.id === activityId);
+    if (activityIndex < userData.currentActivity) {
+      navigate(`/activity/${uid}/${activityIndex + 1}`); // Navigate to the correct activity page if the user has access
     } else {
       alert('You need to complete the previous activities first!');
     }

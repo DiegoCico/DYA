@@ -22,6 +22,7 @@ function Activity() {
   const [correctCount, setCorrectCount] = useState(0);
   const [incorrectCount, setIncorrectCount] = useState(0);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [completed, setCompleted] = useState(false);
 
   const handleCodeChange = (value, viewUpdate) => {
     setUserCode(value);
@@ -67,9 +68,9 @@ function Activity() {
     const userDocSnap = await getDoc(userDocRef);
     const userData = userDocSnap.data();
 
-    if (activityIndex + 1 > userData.currentActivity) {
+    if (activityIndex == userData.currentActivity) {
       await updateDoc(userDocRef, {
-        currentActivity: activityIndex + 2
+        currentActivity: userData.currentActivity + 1
       });
     }
   };
@@ -107,6 +108,7 @@ function Activity() {
       if (correctCount + 1 === 5) {
         updateUserProgress();
         setShowAnimation(true);
+        setCompleted(true);
         setTimeout(() => {
           setShowAnimation(false);
           alert('Congratulations! You have completed this phase.');
@@ -158,7 +160,7 @@ function Activity() {
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
-  if (activity && currentQuestionIndex >= shuffledQuestions.length) {
+  if (activity && (currentQuestionIndex >= shuffledQuestions.length || completed)) {
     return (
       <div className="activity-page">
         <h2 className="activity-title">{activity.title}</h2>
