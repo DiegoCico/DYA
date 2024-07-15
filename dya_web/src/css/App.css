@@ -41,9 +41,33 @@
 .hero {
   background-color: #87CEEB; /* Sky Blue */
   color: white;
-  padding: 40px;
-  margin: 20px 0;
   animation: slideIn 1s ease-in-out;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: 400px;
+}
+
+.hero img {
+  position: absolute;
+  height: auto;
+  max-width: 100%;
+}
+
+.hero-img-left {
+  left: 0;
+  width: 30%;
+}
+
+.hero-img-right {
+  right: 0;
+  width: 30%;
+}
+
+.hero-content {
+  text-align: center;
+  z-index: 1;
+  margin: auto;
 }
 
 .features {

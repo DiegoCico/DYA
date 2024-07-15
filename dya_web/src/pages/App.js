@@ -46,9 +46,13 @@ function App() {
                 </div>
               </section>
               <section className="hero">
-                <h2>Discover and Learn</h2>
-                <p>Explore our interactive games, educational videos, and fun activities!</p>
-                <button className="animated-button">Get Started</button>
+                <img src='branch-left.png' alt='left-img' className='hero-img-left'/>
+                <div className='hero-content'>
+                  <h2>Discover and Learn</h2>
+                  <p>Explore our interactive games, educational videos, and fun activities!</p>
+                  <button className="animated-button">Get Started</button>
+                </div>
+                <img src='branch-right.png' alt='right-img' className='hero-img-right'/>
               </section>
               <section className="reasons">
                 <h2>Why Join DYA?</h2>
