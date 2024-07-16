@@ -67,22 +67,22 @@ def run_tests(function_name, user_code):
         try:
             result = user_function(*input_args)
             if result == expected_output:
-                results.append(f"Test passed for inputs {input_args}. Expected and got {expected_output}.")
+                results.append({"passed": True, "message": f"Test passed for inputs {input_args}. Expected and got {expected_output}."})
             else:
                 all_passed = False
-                results.append(f"Test failed for inputs {input_args}. Expected {expected_output}, got {result}.")
+                results.append({"passed": False, "message": f"Test failed for inputs {input_args}. Expected {expected_output}, got {result}."})
         except Exception as e:
             all_passed = False
-            results.append(f"Test raised an exception for inputs {input_args}: {str(e)}")
+            results.append({"passed": False, "message": f"Test raised an exception for inputs {input_args}: {str(e)}"})
     
     if all_passed:
-        return True, "\n".join(results)
+        return True, results
     else:
-        return False, "\n".join(results)
+        return False, results
 
 if __name__ == "__main__":
     function_name = sys.argv[1]
     user_code = sys.argv[2]
     success, message = run_tests(function_name, user_code)
-    response = {"success": success, "message": message}
+    response = {"success": success, "testResults": message}
     print(json.dumps(response))

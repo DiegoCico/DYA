@@ -6,6 +6,24 @@ import '../css/Activity.css';
 import CodeEditor from '../components/CodeEditor';
 import axios from 'axios';
 
+function TestResultsPopup({ results, onClose }) {
+  return (
+    <div className="popup">
+      <div className="popup-content">
+        <h2>Test Results</h2>
+        <button onClick={onClose} className="close-btn">X</button>
+        <ul>
+          {results.map((result, index) => (
+            <li key={index} style={{ color: result.passed ? 'green' : 'red' }}>
+              {result.message}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 function Activity() {
   const { uid, activityIndex } = useParams();
   const navigate = useNavigate();
@@ -22,6 +40,7 @@ function Activity() {
   const [showAnimation, setShowAnimation] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [testResults, setTestResults] = useState([]);
 
   useEffect(() => {
     const fetchActivityAndUserProgress = async () => {
@@ -67,12 +86,13 @@ function Activity() {
     setIsSubmitting(true);
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
     const funcName = currentQuestion.functionName;
-
+    
     try {
       const response = await axios.post('http://localhost:5001/test-function', {
         functionName: funcName,
-        userCode,
+        userCode: userCode,
       });
+      console.log(response.data);  // Log the response for debugging
       if (response.data.success) {
         setResult('Success! You got it right.');
         setCorrectCount(correctCount + 1);
@@ -103,13 +123,14 @@ function Activity() {
           setResult(null);
         }
       }
+      setTestResults(response.data.testResults);
     } catch (error) {
       console.error(`Error testing ${funcName}:`, error);
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  
   const handleCodeChange = (value) => {
     // Update code as needed when user types
   };
@@ -217,6 +238,9 @@ function Activity() {
           <div id="mycanvas"></div>
           <button onClick={checkServerStatus}>Check Server Status</button>
           {serverStatus && <div className="server-status">{serverStatus}</div>}
+          {testResults.length > 0 && (
+            <TestResultsPopup results={testResults} onClose={() => setTestResults([])} />
+          )}
         </>
       )}
     </div>
