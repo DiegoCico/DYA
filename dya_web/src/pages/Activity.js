@@ -138,8 +138,10 @@ function Activity() {
   const checkServerStatus = async () => {
     try {
       const response = await axios.get('http://localhost:5000/ping');
+      console.log(response.data); // Log the response for debugging
       setServerStatus(response.data.message);
     } catch (error) {
+      console.error('Error:', error); // Log the error for debugging
       setServerStatus('Error: Unable to reach the server.');
     }
   };
