@@ -50,17 +50,24 @@ test_cases = {
 }
 
 def run_tests(function_name, user_code):
-    # Compile and execute user_code
     exec(user_code)
-    user_function = locals()[function_name]
-    cases = test_cases[function_name]
+    user_function = locals().get(function_name)
+    if not user_function:
+        return False, f"Function {function_name} not found in user code."
+    
+    cases = test_cases.get(function_name)
+    if not cases:
+        return False, f"No test cases found for function {function_name}."
 
     for case in cases:
         input_args = case[:-1]
         expected_output = case[-1]
-        result = user_function(*input_args)
-        if result != expected_output:
-            return False, f"Test failed for inputs {input_args}. Expected {expected_output}, got {result}."
+        try:
+            result = user_function(*input_args)
+            if result != expected_output:
+                return False, f"Test failed for inputs {input_args}. Expected {expected_output}, got {result}."
+        except Exception as e:
+            return False, f"Test raised an exception for inputs {input_args}: {str(e)}"
     
     return True, "All tests passed!"
 

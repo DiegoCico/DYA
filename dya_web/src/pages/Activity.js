@@ -62,12 +62,8 @@ function Activity() {
     }
   };
 
-  const handleCodeRun = (text) => {
-    setOutput((prevOutput) => prevOutput + text + '\n');
-  };
-
   const handleCodeSubmit = async (userCode) => {
-    setIsSubmitting(true); // Start loading
+    setIsSubmitting(true);
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
     const funcName = currentQuestion.functionName;
 
@@ -109,7 +105,7 @@ function Activity() {
     } catch (error) {
       console.error(`Error testing ${funcName}:`, error);
     } finally {
-      setIsSubmitting(false); // End loading
+      setIsSubmitting(false);
     }
   };
 
@@ -196,9 +192,9 @@ function Activity() {
           </div>
           <CodeEditor 
             currentQuestion={currentQuestion} 
-            onCodeRun={handleCodeRun}
             onCodeSubmit={handleCodeSubmit}
             onCodeChange={handleCodeChange}
+            setOutput={setOutput}
           />
           <div className="output-section">
             <h3>Output:</h3>

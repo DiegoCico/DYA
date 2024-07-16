@@ -6,7 +6,7 @@ import { oneDark } from '@codemirror/theme-one-dark';
 import { getCodeTemplate } from './codeTemplate';
 import '../css/Activity.css';
 
-const CodeEditor = ({ currentQuestion, onCodeRun, onCodeSubmit, onCodeChange }) => {
+const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, setOutput }) => {
   const [userCode, setUserCode] = useState('');
 
   const handleCodeChange = (value) => {
@@ -29,7 +29,8 @@ const CodeEditor = ({ currentQuestion, onCodeRun, onCodeSubmit, onCodeChange }) 
 
   const runCode = () => {
     const outf = (text) => {
-      onCodeRun(text);
+      console.log(text);
+      setOutput(prev => prev + text + '\n');
     };
 
     const builtinRead = (x) => {
