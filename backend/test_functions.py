@@ -59,17 +59,26 @@ def run_tests(function_name, user_code):
     if not cases:
         return False, f"No test cases found for function {function_name}."
 
+    results = []
+    all_passed = True
     for case in cases:
         input_args = case[:-1]
         expected_output = case[-1]
         try:
             result = user_function(*input_args)
-            if result != expected_output:
-                return False, f"Test failed for inputs {input_args}. Expected {expected_output}, got {result}."
+            if result == expected_output:
+                results.append(f"Test passed for inputs {input_args}. Expected and got {expected_output}.")
+            else:
+                all_passed = False
+                results.append(f"Test failed for inputs {input_args}. Expected {expected_output}, got {result}.")
         except Exception as e:
-            return False, f"Test raised an exception for inputs {input_args}: {str(e)}"
+            all_passed = False
+            results.append(f"Test raised an exception for inputs {input_args}: {str(e)}")
     
-    return True, "All tests passed!"
+    if all_passed:
+        return True, "\n".join(results)
+    else:
+        return False, "\n".join(results)
 
 if __name__ == "__main__":
     function_name = sys.argv[1]

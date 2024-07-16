@@ -29,8 +29,7 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, setOutput }) 
 
   const runCode = () => {
     const outf = (text) => {
-      console.log(text);
-      setOutput(prev => prev + text + '\n');
+      setOutput((prevOutput) => prevOutput + text + '\n');
     };
 
     const builtinRead = (x) => {

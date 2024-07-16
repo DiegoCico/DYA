@@ -22,5 +22,9 @@ def test_function():
     except subprocess.CalledProcessError as e:
         return jsonify({'success': False, 'message': e.stderr}), 400
 
+@app.route('/ping', methods=['GET'])
+def ping():
+    return jsonify({'message': 'Pong! The server is running.'}), 200
+
 if __name__ == '__main__':
     app.run(port=5000)

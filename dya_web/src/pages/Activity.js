@@ -15,6 +15,7 @@ function Activity() {
   const [error, setError] = useState(null);
   const [output, setOutput] = useState('');
   const [result, setResult] = useState(null);
+  const [serverStatus, setServerStatus] = useState('');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [incorrectCount, setIncorrectCount] = useState(0);
@@ -90,7 +91,7 @@ function Activity() {
           setResult(null);
         }
       } else {
-        setResult(`Incorrect output: ${response.data.message}`);
+        setResult(`Incorrect output:\n${response.data.message}`);
         setIncorrectCount(incorrectCount + 1);
         if (incorrectCount + 1 === 3) {
           alert('You have 3 incorrect answers. Restarting...');
@@ -132,6 +133,15 @@ function Activity() {
 
   const handleMainMenu = () => {
     navigate(`/roadmap/${uid}`);
+  };
+
+  const checkServerStatus = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/ping');
+      setServerStatus(response.data.message);
+    } catch (error) {
+      setServerStatus('Error: Unable to reach the server.');
+    }
   };
 
   useEffect(() => {
@@ -200,9 +210,11 @@ function Activity() {
             <h3>Output:</h3>
             <pre id="output">{output}</pre>
           </div>
-          {result && <div className="result-section">{result}</div>}
+          {result && <div className="result-section"><pre>{result}</pre></div>}
           {isSubmitting && <div className="loading">Submitting...</div>}
           <div id="mycanvas"></div>
+          <button onClick={checkServerStatus}>Check Server Status</button>
+          {serverStatus && <div className="server-status">{serverStatus}</div>}
         </>
       )}
     </div>
