@@ -69,7 +69,7 @@ function Activity() {
     const funcName = currentQuestion.functionName;
 
     try {
-      const response = await axios.post('http://localhost:5000/test-function', {
+      const response = await axios.post('http://localhost:5001/test-function', {
         functionName: funcName,
         userCode,
       });
@@ -137,7 +137,7 @@ function Activity() {
 
   const checkServerStatus = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/ping');
+      const response = await axios.get('http://localhost:5001/ping');
       console.log(response.data); // Log the response for debugging
       setServerStatus(response.data.message);
     } catch (error) {
@@ -155,7 +155,7 @@ function Activity() {
 
   const testFunction = async (funcName) => {
     try {
-      const response = await axios.post('http://localhost:5000/test-function', {
+      const response = await axios.post('http://localhost:5001/test-function', {
         functionName: funcName,
       });
       if (response.data.success) {
