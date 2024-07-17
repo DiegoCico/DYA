@@ -15,6 +15,8 @@ CORS(app)
 
 db = firestore.client()
 
+
+
 @app.route('/test-function', methods=['POST'])
 def test_function():
     try:
