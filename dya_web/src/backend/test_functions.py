@@ -1,6 +1,7 @@
 import sys
 import json
 
+# Define the functions
 def add(a, b):
     return a + b
 
@@ -35,7 +36,7 @@ def factorial(n):
         return 1
     return n * factorial(n-1)
 
-# Example test cases
+# Define the test cases
 test_cases = {
     "add": [(1, 2, 3), (5, 5, 10), (-1, 1, 0)],
     "subtract": [(2, 1, 1), (5, 5, 0), (-1, 1, -2)],
@@ -49,16 +50,25 @@ test_cases = {
     "factorial": [(5, 120), (0, 1), (3, 6)]
 }
 
-def run_tests(function_name, user_code):
-    exec(user_code)
-    user_function = locals().get(function_name)
+def run_tests(function_name, user_code_file):
+    # Read the content of the user_code file
+    with open(user_code_file, 'r') as f:
+        user_code = f.read()
+
+    # Execute user code to define the function
+    exec(user_code, globals())
+
+    # Retrieve the function defined in the user code
+    user_function = globals().get(function_name)
     if not user_function:
         return False, f"Function {function_name} not found in user code."
     
+    # Retrieve test cases for the function
     cases = test_cases.get(function_name)
     if not cases:
         return False, f"No test cases found for function {function_name}."
 
+    # Run the tests and collect results
     results = []
     all_passed = True
     for case in cases:
@@ -81,8 +91,13 @@ def run_tests(function_name, user_code):
         return False, results
 
 if __name__ == "__main__":
+    # Get the function name and user code file path from the command-line arguments
     function_name = sys.argv[1]
-    user_code = sys.argv[2]
-    success, message = run_tests(function_name, user_code)
+    user_code_file = sys.argv[2]
+    
+    # Run the tests and get the result
+    success, message = run_tests(function_name, user_code_file)
+    
+    # Create the response and print it as JSON
     response = {"success": success, "testResults": message}
     print(json.dumps(response))

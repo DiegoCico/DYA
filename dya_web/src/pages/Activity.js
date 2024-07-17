@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
-import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, getDocs, setDoc } from 'firebase/firestore';
 import '../css/Activity.css';
 import CodeEditor from '../components/CodeEditor';
 import axios from 'axios';
+import { getCodeTemplate }  from "../components/codeTemplate"
 
 function TestResultsPopup({ results, onClose }) {
   return (
@@ -75,7 +76,7 @@ function Activity() {
     const userDocSnap = await getDoc(userDocRef);
     const userData = userDocSnap.data();
 
-    if (activityIndex == userData.currentActivity) {
+    if (parseInt(activityIndex) === userData.currentActivity) {
       await updateDoc(userDocRef, {
         currentActivity: userData.currentActivity + 1
       });
@@ -87,11 +88,24 @@ function Activity() {
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
     const funcName = currentQuestion.functionName;
     
+    // Store user code in Firebase
     try {
-      const response = await axios.post('http://localhost:5001/test-function', {
+      await setDoc(doc(db, 'users', uid, 'activities', activityIndex, 'questions', currentQuestion.id), {
         functionName: funcName,
         userCode: userCode,
       });
+
+      const response = await axios.post('http://localhost:5002/test-function', {
+        functionName: funcName,
+        activityIndex: activityIndex,
+        userId: uid,
+        questionId: currentQuestion.id,
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
       console.log(response.data);  // Log the response for debugging
       if (response.data.success) {
         setResult('Success! You got it right.');
@@ -130,9 +144,10 @@ function Activity() {
       setIsSubmitting(false);
     }
   };
-  
+
   const handleCodeChange = (value) => {
-    // Update code as needed when user types
+    setOutput('');
+    setResult(null);
   };
 
   const shuffleArray = (array) => {
@@ -158,7 +173,7 @@ function Activity() {
 
   const checkServerStatus = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/ping');
+      const response = await axios.get('http://localhost:5002/ping');
       console.log(response.data); // Log the response for debugging
       setServerStatus(response.data.message);
     } catch (error) {
@@ -176,7 +191,7 @@ function Activity() {
 
   const testFunction = async (funcName) => {
     try {
-      const response = await axios.post('http://localhost:5001/test-function', {
+      const response = await axios.post('http://localhost:5002/test-function', {
         functionName: funcName,
       });
       if (response.data.success) {
@@ -227,6 +242,8 @@ function Activity() {
             currentQuestion={currentQuestion} 
             onCodeSubmit={handleCodeSubmit}
             onCodeChange={handleCodeChange}
+            userId={uid}
+            activityIndex={activityIndex}
             setOutput={setOutput}
           />
           <div className="output-section">

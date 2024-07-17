@@ -5,26 +5,32 @@
       "description": "Complete these coding tasks to test basic math operations.",
       "questions": [
         {
+          "id": "q1",
           "codingQuestion": "Write a Python function to add two numbers.",
           "functionName": "add"
         },
         {
+          "id": "q2",
           "codingQuestion": "Write a Python function to subtract two numbers.",
           "functionName": "subtract"
         },
         {
+          "id": "q3",
           "codingQuestion": "Write a Python function to multiply two numbers.",
           "functionName": "multiply"
         },
         {
+          "id": "q4",
           "codingQuestion": "Write a Python function to divide two numbers.",
           "functionName": "divide"
         },
         {
+          "id": "q5",
           "codingQuestion": "Write a Python function to find the power of a number.",
           "functionName": "power"
         },
         {
+          "id": "q6",
           "codingQuestion": "Write a Python function to find the modulo of two numbers.",
           "functionName": "mod"
         }
@@ -35,6 +41,7 @@
       "description": "Complete these coding tasks to test string operations.",
       "questions": [
         {
+          "id": "q7",
           "codingQuestion": "Write a Python function to concatenate two strings.",
           "functionName": "concat_strings"
         }
@@ -45,14 +52,17 @@
       "description": "Complete these coding tasks to test number properties.",
       "questions": [
         {
+          "id": "q8",
           "codingQuestion": "Write a Python function to find the maximum of two numbers.",
           "functionName": "find_max"
         },
         {
+          "id": "q9",
           "codingQuestion": "Write a Python function to check if a number is even.",
           "functionName": "is_even"
         },
         {
+          "id": "q10",
           "codingQuestion": "Write a Python function to calculate the factorial of a number.",
           "functionName": "factorial"
         }

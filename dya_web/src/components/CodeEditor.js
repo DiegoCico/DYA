@@ -5,9 +5,12 @@ import { python } from '@codemirror/lang-python';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { getCodeTemplate } from './codeTemplate';
 import '../css/Activity.css';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
-const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, setOutput }) => {
+const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, activityIndex, setOutput }) => {
   const [userCode, setUserCode] = useState('');
+  const [originalCode, setOriginalCode] = useState('');
 
   const handleCodeChange = (value) => {
     setUserCode(value);
@@ -22,10 +25,22 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, setOutput }) 
   });
 
   useEffect(() => {
-    const functionName = currentQuestion.functionName;
-    const functionTemplate = getCodeTemplate(functionName);
-    setUserCode(functionTemplate);
-  }, [currentQuestion]);
+    const loadUserCode = async () => {
+      const docRef = doc(db, 'users', userId, 'activities', activityIndex, 'questions', currentQuestion.id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const savedCode = docSnap.data().userCode;
+        setUserCode(savedCode);
+      } else {
+        const functionName = currentQuestion.functionName;
+        const functionTemplate = getCodeTemplate(functionName);
+        setUserCode(functionTemplate);
+        setOriginalCode(functionTemplate);
+      }
+    };
+
+    loadUserCode();
+  }, [currentQuestion, userId, activityIndex]);
 
   const runCode = () => {
     const outf = (text) => {
@@ -51,12 +66,17 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, setOutput }) 
     });
   };
 
+  const restartCode = () => {
+    setUserCode(originalCode);
+  };
+
   return (
     <div className="coding-section">
       <p className="coding-question">{currentQuestion.codingQuestion}</p>
       <div ref={setContainer} className="code-editor" />
       <button onClick={runCode}>Run</button>
       <button onClick={() => onCodeSubmit(userCode)}>Submit</button>
+      <button onClick={restartCode}>Restart</button>
     </div>
   );
 };
