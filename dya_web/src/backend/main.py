@@ -28,31 +28,20 @@ def test_function():
         function_name = data.get('functionName')
         user_id = data.get('userId')
         activity_index = data.get('activityIndex')
+        question_id = data.get('questionId')
 
-        if not function_name or not user_id or not activity_index:
-            print("Missing functionName, userId, or activityIndex")
-            return jsonify({'success': False, 'message': 'functionName, userId, and activityIndex are required'}), 400
+        if not function_name or not user_id or not activity_index or not question_id:
+            print("Missing functionName, userId, activityIndex, or questionId")
+            return jsonify({'success': False, 'message': 'functionName, userId, activityIndex, and questionId are required'}), 400
 
         # Fetch user code from Firebase
-        doc_ref = db.collection('users').document(user_id)
+        doc_ref = db.collection('users').document(user_id).collection('activities').document(str(activity_index)).collection('questions').document(question_id)
         user_doc = doc_ref.get()
-        if not user_doc.exists:
-            print("User not found in Firebase")
-            return jsonify({'success': False, 'message': 'User not found in Firebase'}), 400
+        if not user_doc.exists():
+            print("Question not found in Firebase")
+            return jsonify({'success': False, 'message': 'Question not found in Firebase'}), 400
 
-        user_data = user_doc.to_dict()
-        current_activity_index = user_data.get('currentActivity')
-        if current_activity_index is None or int(activity_index) != current_activity_index:
-            print("Incorrect activity index")
-            return jsonify({'success': False, 'message': 'Incorrect activity index'}), 400
-
-        activity_ref = doc_ref.collection('activities').document(str(activity_index))
-        activity_doc = activity_ref.get()
-        if not activity_doc.exists():
-            print("Activity not found in Firebase")
-            return jsonify({'success': False, 'message': 'Activity not found in Firebase'}), 400
-
-        user_code = activity_doc.to_dict().get('userCode')
+        user_code = user_doc.to_dict().get('userCode')
         if not user_code:
             print("No user code found in Firebase document")
             return jsonify({'success': False, 'message': 'No user code found in Firebase document'}), 400
