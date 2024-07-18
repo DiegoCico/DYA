@@ -100,16 +100,14 @@
   color: #555; /* Slightly lighter text color */
 }
 
-.feature-games {
-  background-color: #32CD32; /* Lime Green */
-}
-
-.feature-videos {
-  background-color: #1E90FF; /* Dodger Blue */
-}
-
-.feature-activities {
-  background-color: #FF69B4; /* Hot Pink */
+.feature-games, .feature-videos, .feature-activities {
+  background-color: #FF7F50; /* Coral */
+  border-radius: 50%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .reasons {
@@ -246,4 +244,148 @@
 @keyframes bounceIn {
   from { transform: scale(0.8); }
   to { transform: scale(1); }
+}
+
+.testimonials, .courses-overview, .instructors {
+  background-color: #f0f8ff; /* Light blue background */
+  padding: 40px;
+  margin: 20px 0;
+  border-radius: 10px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.testimonial, .course, .instructor {
+  margin-bottom: 20px;
+}
+
+.instructor-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.footer {
+  background-color: #87CEEB; /* Sky Blue */
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+  border-top: 5px solid #1E90FF; /* Adding a border for better visual separation */
+}
+
+.discover-learn {
+  margin-bottom: 20px;
+}
+
+.discover-learn-images {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.discover-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.footer p {
+  margin: 0;
+  font-size: 1em;
+}
+
+
+.language-slider {
+  padding: 40px;
+  background-color: #f0f8ff; /* Light blue background */
+  animation: fadeIn 1s ease-in-out;
+}
+
+.slider {
+  display: flex;
+  overflow-x: scroll;
+  gap: 20px;
+  padding: 20px 0;
+  scrollbar-width: thin; /* For Firefox */
+}
+
+.slider::-webkit-scrollbar {
+  height: 8px;
+}
+
+.slider::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
+
+.language-card {
+  min-width: 250px; /* Increased size */
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.3s ease;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+}
+
+.language-card:hover {
+  transform: scale(1.05);
+}
+
+.language-image {
+  width: 100%;
+  height: 200px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 5;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  text-align: center;
+}
+
+.popup-content h3 {
+  margin-top: 0;
+}
+
+.popup-content button {
+  background-color: #228B22; /* Forest Green */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.popup-content button:hover {
+  background-color: #1B5E20; /* Darker Green */
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

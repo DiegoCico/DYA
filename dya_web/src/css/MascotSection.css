@@ -1,0 +1,41 @@
+.mascot-section {
+    padding: 40px;
+    background-color: #fffbe7; /* Light yellow background */
+    border-radius: 10px;
+    margin: 20px 0;
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  .mascot-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .mascot-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    animation: bounceIn 1s ease-in-out;
+  }
+  
+  .reasons-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    text-align: left;
+    font-size: 1.1em;
+    color: #333;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes bounceIn {
+    from { transform: scale(0.8); }
+    to { transform: scale(1); }
+  }
+  

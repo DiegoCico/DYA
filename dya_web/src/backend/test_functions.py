@@ -50,11 +50,7 @@ test_cases = {
     "factorial": [(5, 120), (0, 1), (3, 6)]
 }
 
-def run_tests(function_name, user_code_file):
-    # Read the content of the user_code file
-    with open(user_code_file, 'r') as f:
-        user_code = f.read()
-
+def run_tests(function_name, user_code):
     # Execute user code to define the function
     exec(user_code, globals())
 
@@ -85,18 +81,15 @@ def run_tests(function_name, user_code_file):
             all_passed = False
             results.append({"passed": False, "message": f"Test raised an exception for inputs {input_args}: {str(e)}"})
     
-    if all_passed:
-        return True, results
-    else:
-        return False, results
+    return all_passed, results
 
 if __name__ == "__main__":
-    # Get the function name and user code file path from the command-line arguments
+    # Get the function name and user code from the command-line arguments
     function_name = sys.argv[1]
-    user_code_file = sys.argv[2]
+    user_code = sys.argv[2]
     
     # Run the tests and get the result
-    success, message = run_tests(function_name, user_code_file)
+    success, message = run_tests(function_name, user_code)
     
     # Create the response and print it as JSON
     response = {"success": success, "testResults": message}

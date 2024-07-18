@@ -42,6 +42,7 @@ function Activity() {
   const [completed, setCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testResults, setTestResults] = useState([]);
+  const [userCode, setUserCode] = useState('');
 
   useEffect(() => {
     const fetchActivityAndUserProgress = async () => {
@@ -93,6 +94,10 @@ function Activity() {
     }
   };
 
+  const handleCodeChange = (newCode) => {
+    setUserCode(newCode);
+  };
+
   const handleCodeSubmit = async (userCode) => {
     setIsSubmitting(true);
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
@@ -104,17 +109,22 @@ function Activity() {
         return;
       }
 
+      // Save the user's code to Firestore
       await setDoc(doc(db, 'users', uid, 'activities', activityOrder, 'questions', currentQuestion.id), {
         functionName: funcName,
         userCode: userCode,
       });
 
-      const response = await axios.post('http://localhost:5002/test-function', {
+      // Create the JSON payload
+      const payload = {
         functionName: funcName,
         activityOrder: activityOrder,
         userId: uid,
         questionId: currentQuestion.id,
-      }, {
+      };
+
+      // Send the payload to the backend
+      const response = await axios.post('http://localhost:5002/test-function', payload, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -156,11 +166,6 @@ function Activity() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleCodeChange = (value) => {
-    setOutput('');
-    setResult(null);
   };
 
   const shuffleArray = (array) => {
