@@ -48,7 +48,7 @@ def test_function():
 
         if not data:
             print("No data received")
-            return jsonify({'success': False, 'message': 'No data received'}), 400
+            return jsonify({'success': False, 'message': 'No data received'}), 800
 
         function_name = data.get('functionName')
         user_id = data.get('userId')
@@ -69,7 +69,7 @@ def test_function():
         user_code = user_doc.to_dict().get('userCode')
         if not user_code:
             print("No user code found in Firebase document")
-            return jsonify({'success': False, 'message': 'No user code found in Firebase document'}), 400
+            return jsonify({'success': False, 'message': 'No user code found in Firebase document'}), 700
 
         # Run the test script and get the results
         test_results = run_test_script(function_name, user_code)
