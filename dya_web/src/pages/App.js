@@ -7,27 +7,30 @@ import ChildSignup from './ChildSignup';
 import ParentSignup from './ParentSignup';
 import NewSignup from './NewSignup';
 import NewLogin from './NewLogin';
-// import AdditionalInfo from './ChildAdditionalInfo';
 import SignUpTypePopUp from '../components/SignUpTypePopUp';
 
 function App() {
   const navigate = useNavigate();
 
   const handleRouteChange = (route) => {
-    navigate(route);
+    if (route) {
+      navigate(route);
+    } else {
+      console.error("Undefined route passed to handleRouteChange");
+    }
   };
 
-  const [ showPopUp, setShowPopUp ] = useState(false)
-  const [ showSignUpForm, setShowSignUpForm ] = useState(false)
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [showSignUpForm, setShowSignUpForm] = useState(false);
 
   const togglePopUp = () => {
-    setShowPopUp(!showPopUp)
-    setShowSignUpForm(false)
-  }
+    setShowPopUp(!showPopUp);
+    setShowSignUpForm(false);
+  };
 
   const toggleSignUpForm = () => {
-    setShowSignUpForm(true)
-  }
+    setShowSignUpForm(true);
+  };
 
   return (
     <div className="App">
@@ -37,7 +40,6 @@ function App() {
             <header className="App-header">
               <div className="auth-buttons">
                 <button className="auth-button" onClick={() => handleRouteChange('/login')}>Log In</button>
-                {/* <button className="auth-button" onClick={() => handleRouteChange('/signup')}>Sign Up</button> */}
                 <button className="auth-button" onClick={togglePopUp}>Sign Up</button>
               </div>
               <h1>Welcome to DYA!</h1>
@@ -48,8 +50,8 @@ function App() {
                 <div className='popup-overlay' onClick={togglePopUp}>
                   <div className='popup-content' onClick={(e) => e.stopPropagation()}>
                     {showSignUpForm ? (
-                      <ChildSignup setShowSignUpForm={setShowSignUpForm}/>
-                    )  : (
+                      <ChildSignup setShowSignUpForm={setShowSignUpForm} />
+                    ) : (
                       <SignUpTypePopUp showSignUpForm={toggleSignUpForm} />
                     )}
                   </div>
@@ -105,13 +107,11 @@ function App() {
           </div>
         } />
         <Route path="/login" element={<NewLogin handleRouteChange={handleRouteChange} />} />
-        {/* <Route path='/signup' element={<NewSignup handleRouteChange={handleRouteChange} />} /> */}
         <Route path='/signup' element={<SignUpTypePopUp handleRouteChange={handleRouteChange} />} />
         <Route path='/signup/parent' element={<ParentSignup />} />
         <Route path='/signup/child' element={<ChildSignup handleRouteChange={handleRouteChange} />} />
         <Route path="/roadmap/:uid" element={<Roadmap />} />
-        <Route path="/activity/:uid/:activityIndex" element={<Activity />} />
-        {/* <Route path="/signupInfo/:userId/:startingStep" element={<AdditionalInfo />} /> */}
+        <Route path="/activity/:uid/:activityTitle/:activityOrder" element={<Activity />} />
       </Routes>
     </div>
   );

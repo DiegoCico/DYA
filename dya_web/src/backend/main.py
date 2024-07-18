@@ -5,9 +5,18 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, firestore
+from multiprocessing import Process, Manager
+
+# Load Firebase configuration from serviceAccountKey.json
+service_account_file = os.path.join(os.getcwd(), 'src/backend/serviceAccountKey.json')
+if not os.path.exists(service_account_file):
+    raise FileNotFoundError(f"{service_account_file} not found. Ensure the file exists and the path is correct.")
+
+with open(service_account_file) as f:
+    firebase_config = json.load(f)
 
 # Initialize Firebase Admin SDK
-# cred = credentials.Certificate("")  # Update the path to your service account key
+cred = credentials.Certificate(firebase_config)
 firebase_admin.initialize_app(cred)
 
 app = Flask(__name__)
@@ -15,7 +24,13 @@ CORS(app)
 
 db = firestore.client()
 
-
+def execute_user_code(code, function_name, return_dict):
+    local_vars = {}
+    exec(code, {"__builtins__": None}, local_vars)
+    if function_name in local_vars:
+        return_dict['result'] = local_vars[function_name]()
+    else:
+        raise Exception(f"Function {function_name} not found in user code")
 
 @app.route('/test-function', methods=['POST'])
 def test_function():
@@ -48,29 +63,19 @@ def test_function():
             print("No user code found in Firebase document")
             return jsonify({'success': False, 'message': 'No user code found in Firebase document'}), 400
 
-        # Write user code to a temporary file to be used in subprocess
-        user_code_file_path = os.path.join(os.getcwd(), 'user_code.py')
-        with open(user_code_file_path, 'w') as f:
-            f.write(user_code)
+        # Create a manager to store the result
+        manager = Manager()
+        return_dict = manager.dict()
 
-        # Ensure the script file path is correct
-        script_file_path = os.path.join(os.getcwd(), 'src', 'backend', 'test_functions.py')
-        if not os.path.exists(script_file_path):
-            print(f"File not found: {script_file_path}")
-            return jsonify({'success': False, 'message': f'File not found: {script_file_path}'}), 500
+        # Run user code in a separate process
+        process = Process(target=execute_user_code, args=(user_code, function_name, return_dict))
+        process.start()
+        process.join()
 
-        result = subprocess.run(
-            ['python3', script_file_path, function_name, user_code_file_path],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        output = json.loads(result.stdout)
-        print(f"Subprocess Output: {output}")  # Debugging statement
-        return jsonify(output), 200
-    except subprocess.CalledProcessError as e:
-        print(f"Subprocess Error: {e.stderr}")  # Debugging statement
-        return jsonify({'success': False, 'message': e.stderr}), 500
+        if 'result' in return_dict:
+            return jsonify({'success': True, 'result': return_dict['result']}), 200
+        else:
+            return jsonify({'success': False, 'message': 'Function execution failed'}), 500
     except Exception as e:
         print(f"Error: {str(e)}")  # Debugging statement
         return jsonify({'success': False, 'message': str(e)}), 500

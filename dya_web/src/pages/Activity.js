@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
-import { doc, getDoc, updateDoc, collection, getDocs, setDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, updateDoc, setDoc } from 'firebase/firestore';
 import '../css/Activity.css';
 import CodeEditor from '../components/CodeEditor';
 import axios from 'axios';
-import { getCodeTemplate }  from "../components/codeTemplate"
+import { getCodeTemplate } from "../components/codeTemplate";
 
 function TestResultsPopup({ results, onClose }) {
   return (
@@ -26,7 +26,7 @@ function TestResultsPopup({ results, onClose }) {
 }
 
 function Activity() {
-  const { uid, activityIndex } = useParams();
+  const { uid, activityTitle, activityOrder } = useParams();
   const navigate = useNavigate();
   const [activity, setActivity] = useState(null);
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
@@ -46,6 +46,11 @@ function Activity() {
   useEffect(() => {
     const fetchActivityAndUserProgress = async () => {
       try {
+        if (!uid || !activityTitle || !activityOrder) {
+          setError('Missing URL parameters');
+          return;
+        }
+
         const userDocRef = doc(db, 'users', uid);
         const userDocSnap = await getDoc(userDocRef);
         if (!userDocSnap.exists()) {
@@ -57,7 +62,12 @@ function Activity() {
         const activitiesSnapshot = await getDocs(activitiesCollection);
         const activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        const activity = activitiesData[activityIndex];
+        const activity = activitiesData.find(act => act.title.replace(/\s+/g, '-') === activityTitle && act.order.toString() === activityOrder);
+        if (!activity) {
+          setError('Activity not found');
+          return;
+        }
+
         setActivity(activity);
         setShuffledQuestions(shuffleArray(activity.questions));
         setCurrentQuestionIndex(0);
@@ -69,14 +79,14 @@ function Activity() {
     };
 
     fetchActivityAndUserProgress();
-  }, [uid, activityIndex]);
+  }, [uid, activityTitle, activityOrder]);
 
   const updateUserProgress = async () => {
     const userDocRef = doc(db, 'users', uid);
     const userDocSnap = await getDoc(userDocRef);
     const userData = userDocSnap.data();
 
-    if (parseInt(activityIndex) === userData.currentActivity) {
+    if (parseInt(activityOrder) === userData.currentActivity) {
       await updateDoc(userDocRef, {
         currentActivity: userData.currentActivity + 1
       });
@@ -87,17 +97,21 @@ function Activity() {
     setIsSubmitting(true);
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
     const funcName = currentQuestion.functionName;
-    
-    // Store user code in Firebase
+
     try {
-      await setDoc(doc(db, 'users', uid, 'activities', activityIndex, 'questions', currentQuestion.id), {
+      if (!currentQuestion.id || !uid || !activityOrder) {
+        setError('Missing parameters for Firestore document reference');
+        return;
+      }
+
+      await setDoc(doc(db, 'users', uid, 'activities', activityOrder, 'questions', currentQuestion.id), {
         functionName: funcName,
         userCode: userCode,
       });
 
       const response = await axios.post('http://localhost:5002/test-function', {
         functionName: funcName,
-        activityIndex: activityIndex,
+        activityOrder: activityOrder,
         userId: uid,
         questionId: currentQuestion.id,
       }, {
@@ -106,7 +120,6 @@ function Activity() {
         }
       });
 
-      console.log(response.data);  // Log the response for debugging
       if (response.data.success) {
         setResult('Success! You got it right.');
         setCorrectCount(correctCount + 1);
@@ -164,7 +177,7 @@ function Activity() {
   };
 
   const handleNextActivity = () => {
-    navigate(`/activities/${uid}/${parseInt(activityIndex) + 1}`);
+    navigate(`/activities/${uid}/${activityTitle}/${parseInt(activityOrder) + 1}`);
   };
 
   const handleMainMenu = () => {
@@ -174,10 +187,8 @@ function Activity() {
   const checkServerStatus = async () => {
     try {
       const response = await axios.get('http://localhost:5002/ping');
-      console.log(response.data); // Log the response for debugging
       setServerStatus(response.data.message);
     } catch (error) {
-      console.error('Error:', error); // Log the error for debugging
       setServerStatus('Error: Unable to reach the server.');
     }
   };
@@ -187,7 +198,7 @@ function Activity() {
       const currentQuestion = shuffledQuestions[currentQuestionIndex];
       testFunction(currentQuestion.functionName);
     }
-  }, [activityIndex, currentQuestionIndex, shuffledQuestions]);
+  }, [activityOrder, currentQuestionIndex, shuffledQuestions]);
 
   const testFunction = async (funcName) => {
     try {
@@ -243,7 +254,7 @@ function Activity() {
             onCodeSubmit={handleCodeSubmit}
             onCodeChange={handleCodeChange}
             userId={uid}
-            activityIndex={activityIndex}
+            activityOrder={activityOrder}
             setOutput={setOutput}
           />
           <div className="output-section">

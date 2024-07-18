@@ -34,7 +34,7 @@ export const initializeActivities = async () => {
 
     // Add activities from JSON with order field starting from 1
     const addPromises = activitiesData.activities.map((activity, index) => {
-      const activityWithOrder = { ...activity, order: index + 1 };
+      const activityWithOrder = { ...activity, order: index };
       return addDoc(activitiesCollection, activityWithOrder);
     });
 

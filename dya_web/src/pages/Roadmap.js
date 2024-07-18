@@ -6,69 +6,74 @@ import '../css/Roadmap.css';
 import UserProfileSidebar from '../components/UserProfileSidebar';
 
 function Roadmap() {
-  const { uid } = useParams(); // Get URL parameter 'uid'
-  const [userData, setUserData] = useState(null); // State to store user data
-  const [activities, setActivities] = useState([]); // State to store activities data
-  const [loading, setLoading] = useState(true); // State to handle loading state
-  const [error, setError] = useState(null); // State to handle errors
-  const [showAnimation, setShowAnimation] = useState(false); // State to handle animation display
-  const navigate = useNavigate(); // Navigation hook
+  const { uid } = useParams();
+  const [userData, setUserData] = useState(null);
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showAnimation, setShowAnimation] = useState(false);
+  const navigate = useNavigate();
 
-  // Fetch user data and activities when the component mounts
   useEffect(() => {
     const fetchUserDataAndActivities = async () => {
       try {
-        // Fetch user data
-        const userDocRef = doc(db, 'users', uid); // Reference to the user document
-        const userDocSnap = await getDoc(userDocRef); // Get the user document snapshot
+        if (!uid) {
+          setError('Missing user ID');
+          return;
+        }
+
+        const userDocRef = doc(db, 'users', uid);
+        const userDocSnap = await getDoc(userDocRef);
         if (!userDocSnap.exists()) {
-          setError('User not found'); // Set error message
+          setError('User not found');
           return;
         }
         const userData = userDocSnap.data();
 
-        // Fetch activities data in order
-        const activitiesCollection = collection(db, 'activities'); // Reference to the activities collection
-        const activitiesQuery = query(activitiesCollection, orderBy('order')); // Order activities by the order field
-        const activitiesSnapshot = await getDocs(activitiesQuery); // Get the activities snapshot
-        const activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const activitiesCollection = collection(db, 'activities');
+        const activitiesQuery = query(activitiesCollection, orderBy('order'));
+        const activitiesSnapshot = await getDocs(activitiesQuery);
+        let activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        setUserData(userData); // Set user data
-        setActivities(activitiesData); // Set activities data
+        activitiesData = activitiesData.sort((a, b) => a.order - b.order);
 
-        // Check if a new activity is unlocked
+        setUserData(userData);
+        setActivities(activitiesData);
+
         const lastActivityIndex = userData.currentActivity - 1;
         if (lastActivityIndex >= 0 && lastActivityIndex < activitiesData.length) {
           const lastActivity = activitiesData[lastActivityIndex];
           if (lastActivity && !lastActivity.unlocked) {
             setShowAnimation(true);
-            // Mark the activity as unlocked
             const activityDocRef = doc(db, 'activities', lastActivity.id);
             await updateDoc(activityDocRef, { unlocked: true });
-            setTimeout(() => setShowAnimation(false), 3000); // Hide animation after 3 seconds
+            setTimeout(() => setShowAnimation(false), 3000);
           }
         }
       } catch (err) {
-        setError(err.message); // Set error message
+        setError(err.message);
       } finally {
-        setLoading(false); // Set loading to false
+        setLoading(false);
       }
     };
 
-    // Add delay before fetching data
-    const timer = setTimeout(fetchUserDataAndActivities, 500); // .5-second delay
+    const timer = setTimeout(fetchUserDataAndActivities, 500);
 
-    // Cleanup the timer if the component unmounts
     return () => clearTimeout(timer);
   }, [uid]);
 
-  if (loading) return <div className="loading">Loading...</div>; // Show loading indicator while loading
-  if (error) return <div className="error">Error: {error}</div>; // Show error message
+  if (loading) return <div className="loading">Loading...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
 
-  const handleActivityClick = (activityId) => {
-    const activity = activities.find(activity => activity.id === activityId);
+  const handleActivityClick = (activity) => {
+    if (!activity || !activity.title) {
+      console.error("Activity or activity title is undefined.");
+      return;
+    }
+
+    const activityTitleUrl = activity.title.replace(/\s+/g, '-');
     if (activity.order <= userData.currentActivity) {
-      navigate(`/activity/${uid}/${activity.order}`); // Navigate to the correct activity page if the user has access
+      navigate(`/activity/${uid}/${activityTitleUrl}/${activity.order}`);
     } else {
       alert('You need to complete the previous activities first!');
     }
@@ -81,17 +86,17 @@ function Roadmap() {
         {showAnimation && <div className="unlock-animation">New Activity Unlocked!</div>}
         {userData && (
           <>
-            <h2 className="roadmap-title">{userData.username}'s Roadmap</h2> {/* Display roadmap title */}
+            <h2 className="roadmap-title">{userData.username}'s Roadmap</h2>
             <div className="roadmap-container">
               {activities.map((activity) => (
                 <div
-                  key={activity.id} // Use activity.id as the key
-                  className={`roadmap-item ${activity.order > userData.currentActivity ? 'locked' : ''}`} // Add locked class if the activity is not accessible
-                  onClick={() => handleActivityClick(activity.id)} // Handle activity click
+                  key={activity.id}
+                  className={`roadmap-item ${activity.order > userData.currentActivity ? 'locked' : ''}`}
+                  onClick={() => handleActivityClick(activity)}
                 >
-                  <h3 className="roadmap-item-title">{activity.title}</h3> {/* Display activity title */}
-                  <p className="roadmap-item-description">{activity.description}</p> {/* Display activity description */}
-                  {activity.order > userData.currentActivity && <p className="locked-message">Locked</p>} {/* Display locked message */}
+                  <h3 className="roadmap-item-title">{activity.title}</h3>
+                  <p className="roadmap-item-description">{activity.description}</p>
+                  {activity.order > userData.currentActivity && <p className="locked-message">Locked</p>}
                 </div>
               ))}
             </div>
