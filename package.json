@@ -54,6 +54,8 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "esquery": "^1.6.0"
+    "customize-cra": "^1.0.0",
+    "esquery": "^1.6.0",
+    "react-app-rewired": "^2.2.1"
   }
 }
