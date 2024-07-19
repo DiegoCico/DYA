@@ -26,13 +26,14 @@
     "skulpt": "^1.2.0",
     "web-vitals": "^2.1.4"
   },
-  "scripts": {
-    "start": "webpack serve --mode development",
-    "build": "webpack --mode production",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "start-flask": "python3 src/backend/main.py"
-  },
+"scripts": {
+  "start": "concurrently \"npm run start-react\" \"npm run start-flask\"",
+  "start-react": "react-scripts start",
+  "start-flask": "python3 src/backend/main.py",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
+},
   "eslintConfig": {
     "extends": [
       "react-app",
