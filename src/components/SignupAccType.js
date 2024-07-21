@@ -6,14 +6,14 @@ export default function SignupAccType({ handleRouteChange }) {
         <div className="main-container">
             <AccountType 
                 title="Parents, over here" 
-                imgSrc="parent.png" 
+                imgSrc={`${process.env.PUBLIC_URL}/parent.png`} 
                 overlayClass="overlay-left" 
                 description="Few words about parent account" 
                 handleRouteChange={() => handleRouteChange('/signup/parent')} 
             />
             <AccountType 
                 title="Students!" 
-                imgSrc="student.png" 
+                imgSrc={`${process.env.PUBLIC_URL}/student.png`} 
                 overlayClass="overlay-right" 
                 description="Few words about student account" 
                 handleRouteChange={() => handleRouteChange('/signup/child')} 

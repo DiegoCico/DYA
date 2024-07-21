@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Routes, Route, useNavigate, HashRouter } from 'react-router-dom';
 import '../css/App.css';
 import Roadmap from './Roadmap';
 import Activity from './Activity';
