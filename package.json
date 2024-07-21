@@ -1,7 +1,7 @@
 {
   "name": "DYA",
   "version": "0.1.0",
-  "homepage": "https://DiegoCico.github.io/DYA",
+  "homepage": "https://diegocico.github.io/DYA/",
   "private": true,
   "dependencies": {
     "@codemirror/basic-setup": "^0.20.0",
