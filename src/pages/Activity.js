@@ -72,13 +72,43 @@ function Activity() {
       console.log('Received test results:', data); // Debugging statement
       setTestResults(data.testResults || []);
       setResult(data.success ? 'Success! You got it right.' : `Incorrect output:\n${data.message}`);
+      
+      if (data.success) {
+        setCorrectCount(prevCount => prevCount + 1);
+        if (correctCount + 1 === 5) {
+          updateUserProgress();
+          setShowAnimation(true);
+          setCompleted(true);
+          setTimeout(() => {
+            setShowAnimation(false);
+            alert('Congratulations! You have completed this phase.');
+            setCurrentQuestionIndex(shuffledQuestions.length); // to end the activity
+          }, 3000); // duration of the animation
+        } else {
+          setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+          setOutput('');
+          setResult(null);
+        }
+      } else {
+        setIncorrectCount(prevCount => prevCount + 1);
+        if (incorrectCount + 1 === 3) {
+          alert('You have 3 incorrect answers. Restarting...');
+          setCorrectCount(0);
+          setIncorrectCount(0);
+          setCurrentQuestionIndex(0);
+          setShuffledQuestions(shuffleArray(activity.questions));
+          setOutput('');
+          setResult(null);
+        }
+      }
+
       setIsSubmitting(false);
     });
 
     return () => {
       socket.off('test_results');
     };
-  }, []);
+  }, [correctCount, incorrectCount, shuffledQuestions]);
 
   const updateUserProgress = async () => {
     const userDocRef = doc(db, 'users', uid);
@@ -129,6 +159,7 @@ function Activity() {
       });
     } catch (error) {
       console.error(`Error testing ${funcName}:`, error);
+      setIsSubmitting(false); // Ensure we stop the submitting state even if there's an error
     }
   };
 
