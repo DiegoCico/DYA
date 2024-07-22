@@ -1,42 +1,7 @@
+# test_functions.py
 import sys
 import json
 
-# Define the functions
-def add(a, b):
-    return a + b
-
-def subtract(a, b):
-    return a - b
-
-def multiply(a, b):
-    return a * b
-
-def divide(a, b):
-    if b == 0:
-        return 'Cannot divide by zero'
-    return a / b
-
-def power(a, b):
-    return a ** b
-
-def mod(a, b):
-    return a % b
-
-def concat_strings(a, b):
-    return a + b
-
-def find_max(a, b):
-    return max(a, b)
-
-def is_even(a):
-    return a % 2 == 0
-
-def factorial(n):
-    if n == 0:
-        return 1
-    return n * factorial(n-1)
-
-# Define the test cases
 test_cases = {
     "add": [(1, 2, 3), (5, 5, 10), (-1, 1, 0)],
     "subtract": [(2, 1, 1), (5, 5, 0), (-1, 1, -2)],
@@ -73,13 +38,13 @@ def run_tests(function_name, user_code):
         try:
             result = user_function(*input_args)
             if result == expected_output:
-                results.append({"passed": True, "message": f"Test passed for inputs {input_args}. Expected and got {expected_output}."})
+                results.append({"passed": True, "message": f"Test passed for inputs {input_args}. Expected and got {expected_output}.", "inputs": input_args, "expected": expected_output, "actual": result})
             else:
                 all_passed = False
-                results.append({"passed": False, "message": f"Test failed for inputs {input_args}. Expected {expected_output}, got {result}."})
+                results.append({"passed": False, "message": f"Test failed for inputs {input_args}. Expected {expected_output}, got {result}.", "inputs": input_args, "expected": expected_output, "actual": result})
         except Exception as e:
             all_passed = False
-            results.append({"passed": False, "message": f"Test raised an exception for inputs {input_args}: {str(e)}"})
+            results.append({"passed": False, "message": f"Test raised an exception for inputs {input_args}: {str(e)}", "inputs": input_args, "expected": expected_output, "actual": None})
     
     return all_passed, results
 

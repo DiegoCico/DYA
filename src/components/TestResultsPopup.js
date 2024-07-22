@@ -10,7 +10,10 @@ function TestResultsPopup({ results, onClose }) {
         <ul>
           {results.map((result, index) => (
             <li key={index} style={{ color: result.passed ? 'green' : 'red' }}>
-              {result.message}
+              <p>{result.message}</p>
+              <p><strong>Inputs:</strong> {JSON.stringify(result.inputs)}</p>
+              <p><strong>Expected Output:</strong> {JSON.stringify(result.expected)}</p>
+              <p><strong>Actual Output:</strong> {JSON.stringify(result.actual)}</p>
             </li>
           ))}
         </ul>

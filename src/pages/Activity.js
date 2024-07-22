@@ -193,28 +193,6 @@ function Activity() {
     }
   };
 
-  useEffect(() => {
-    if (shuffledQuestions.length > 0) {
-      const currentQuestion = shuffledQuestions[currentQuestionIndex];
-      testFunction(currentQuestion.functionName);
-    }
-  }, [activityOrder, currentQuestionIndex, shuffledQuestions]);
-
-  const testFunction = async (funcName) => {
-    try {
-      const response = await axios.post('http://localhost:5002/test-function', {
-        functionName: funcName,
-      });
-      if (response.data.success) {
-        console.log(`${funcName} tests passed successfully!`);
-      } else {
-        console.error(`${funcName} tests failed. Output: ${response.data.output}`);
-      }
-    } catch (error) {
-      console.error(`Error testing ${funcName}:`, error);
-    }
-  };
-
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
