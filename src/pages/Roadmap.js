@@ -40,12 +40,11 @@ function Roadmap() {
         setUserData(userData);
         setActivities(activitiesData);
 
-        const lastActivityIndex = userData.currentActivity - 1;
-        if (lastActivityIndex >= 0 && lastActivityIndex < activitiesData.length) {
-          const lastActivity = activitiesData[lastActivityIndex];
-          if (lastActivity && !lastActivity.unlocked) {
+        if (userData.currentActivity === 1 && activitiesData.length > 0) {
+          const firstActivity = activitiesData[0];
+          if (!firstActivity.unlocked) {
             setShowAnimation(true);
-            const activityDocRef = doc(db, 'activities', lastActivity.id);
+            const activityDocRef = doc(db, 'activities', firstActivity.id);
             await updateDoc(activityDocRef, { unlocked: true });
             setTimeout(() => setShowAnimation(false), 3000);
           }

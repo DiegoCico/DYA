@@ -3,6 +3,7 @@ import json
 import subprocess
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_socketio import SocketIO, emit
 import firebase_admin
 from firebase_admin import credentials, firestore
 import sys
@@ -21,6 +22,7 @@ firebase_admin.initialize_app(cred)
 
 app = Flask(__name__)
 CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 db = firestore.client()
 
@@ -48,7 +50,7 @@ def test_function():
 
         if not data:
             print("No data received")
-            return jsonify({'success': False, 'message': 'No data received'}), 800
+            return jsonify({'success': False, 'message': 'No data received'}), 400
 
         function_name = data.get('functionName')
         user_id = data.get('userId')
@@ -64,15 +66,16 @@ def test_function():
         user_doc = doc_ref.get()
         if not user_doc.exists():
             print("Question not found in Firebase")
-            return jsonify({'success': False, 'message': 'Question not found in Firebase'}), 400
+            return jsonify({'success': False, 'message': 'Question not found in Firebase'}), 404
 
         user_code = user_doc.to_dict().get('userCode')
         if not user_code:
             print("No user code found in Firebase document")
-            return jsonify({'success': False, 'message': 'No user code found in Firebase document'}), 700
+            return jsonify({'success': False, 'message': 'No user code found in Firebase document'}), 400
 
         # Run the test script and get the results
         test_results = run_test_script(function_name, user_code)
+        socketio.emit('test_results', test_results, to=request.sid)  # Emit results in real-time
         
         return jsonify(test_results), 200
     except Exception as e:
@@ -124,4 +127,4 @@ def export_data():
         return jsonify({'success': False, 'message': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002, debug=True)  # Enable debug mode
+    socketio.run(app, host='0.0.0.0', port=5002, debug=True)

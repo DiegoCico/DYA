@@ -5,25 +5,10 @@ import { doc, getDoc, collection, getDocs, updateDoc, setDoc } from 'firebase/fi
 import '../css/Activity.css';
 import CodeEditor from '../components/CodeEditor';
 import axios from 'axios';
-import { getCodeTemplate } from "../components/codeTemplate";
+import TestResultsPopup from '../components/TestResultsPopup';
+import { io } from 'socket.io-client';
 
-function TestResultsPopup({ results, onClose }) {
-  return (
-    <div className="popup">
-      <div className="popup-content">
-        <h2>Test Results</h2>
-        <button onClick={onClose} className="close-btn">X</button>
-        <ul>
-          {results.map((result, index) => (
-            <li key={index} style={{ color: result.passed ? 'green' : 'red' }}>
-              {result.message}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-}
+const socket = io('http://localhost:5002');
 
 function Activity() {
   const { uid, activityTitle, activityOrder } = useParams();
@@ -82,6 +67,19 @@ function Activity() {
     fetchActivityAndUserProgress();
   }, [uid, activityTitle, activityOrder]);
 
+  useEffect(() => {
+    socket.on('test_results', (data) => {
+      console.log('Received test results:', data); // Debugging statement
+      setTestResults(data.testResults || []);
+      setResult(data.success ? 'Success! You got it right.' : `Incorrect output:\n${data.message}`);
+      setIsSubmitting(false);
+    });
+
+    return () => {
+      socket.off('test_results');
+    };
+  }, []);
+
   const updateUserProgress = async () => {
     const userDocRef = doc(db, 'users', uid);
     const userDocSnap = await getDoc(userDocRef);
@@ -124,47 +122,13 @@ function Activity() {
       };
 
       // Send the payload to the backend
-      const response = await axios.post('http://localhost:5002/test-function', payload, {
+      await axios.post('http://localhost:5002/test-function', payload, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-
-      if (response.data.success) {
-        setResult('Success! You got it right.');
-        setCorrectCount(correctCount + 1);
-        if (correctCount + 1 === 5) {
-          updateUserProgress();
-          setShowAnimation(true);
-          setCompleted(true);
-          setTimeout(() => {
-            setShowAnimation(false);
-            alert('Congratulations! You have completed this phase.');
-            setCurrentQuestionIndex(shuffledQuestions.length); // to end the activity
-          }, 3000); // duration of the animation
-        } else {
-          setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-          setOutput('');
-          setResult(null);
-        }
-      } else {
-        setResult(`Incorrect output:\n${response.data.message}`);
-        setIncorrectCount(incorrectCount + 1);
-        if (incorrectCount + 1 === 3) {
-          alert('You have 3 incorrect answers. Restarting...');
-          setCorrectCount(0);
-          setIncorrectCount(0);
-          setCurrentQuestionIndex(0);
-          setShuffledQuestions(shuffleArray(activity.questions));
-          setOutput('');
-          setResult(null);
-        }
-      }
-      setTestResults(response.data.testResults);
     } catch (error) {
       console.error(`Error testing ${funcName}:`, error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

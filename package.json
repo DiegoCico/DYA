@@ -25,18 +25,19 @@
     "react-router-dom": "^6.24.1",
     "react-scripts": "^5.0.1",
     "skulpt": "^1.2.0",
+    "socket.io-client": "^4.7.5",
     "web-vitals": "^2.1.4"
   },
-"scripts": {
-  "start": "concurrently \"npm run start-react\" \"npm run start-flask\"",
-  "predeploy": "npm run build",
-  "deploy": "gh-pages -d build",
-  "start-react": "react-scripts start",
-  "start-flask": "python3 src/backend/main.py",
-  "build": "react-scripts build",
-  "test": "react-scripts test",
-  "eject": "react-scripts eject"
-},
+  "scripts": {
+    "start": "concurrently \"npm run start-react\" \"npm run start-flask\"",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "start-react": "react-scripts start",
+    "start-flask": "python3 src/backend/main.py",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
