@@ -1,5 +1,5 @@
 {
-  "name": "DYA",
+  "name": "dya",
   "version": "0.1.0",
   "homepage": "https://diegocico.github.io/DYA/",
   "private": true,
@@ -14,8 +14,11 @@
     "@testing-library/user-event": "^13.5.0",
     "@uiw/react-codemirror": "^4.23.0",
     "axios": "^1.7.2",
+    "body-parser": "^1.20.2",
     "codemirror": "^5.65.16",
+    "cors": "^2.8.5",
     "cross-spawn": "^7.0.3",
+    "express": "^4.19.2",
     "firebase": "^10.12.3",
     "firebase-admin": "^12.2.0",
     "react": "^18.3.1",
@@ -25,19 +28,20 @@
     "react-router-dom": "^6.24.1",
     "react-scripts": "^5.0.1",
     "skulpt": "^1.2.0",
+    "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
     "web-vitals": "^2.1.4"
   },
-  "scripts": {
-    "start": "concurrently \"npm run start-react\" \"npm run start-flask\"",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "start-react": "react-scripts start",
-    "start-flask": "python3 src/backend/main.py",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
+"scripts": {
+  "start": "concurrently \"npm run start-react\" \"npm run start-server\"",
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d build",
+  "start-react": "react-scripts start",
+  "start-server": "node src/backend/server.js",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
+},
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -70,5 +74,17 @@
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
-  }
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DiegoCico/DYA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DiegoCico/DYA/issues"
+  },
+  "description": ""
 }

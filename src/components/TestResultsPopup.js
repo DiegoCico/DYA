@@ -7,13 +7,17 @@ function TestResultsPopup({ results, onClose }) {
       <div className="popup-content">
         <h2>Test Results</h2>
         <button onClick={onClose} className="close-btn">X</button>
-        <ul>
+        <ul className="results-list">
           {results.map((result, index) => (
-            <li key={index} style={{ color: result.passed ? 'green' : 'red' }}>
-              <p>{result.message}</p>
-              <p><strong>Inputs:</strong> {JSON.stringify(result.inputs)}</p>
-              <p><strong>Expected Output:</strong> {JSON.stringify(result.expected)}</p>
-              <p><strong>Actual Output:</strong> {JSON.stringify(result.actual)}</p>
+            <li key={index} className="result-item">
+              <div className="result-inputs">
+                <p><strong>Inputs:</strong> {JSON.stringify(result.inputs)}</p>
+                <p><strong>Expected:</strong> {JSON.stringify(result.expected)}</p>
+                <p><strong>Actual:</strong> {JSON.stringify(result.actual)}</p>
+              </div>
+              <div className={`result-status ${result.passed ? 'passed' : 'failed'}`}>
+                <p>{result.passed ? 'PASSED' : 'FAILED'}</p>
+              </div>
             </li>
           ))}
         </ul>

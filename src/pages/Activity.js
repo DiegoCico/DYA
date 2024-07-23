@@ -28,6 +28,8 @@ function Activity() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testResults, setTestResults] = useState([]);
   const [userCode, setUserCode] = useState('');
+  const [shake, setShake] = useState(false);
+  const [fireworks, setFireworks] = useState(false);
 
   useEffect(() => {
     const fetchActivityAndUserProgress = async () => {
@@ -74,6 +76,8 @@ function Activity() {
       setResult(data.success ? 'Success! You got it right.' : `Incorrect output:\n${data.message}`);
       
       if (data.success) {
+        setFireworks(true);
+        setTimeout(() => setFireworks(false), 1000);
         setCorrectCount(prevCount => prevCount + 1);
         if (correctCount + 1 === 5) {
           updateUserProgress();
@@ -90,6 +94,8 @@ function Activity() {
           setResult(null);
         }
       } else {
+        setShake(true);
+        setTimeout(() => setShake(false), 1000);
         setIncorrectCount(prevCount => prevCount + 1);
         if (incorrectCount + 1 === 3) {
           alert('You have 3 incorrect answers. Restarting...');
@@ -149,6 +155,7 @@ function Activity() {
         activityOrder: activityOrder,
         userId: uid,
         questionId: currentQuestion.id,
+        userCode: userCode
       };
 
       // Send the payload to the backend
@@ -213,7 +220,19 @@ function Activity() {
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
 
   return (
-    <div className="activity-page">
+    <div className={`activity-page ${shake ? 'shake' : ''}`}>
+      {fireworks && (
+        <div className="fireworks">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      )}
       {activity && (
         <>
           <div className='activity-header'>
