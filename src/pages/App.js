@@ -5,7 +5,6 @@ import Roadmap from './Roadmap';
 import Activity from './Activity';
 import ChildSignup from './ChildSignup';
 import ParentSignup from './ParentSignup';
-import NewSignup from './NewSignup';
 import NewLogin from './NewLogin';
 import SignUpTypePopUp from '../components/SignUpTypePopUp';
 import Footer from '../components/Footer';
