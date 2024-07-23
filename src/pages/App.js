@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, HashRouter } from 'react-router-dom';
 import '../css/App.css';
 import Roadmap from './Roadmap';
@@ -12,6 +12,7 @@ import Footer from '../components/Footer';
 import LanguageSlider from '../components/LanguageSlider';
 import MascotSection from '../components/MascotSection';
 
+
 function App() {
   const navigate = useNavigate();
 
@@ -23,16 +24,29 @@ function App() {
     }
   };
 
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [showSignUpForm, setShowSignUpForm] = useState(false);
+  const [showSignUpPopUp, setShowSignUpPopUp] = useState(false)
+  const [showSignUpForm, setShowSignUpForm] = useState(false)
+  const [showLoginPopUp, setShowLoginPopUp] = useState(false)
 
-  const togglePopUp = () => {
-    setShowPopUp(!showPopUp);
-    setShowSignUpForm(false);
+  useEffect(() => {
+    setShowSignUpPopUp(false)
+    setShowSignUpForm(false)
+    setShowLoginPopUp(false)
+  }, [navigate]);
+
+  const toggleSignUpPopUp = () => {
+    setShowSignUpPopUp(!showSignUpPopUp);
+    setShowSignUpForm(false)
+    setShowLoginPopUp(false)
   };
 
   const toggleSignUpForm = () => {
-    setShowSignUpForm(true);
+    setShowSignUpForm(true)
+  };
+
+  const toggleLoginPopUp = () => {
+    setShowSignUpPopUp(false)
+    setShowLoginPopUp(!showLoginPopUp)
   };
 
   return (
@@ -42,25 +56,43 @@ function App() {
           <div>
             <header className="App-header">
               <div className="auth-buttons">
-                <button className="auth-button" onClick={() => handleRouteChange('/login')}>Log In</button>
-                <button className="auth-button" onClick={togglePopUp}>Sign Up</button>
+                <button className="auth-button" onClick={toggleLoginPopUp}>Log In</button>
+                <button className="auth-button" onClick={toggleSignUpPopUp}>Sign Up</button>
               </div>
               <h1>Welcome to DYA!</h1>
               <p>Your ultimate fun and learning destination for kids.</p>
             </header>
             <main>
-              {showPopUp && (
-                <div className='popup-overlay' onClick={togglePopUp}>
+              {showSignUpPopUp && (
+                <div className='popup-overlay' onClick={() => setShowSignUpPopUp(false)}>
                   <div className='popup-content' onClick={(e) => e.stopPropagation()}>
                     {showSignUpForm ? (
-                      <ChildSignup setShowSignUpForm={setShowSignUpForm} />
+                      <ChildSignup
+                        setShowSignUpForm={setShowSignUpForm}
+                        toggleLoginPopUp={toggleLoginPopUp}
+                      />
                     ) : (
-                      <SignUpTypePopUp showSignUpForm={toggleSignUpForm} />
+                      <SignUpTypePopUp
+                        showSignUpForm={toggleSignUpForm}
+                        toggleLoginPopUp={toggleLoginPopUp}
+                      />
                     )}
                   </div>
                 </div>
               )}
-              <div className={`main-content ${showPopUp ? 'blur' : ''}`}>
+                
+              {showLoginPopUp && (
+                <div className='popup-overlay' onClick={() => setShowLoginPopUp(false)}>
+                  <div className='popup-content' onClick={(e) => e.stopPropagation()}>
+                    <NewLogin
+                      handleRouteChange={handleRouteChange}
+                      toggleSignUpPopUp={toggleSignUpPopUp}
+                      toggleLoginPopUp={toggleLoginPopUp}
+                    />
+                  </div>
+                </div>
+              )}
+              <div className={`main-content ${showSignUpPopUp || showLoginPopUp ? 'blur' : ''}`}>
                 <section className="features">
                   <div className="feature feature-games">
                     <h3>Games</h3>
