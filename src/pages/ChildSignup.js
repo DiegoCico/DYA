@@ -10,7 +10,7 @@ const generateUniqueId = () => {
 };
 
 export default function ChildSignup(props) {
-    const { setShowSignUpForm } = props
+    const { setShowSignUpForm, toggleLoginPopUp } = props
 
     const [userId, setUserId] = useState()
     const [email, setEmail] = useState('')
@@ -23,19 +23,38 @@ export default function ChildSignup(props) {
     const [programmingLanguage, setProgrammingLanguage] = useState('')
     const [error, setError] = useState('')
 
-    const handleNext = () => setStep(step + 1)
+    const handleNext = (lang) => {
+        if (step === 2 && !name) {
+            setError('Please enter your name.');
+            return
+        }
+        if (step === 3 && !username) {
+            setError('Please enter your username.');
+            return
+        }
+        if (step === 4 && !age) {
+            setError('Please enter your age.');
+            return
+        }
+        if (step < 5) {
+            setStep(step + 1);
+            setError('')
+        } else {
+            handleCompleteSignUp(lang);
+        }
+    }
     const handlePrev = () => setStep(step - 1)
 
     const navigate = useNavigate()
 
     const initializeUser = async (user) => {
         const uniqueId = generateUniqueId();
-            await setDoc(doc(db, 'users', user.uid), {
-                email: user.email,
-                currentActivity: 1,
-                programmingLanguages: ["Python"],
-                uniqueId: uniqueId
-            })
+        await setDoc(doc(db, 'users', user.uid), {
+            email: user.email,
+            currentActivity: 1,
+            programmingLanguages: ['Python'],
+            uniqueId: uniqueId
+        })
     };
 
     const handleSubmit = async (e) => {
@@ -53,9 +72,7 @@ export default function ChildSignup(props) {
             await initializeUser(user);
 
             console.log('Signup successful', user.uid);
-            // navigate(`/signupInfo/${user.uid}/1`); // Navigate to additional info page
             setUserId(user.uid)
-            // setShowSignUpForm(false)
             
             handleNext()
             
@@ -74,25 +91,25 @@ export default function ChildSignup(props) {
             }, { merge: true });
 
             console.log('Programming language saved successfully');
-            navigate(`/roadmap/${userId}`); // Redirect to the roadmap page
+            navigate(`/roadmap/${userId}`)
         } catch (error) {
             setError(error.message || 'Failed to save programming language. Please try again.');
         }
     };
-    
+
     const googleProvider = new GoogleAuthProvider()
     const handleGoogleSignUp = async() => {
         try {
             const res = await signInWithPopup(auth, googleProvider)
-            const userCredential = GoogleAuthProvider.credentialFromResult(res)
             const user = res.user 
             
             const docRef = doc(db, 'users', user.uid)
             const docSnap = await getDoc(docRef)
             if (!docSnap.exists()) {
-                initializeUser(user, true)
-                navigate(`/signupInfo/${user.uid}/2`); // Navigate to additional info page
-
+                await initializeUser(user)
+                setUserId(user.uid);
+                setName(user.displayName || "")
+                setStep(3);
             } else {
                 navigate(`/roadmap/${user.uid}`)
             }
@@ -114,10 +131,11 @@ export default function ChildSignup(props) {
                             <h3>Already joined?</h3>
                             <button
                                 className="signin-button"
-                                onClick={() => navigate('/login')}
-                            >
-                                Log In
-                            </button>
+                                onClick={() => {
+                                    setShowSignUpForm(false)
+                                    toggleLoginPopUp()
+                                }}
+                            >Log In</button>
                         </div>
                         <div className="signup-box">
                             <form onSubmit={handleSubmit}>
@@ -147,10 +165,9 @@ export default function ChildSignup(props) {
                                 />
                                 {error && <p>{error}</p>}
                                 <div className="signup-form-buttons">
-                                    <button className="signup-form-submit-btn" type="submit" onClick={handleSubmit}>Sign Up</button>
+                                    <button className="signup-form-submit-btn" type="submit">Sign Up</button>
                                     <h2 className="signup-form-or">or</h2>
                                     <button onClick={handleGoogleSignUp} className="signup-form-google-btn"><i className="fa-brands fa-google"></i>Continue with Google</button>
-                                    <button className="signup-form-submit-btn" onClick={handleNext}>Next</button>
                                 </div>
                             </form>
                         </div>
@@ -160,36 +177,43 @@ export default function ChildSignup(props) {
                     <InfoStep
                         step={step}
                         type='text'
+                        length='30'
                         placeholder='Name'
                         dataValue={name}
                         setDataValue={setName}
                         handleNext={handleNext}
+                        error={error}
                     />
                 )}
                 {step === 3 && (
                     <InfoStep
                         step={step}
                         type='text'
+                        length='15'
                         placeholder='Username'
                         dataValue={username}
                         setDataValue={setUsername}
                         handleNext={handleNext}
+                        error={error}
                     />
                 )}
                 {step === 4 && (
                     <InfoStep
                         step={step}
                         type='number'
+                        length='2'
                         placeholder='Age'
                         dataValue={age}
                         setDataValue={setAge}
                         handleNext={handleNext}
+                        error={error}
                     />
                 )}
                 {step === 5 && (
                     <InfoStep
                         step={step}
-                        handleNext={handleCompleteSignUp}
+                        handleNext={handleNext}
+                        error={error}
                     />
                 )}
             </div>
@@ -197,7 +221,7 @@ export default function ChildSignup(props) {
     );
 }
 
-function InfoStep({ step, type, placeholder, dataValue, setDataValue, handleNext }) {
+function InfoStep({ step, type, length, placeholder, dataValue, setDataValue, handleNext, error }) {
     return (
         <div className="main-container info">
             <div className="child-signup-container info">
@@ -209,12 +233,13 @@ function InfoStep({ step, type, placeholder, dataValue, setDataValue, handleNext
                         <input
                             className="info-input"
                             type={type}
+                            maxLength={length}
                             placeholder={placeholder}
                             value={dataValue}
                             onChange={(e) => setDataValue(e.target.value)}
                             required
                         />
-                        <button className="signup-form-submit-btn step" onClick={handleNext}>Next</button>
+                        <button className="signup-form-submit-btn step" onClick={() => handleNext()}>Next</button>
                     </>
                 )}
                 {step === 5 && (
@@ -242,7 +267,9 @@ function InfoStep({ step, type, placeholder, dataValue, setDataValue, handleNext
                         </div>
                     </>
                 )}
+                {error && <p className="error-message">{error}</p>}
             </div>
         </div>
     )
 }
+

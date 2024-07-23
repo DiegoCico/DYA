@@ -12,7 +12,7 @@ export default function UserProfileSidebar() {
     }
     const handleSignOut = (auth) => {
         signOut(auth).then(() => {
-            navigate('/login')
+            navigate('/')
         }).catch((error) => {
             <p className="error">{error.message}</p>
         })

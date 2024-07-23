@@ -7,14 +7,14 @@ export default function SignUpTypePopUp(props) {
         <div className="main-container">
             <AccountType
                 title='Parents, over here!'
-                imgSrc='user.png'
+                imgSrc={`${process.env.PUBLIC_URL}/user.png`}
                 overlayClass='overlay-left'
                 desc='Few words about parent account'
                 handleRouteChange={showSignUpForm}
             />
             <AccountType
                 title='Students!'
-                imgSrc='user.png'
+                imgSrc={`${process.env.PUBLIC_URL}/user.png`}
                 overlayClass='overlay-right'
                 desc='Few words about student account'
                 handleRouteChange={showSignUpForm}
