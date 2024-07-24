@@ -10,6 +10,7 @@ import SignUpTypePopUp from '../components/SignUpTypePopUp';
 import Footer from '../components/Footer';
 import LanguageSlider from '../components/LanguageSlider';
 import MascotSection from '../components/MascotSection';
+import Lessons from "./Lessons"
 
 
 function App() {
@@ -122,6 +123,7 @@ function App() {
         <Route path='/signup/child' element={<ChildSignup handleRouteChange={handleRouteChange} />} />
         <Route path="/roadmap/:uid" element={<Roadmap />} />
         <Route path="/activity/:uid/:activityTitle/:activityOrder" element={<Activity />} />
+        <Route path="/lessons/:uid" element={<Lessons />} />
       </Routes>
     </div>
   );

@@ -9,6 +9,7 @@ function Roadmap() {
   const { uid } = useParams();
   const [userData, setUserData] = useState(null);
   const [activities, setActivities] = useState([]);
+  const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
@@ -37,8 +38,14 @@ function Roadmap() {
 
         activitiesData = activitiesData.sort((a, b) => a.order - b.order);
 
+        const lessonsCollection = collection(db, 'LessonPython');
+        const lessonsQuery = query(lessonsCollection, orderBy('order'));
+        const lessonsSnapshot = await getDocs(lessonsQuery);
+        const lessonsData = lessonsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
         setUserData(userData);
         setActivities(activitiesData);
+        setLessons(lessonsData);
 
         if (userData.currentActivity === 1 && activitiesData.length > 0) {
           const firstActivity = activitiesData[0];
@@ -87,15 +94,23 @@ function Roadmap() {
           <>
             <h2 className="roadmap-title">{userData.username}'s Roadmap</h2>
             <div className="roadmap-container">
-              {activities.map((activity) => (
-                <div
-                  key={activity.id}
-                  className={`roadmap-item ${activity.order > userData.currentActivity ? 'locked' : ''}`}
-                  onClick={() => handleActivityClick(activity)}
-                >
-                  <h3 className="roadmap-item-title">{activity.title}</h3>
-                  <p className="roadmap-item-description">{activity.description}</p>
-                  {activity.order > userData.currentActivity && <p className="locked-message">Locked</p>}
+              {activities.map((activity, index) => (
+                <div key={activity.id} className="roadmap-item-container">
+                  <div className="lesson-icon">
+                    {lessons[index] && (
+                      <div className="lesson-circle" title={lessons[index].title}>
+                        L{lessons[index].order + 1}
+                      </div>
+                    )}
+                  </div>
+                  <div
+                    className={`roadmap-item ${activity.order > userData.currentActivity ? 'locked' : ''}`}
+                    onClick={() => handleActivityClick(activity)}
+                  >
+                    <h3 className="roadmap-item-title">{activity.title}</h3>
+                    <p className="roadmap-item-description">{activity.description}</p>
+                    {activity.order > userData.currentActivity && <p className="locked-message">Locked</p>}
+                  </div>
                 </div>
               ))}
             </div>

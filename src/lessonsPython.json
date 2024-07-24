@@ -1,0 +1,143 @@
+{
+  "lessons": [
+    {
+      "title": "Basic Math Operations",
+      "description": "Complete these coding tasks to test basic math operations.",
+      "objective": "Understand and implement basic mathematical operations in Python.",
+      "materials": [
+        "Computer with Python installed",
+        "Text editor or IDE"
+      ],
+      "steps": [
+        {
+          "title": "Addition Function",
+          "instruction": "Write a Python function to add two numbers.",
+          "steps": [
+            "Open your text editor or IDE.",
+            "Create a new Python file named 'math_operations.py'.",
+            "Define a function named 'add' that takes two parameters.",
+            "Inside the function, return the sum of the two parameters.",
+            "Save the file.",
+            "Example function implementation:\n\ndef add(a, b):\n    return a + b"
+          ]
+        },
+        {
+          "title": "Subtraction Function",
+          "instruction": "Write a Python function to subtract two numbers.",
+          "steps": [
+            "In 'math_operations.py', define a function named 'subtract' that takes two parameters.",
+            "Inside the function, return the difference between the first and second parameter.",
+            "Save the file.",
+            "Example function implementation:\n\ndef subtract(a, b):\n    return a - b"
+          ]
+        },
+        {
+          "title": "Multiplication Function",
+          "instruction": "Write a Python function to multiply two numbers.",
+          "steps": [
+            "In 'math_operations.py', define a function named 'multiply' that takes two parameters.",
+            "Inside the function, return the product of the two parameters.",
+            "Save the file.",
+            "Example function implementation:\n\ndef multiply(a, b):\n    return a * b"
+          ]
+        },
+        {
+          "title": "Division Function",
+          "instruction": "Write a Python function to divide two numbers.",
+          "steps": [
+            "In 'math_operations.py', define a function named 'divide' that takes two parameters.",
+            "Inside the function, return the result of dividing the first parameter by the second.",
+            "Save the file.",
+            "Example function implementation:\n\ndef divide(a, b):\n    return a / b"
+          ]
+        },
+        {
+          "title": "Power Function",
+          "instruction": "Write a Python function to find the power of a number.",
+          "steps": [
+            "In 'math_operations.py', define a function named 'power' that takes two parameters.",
+            "Inside the function, return the result of raising the first parameter to the power of the second.",
+            "Save the file.",
+            "Example function implementation:\n\ndef power(a, b):\n    return a ** b"
+          ]
+        },
+        {
+          "title": "Modulo Function",
+          "instruction": "Write a Python function to find the modulo of two numbers.",
+          "steps": [
+            "In 'math_operations.py', define a function named 'mod' that takes two parameters.",
+            "Inside the function, return the result of the modulo operation between the first and second parameters.",
+            "Save the file.",
+            "Example function implementation:\n\ndef mod(a, b):\n    return a % b"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "String Operations",
+      "description": "Complete these coding tasks to test string operations.",
+      "objective": "Understand and implement basic string operations in Python.",
+      "materials": [
+        "Computer with Python installed",
+        "Text editor or IDE"
+      ],
+      "steps": [
+        {
+          "title": "Concatenate Strings",
+          "instruction": "Write a Python function to concatenate two strings.",
+          "steps": [
+            "Open your text editor or IDE.",
+            "Create a new Python file named 'string_operations.py'.",
+            "Define a function named 'concat_strings' that takes two parameters.",
+            "Inside the function, return the concatenation of the two strings.",
+            "Save the file.",
+            "Example function implementation:\n\ndef concat_strings(str1, str2):\n    return str1 + str2"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Number Properties",
+      "description": "Complete these coding tasks to test number properties.",
+      "objective": "Understand and implement functions to check number properties in Python.",
+      "materials": [
+        "Computer with Python installed",
+        "Text editor or IDE"
+      ],
+      "steps": [
+        {
+          "title": "Find Maximum",
+          "instruction": "Write a Python function to find the maximum of two numbers.",
+          "steps": [
+            "Open your text editor or IDE.",
+            "Create a new Python file named 'number_properties.py'.",
+            "Define a function named 'find_max' that takes two parameters.",
+            "Inside the function, use an if-else statement to return the larger of the two numbers.",
+            "Save the file.",
+            "Example function implementation:\n\ndef find_max(a, b):\n    return a if a > b else b"
+          ]
+        },
+        {
+          "title": "Check Even Number",
+          "instruction": "Write a Python function to check if a number is even.",
+          "steps": [
+            "In 'number_properties.py', define a function named 'is_even' that takes one parameter.",
+            "Inside the function, use the modulo operator to check if the number is even and return True or False.",
+            "Save the file.",
+            "Example function implementation:\n\ndef is_even(n):\n    return n % 2 == 0"
+          ]
+        },
+        {
+          "title": "Calculate Factorial",
+          "instruction": "Write a Python function to calculate the factorial of a number.",
+          "steps": [
+            "In 'number_properties.py', define a function named 'factorial' that takes one parameter.",
+            "Inside the function, use a loop or recursion to calculate the factorial of the number.",
+            "Save the file.",
+            "Example function implementation:\n\ndef factorial(n):\n    if n == 0:\n        return 1\n    else:\n        return n * factorial(n - 1)"
+          ]
+        }
+      ]
+    }
+  ]
+}

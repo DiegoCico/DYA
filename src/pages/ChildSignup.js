@@ -51,7 +51,7 @@ export default function ChildSignup(props) {
         const uniqueId = generateUniqueId();
         await setDoc(doc(db, 'users', user.uid), {
             email: user.email,
-            currentActivity: 1,
+            currentActivity: 0,
             programmingLanguages: ['Python'],
             uniqueId: uniqueId
         })
