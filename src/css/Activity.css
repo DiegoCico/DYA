@@ -151,3 +151,57 @@ button:hover {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
 }
+
+.activity-page.shake {
+  animation: shake 0.5s;
+  animation-iteration-count: 2;
+}
+
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.fireworks {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.fireworks div {
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  position: absolute;
+  animation: explode 0.5s ease-out forwards;
+}
+
+.fireworks div:nth-child(1) { transform: rotate(0deg) translateX(40px); }
+.fireworks div:nth-child(2) { transform: rotate(45deg) translateX(40px); }
+.fireworks div:nth-child(3) { transform: rotate(90deg) translateX(40px); }
+.fireworks div:nth-child(4) { transform: rotate(135deg) translateX(40px); }
+.fireworks div:nth-child(5) { transform: rotate(180deg) translateX(40px); }
+.fireworks div:nth-child(6) { transform: rotate(225deg) translateX(40px); }
+.fireworks div:nth-child(7) { transform: rotate(270deg) translateX(40px); }
+.fireworks div:nth-child(8) { transform: rotate(315deg) translateX(40px); }
+
+@keyframes explode {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
