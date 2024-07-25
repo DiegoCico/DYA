@@ -1,0 +1,132 @@
+.profile-window-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.profile-window-content {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 1200px;
+    height: 800px;
+    /* max-width: 500px; */
+    text-align: center;
+    position: relative;
+    margin-right: 8rem;
+    display: flex;
+}
+
+.user-data-container-left {
+    background-color: rgb(241, 241, 241);
+    flex: 1;
+    /* height: 80%; */
+    border-radius: 20px;
+    margin: 0 10px 0 10px;
+}
+
+.user-picture {
+    background-color: none;
+    margin: 50px 50px;
+}
+
+.user-picture img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+}
+
+.user-data {
+    background-color: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+}
+
+.user-data input {
+    margin: 20px 0 20px 0;
+    font-size: larger;
+    background: transparent;
+    border-width: 1px;
+}
+
+.head {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+.head h2 {
+    margin: 0;
+}
+
+.head i {
+    cursor: pointer;
+}
+
+.data {
+    font-size: larger;
+}
+
+.border-gray {
+    background-color: gray;
+    height: 1px;
+    width: 90%;
+    border: 2px;
+    opacity: 50%;
+}
+
+.user-data-container-right {
+    background-color: none;
+    flex: 1;
+    border-radius: 20px;
+    margin: 0 10px 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.user-languages-container, .user-language-progress {
+    background-color:rgb(241, 241, 241);
+    border-radius: 20px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 20px 0 10px 0;
+}
+
+.progress-container {
+    width: 100%;
+    border-radius: 5px;
+    text-align: left;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 20px;
+    background-color: #76c7c0;
+    width: 0;
+    transition: width 0.5s;
+}
+
+.close-btn {
+    color: black;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}

@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
+import UserProfile from "../pages/UserProfile";
 
-export default function UserProfileSidebar() {
+export default function UserProfileSidebar( userData ) {
     const { uid } = useParams();
     const navigate = useNavigate()
+    const [showUserProfile, setShowUserProfile] = useState(false)
+
+    const toggleUserProfile = () => {
+        setShowUserProfile(!showUserProfile)
+    }
 
     const handleRouteClick = (route) => {
         navigate(route)
@@ -18,14 +24,6 @@ export default function UserProfileSidebar() {
         })
     }
     return (
-        // <div className="header">
-        //     <button className="roadmap-btn" onClick={() => handleRouteClick(`/roadmap/${uid}`)}>Roadmap</button>
-        //     <div className="header-right">
-        //         <button className="logout-btn" onClick={() => handleSignOut(auth)}>
-        //             <i className="fa-solid fa-right-from-bracket"></i>
-        //         </button>
-        //     </div>
-        // </div>
         <div className="side-nav">
             <div className="mascot-container">
                 <p>Add mascot here or something else</p>
@@ -33,12 +31,15 @@ export default function UserProfileSidebar() {
             <div className="btn-container">
                 <button onClick={() => handleRouteClick(`/roadmap/${uid}`)}>Roadmap</button>
 
-                <button>Profile</button>
+                <button onClick={toggleUserProfile}>Profile</button>
                 
                 <button className="logout-btn" onClick={() => handleSignOut(auth)}>
                     <i className="fa-solid fa-arrow-right-from-bracket"></i>
                 </button>
             </div>
+            {showUserProfile && userData && (
+                <UserProfile userData={userData} close={toggleUserProfile} />
+            )}
         </div>
     )
 }

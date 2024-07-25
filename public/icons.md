@@ -8,3 +8,4 @@ Sign up page
 [Student account](https://www.flaticon.com/free-icons/student)
 [Python icon](https://www.flaticon.com/free-icons/python)
 <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/about-me" title="about me icons">About me icons created by bsd - Flaticon</a>

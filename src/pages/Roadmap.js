@@ -87,7 +87,7 @@ function Roadmap() {
 
   return (
     <>
-      <UserProfileSidebar />
+      <UserProfileSidebar userData={userData}/>
       <div className="roadmap-page">
         {showAnimation && <div className="unlock-animation">New Activity Unlocked!</div>}
         {userData && (
