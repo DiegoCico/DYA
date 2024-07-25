@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../firebase';
-import { collection, getDocs, query, orderBy, doc, updateDoc, getDoc, addDoc } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, doc, updateDoc, getDoc } from 'firebase/firestore';
 import '../css/LanguageDropdown.css';
 
 function LanguageDropdown({ uid }) {
@@ -8,6 +8,7 @@ function LanguageDropdown({ uid }) {
   const [currentLanguage, setCurrentLanguage] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [offeredLanguages] = useState(["Java", "Python", "HTML/CSS"]);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const fetchLanguages = async () => {
@@ -31,6 +32,20 @@ function LanguageDropdown({ uid }) {
     fetchLanguages();
   }, [uid]);
 
+  useEffect(() => {
+    if (dropdownOpen && dropdownRef.current) {
+      const dropdownRect = dropdownRef.current.getBoundingClientRect();
+      if (dropdownRect.right > window.innerWidth) {
+        dropdownRef.current.style.left = 'auto';
+        dropdownRef.current.style.right = '0';
+      }
+      if (dropdownRect.bottom > window.innerHeight) {
+        dropdownRef.current.style.top = 'auto';
+        dropdownRef.current.style.bottom = '100%';
+      }
+    }
+  }, [dropdownOpen]);
+
   const handleLanguageChange = async (language) => {
     try {
       const userDocRef = doc(db, 'users', uid);
@@ -47,17 +62,6 @@ function LanguageDropdown({ uid }) {
       });
       setCurrentLanguage(language.name);
       setDropdownOpen(false);
-
-      // Check if the selected language is already in programmingLanguages collection
-      const languageExists = languages.some(lang => lang.name === language.name);
-
-      // If the language does not exist, add it to the collection
-      if (!languageExists) {
-        await addDoc(collection(db, 'programmingLanguages'), { name: language.name });
-        // Update the languages state with the new language
-        const updatedLanguages = [...languages, { id: language.id, name: language.name }];
-        setLanguages(updatedLanguages);
-      }
     } catch (err) {
       console.error('Error updating language:', err);
     }
@@ -69,7 +73,7 @@ function LanguageDropdown({ uid }) {
         {currentLanguage ? currentLanguage : 'Select Language'}
       </button>
       {dropdownOpen && (
-        <div className="language-dropdown-content">
+        <div ref={dropdownRef} className="language-dropdown-content">
           {languages.map(language => (
             <div
               key={language.id}
@@ -84,7 +88,7 @@ function LanguageDropdown({ uid }) {
             <div
               key={index}
               className={`language-item ${language === currentLanguage ? 'current' : ''}`}
-              onClick={() => handleLanguageChange({ id: language.id, name: language })}
+              onClick={() => handleLanguageChange({ id: index, name: language })}
             >
               {language}
             </div>
