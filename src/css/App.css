@@ -59,6 +59,8 @@ html, body {
   display: flex;
   justify-content: center;
   height: 400px;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero img {
@@ -397,10 +399,27 @@ html, body {
   background-color: #1B5E20; /* Darker Green */
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .hero-img-left,
+  .hero-img-right {
+    width: 50%;
+    position: static;
+    margin-bottom: 20px;
+  }
+
+  .features {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .feature {
+    width: 80%;
+    margin-bottom: 20px;
+  }
 }
-
-

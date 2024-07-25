@@ -120,7 +120,7 @@ export default function ParentSignup(props) {
         <>
             <div className="main-container">
                 {step === 1 && (
-                    <div className="parent-signup-container">
+                    <div className="child-signup-container">
                         <div className="title">
                             <h1>Let's get started</h1>
                         </div>

@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import '../css/Signup.css';
 import ParentSignup from '../pages/ParentSignup';
+import ChildSignup from '../pages/ChildSignup'; // Import ChildSignup component
 import { useNavigate } from 'react-router-dom';
 
 export default function SignUpTypePopUp(props) {
     const { showSignUpForm } = props;
     const [showParentSignup, setShowParentSignup] = useState(false);
+    const [showChildSignup, setShowChildSignup] = useState(false); // State for showing ChildSignup
     const navigate = useNavigate();
 
     const handleParentSignup = () => setShowParentSignup(true);
+    const handleChildSignup = () => setShowChildSignup(true); // Handler for showing ChildSignup
     const handleCloseParentSignup = () => setShowParentSignup(false);
+    const handleCloseChildSignup = () => setShowChildSignup(false); // Handler for closing ChildSignup
 
     return (
         <div className="main-container">
@@ -25,7 +29,7 @@ export default function SignUpTypePopUp(props) {
                 imgSrc={`${process.env.PUBLIC_URL}/user.png`}
                 overlayClass='overlay-right'
                 desc='Few words about student account'
-                handleRouteChange={showSignUpForm}
+                handleRouteChange={handleChildSignup} 
             />
 
             {showParentSignup && (
@@ -33,6 +37,17 @@ export default function SignUpTypePopUp(props) {
                     <div className='popup-content' onClick={(e) => e.stopPropagation()}>
                         <ParentSignup
                             setShowSignUpForm={setShowParentSignup}
+                            toggleLoginPopUp={() => {}} // Pass appropriate toggle function if needed
+                        />
+                    </div>
+                </div>
+            )}
+
+            {showChildSignup && ( 
+                <div className='popup-overlay' onClick={handleCloseChildSignup}>
+                    <div className='popup-content' onClick={(e) => e.stopPropagation()}>
+                        <ChildSignup
+                            setShowSignUpForm={setShowChildSignup}
                             toggleLoginPopUp={() => {}} // Pass appropriate toggle function if needed
                         />
                     </div>
