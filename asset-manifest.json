@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/DYA/static/css/main.39440f36.css",
-    "main.js": "/DYA/static/js/main.46e34c60.js",
+    "main.css": "/DYA/static/css/main.16428eab.css",
+    "main.js": "/DYA/static/js/main.04a6d600.js",
     "static/js/845.416237cf.chunk.js": "/DYA/static/js/845.416237cf.chunk.js",
     "static/media/homepage-banner.jpeg": "/DYA/static/media/homepage-banner.9485d6cc9c672326a7e7.jpeg",
     "index.html": "/DYA/index.html",
-    "main.39440f36.css.map": "/DYA/static/css/main.39440f36.css.map",
-    "main.46e34c60.js.map": "/DYA/static/js/main.46e34c60.js.map",
+    "main.16428eab.css.map": "/DYA/static/css/main.16428eab.css.map",
+    "main.04a6d600.js.map": "/DYA/static/js/main.04a6d600.js.map",
     "845.416237cf.chunk.js.map": "/DYA/static/js/845.416237cf.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.39440f36.css",
-    "static/js/main.46e34c60.js"
+    "static/css/main.16428eab.css",
+    "static/js/main.04a6d600.js"
   ]
 }
