@@ -1,8 +1,16 @@
-import React from "react";
-import '../css/Signup.css'
+import React, { useState } from "react";
+import '../css/Signup.css';
+import ParentSignup from '../pages/ParentSignup';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUpTypePopUp(props) {
-    const { showSignUpForm } = props
+    const { showSignUpForm } = props;
+    const [showParentSignup, setShowParentSignup] = useState(false);
+    const navigate = useNavigate();
+
+    const handleParentSignup = () => setShowParentSignup(true);
+    const handleCloseParentSignup = () => setShowParentSignup(false);
+
     return (
         <div className="main-container">
             <AccountType
@@ -10,7 +18,7 @@ export default function SignUpTypePopUp(props) {
                 imgSrc={`${process.env.PUBLIC_URL}/user.png`}
                 overlayClass='overlay-left'
                 desc='Few words about parent account'
-                handleRouteChange={showSignUpForm}
+                handleRouteChange={handleParentSignup}
             />
             <AccountType
                 title='Students!'
@@ -19,8 +27,19 @@ export default function SignUpTypePopUp(props) {
                 desc='Few words about student account'
                 handleRouteChange={showSignUpForm}
             />
+
+            {showParentSignup && (
+                <div className='popup-overlay' onClick={handleCloseParentSignup}>
+                    <div className='popup-content' onClick={(e) => e.stopPropagation()}>
+                        <ParentSignup
+                            setShowSignUpForm={setShowParentSignup}
+                            toggleLoginPopUp={() => {}} // Pass appropriate toggle function if needed
+                        />
+                    </div>
+                </div>
+            )}
         </div>
-    )
+    );
 }
 
 function AccountType({ title, imgSrc, overlayClass, desc, handleRouteChange }) {
@@ -37,5 +56,5 @@ function AccountType({ title, imgSrc, overlayClass, desc, handleRouteChange }) {
                 </div>
             </div>
         </div>
-    )
+    );
 }

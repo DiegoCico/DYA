@@ -23,6 +23,8 @@ export default function ChildSignup(props) {
     const [programmingLanguage, setProgrammingLanguage] = useState('');
     const [error, setError] = useState('');
 
+    const navigate = useNavigate();
+
     const handleNext = (lang) => {
         if (step === 2 && !name) {
             setError('Please enter your name.');
@@ -43,9 +45,8 @@ export default function ChildSignup(props) {
             handleCompleteSignUp(lang);
         }
     };
-    const handlePrev = () => setStep(step - 1);
 
-    const navigate = useNavigate();
+    const handlePrev = () => setStep(step - 1);
 
     const initializeUser = async (user) => {
         const uniqueId = generateUniqueId();
@@ -54,6 +55,7 @@ export default function ChildSignup(props) {
             currentActivity: 0,
             programmingLanguages: ['Python'],
             uniqueId: uniqueId,
+            isParent: false,
             currentLanguage: 'Python'
         }, { merge: true });
     };
@@ -100,7 +102,7 @@ export default function ChildSignup(props) {
     };
 
     const googleProvider = new GoogleAuthProvider();
-    const handleGoogleSignUp = async() => {
+    const handleGoogleSignUp = async () => {
         try {
             const res = await signInWithPopup(auth, googleProvider);
             const user = res.user;
@@ -164,7 +166,7 @@ export default function ChildSignup(props) {
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
                                 />
-                                {error && <p>{error}</p>}
+                                {error && <p className="error-message">{error}</p>}
                                 <div className="signup-form-buttons">
                                     <button className="signup-form-submit-btn" type="submit">Sign Up</button>
                                     <h2 className="signup-form-or">or</h2>

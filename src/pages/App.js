@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, HashRouter } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import '../css/App.css';
 import Roadmap from './Roadmap';
 import Activity from './Activity';
 import ChildSignup from './ChildSignup';
-import ParentSignup from './ParentSignup';
 import NewLogin from './NewLogin';
 import SignUpTypePopUp from '../components/SignUpTypePopUp';
 import Footer from '../components/Footer';
 import LanguageSlider from '../components/LanguageSlider';
 import MascotSection from '../components/MascotSection';
-import Lessons from "./Lessons"
-
+import Lessons from "./Lessons";
+import ParentHub from "./ParentHub"
 
 function App() {
   const navigate = useNavigate();
@@ -24,29 +23,29 @@ function App() {
     }
   };
 
-  const [showSignUpPopUp, setShowSignUpPopUp] = useState(false)
-  const [showSignUpForm, setShowSignUpForm] = useState(false)
-  const [showLoginPopUp, setShowLoginPopUp] = useState(false)
+  const [showSignUpPopUp, setShowSignUpPopUp] = useState(false);
+  const [showSignUpForm, setShowSignUpForm] = useState(false);
+  const [showLoginPopUp, setShowLoginPopUp] = useState(false);
 
   useEffect(() => {
-    setShowSignUpPopUp(false)
-    setShowSignUpForm(false)
-    setShowLoginPopUp(false)
+    setShowSignUpPopUp(false);
+    setShowSignUpForm(false);
+    setShowLoginPopUp(false);
   }, [navigate]);
 
   const toggleSignUpPopUp = () => {
     setShowSignUpPopUp(!showSignUpPopUp);
-    setShowSignUpForm(false)
-    setShowLoginPopUp(false)
+    setShowSignUpForm(false);
+    setShowLoginPopUp(false);
   };
 
   const toggleSignUpForm = () => {
-    setShowSignUpForm(true)
+    setShowSignUpForm(true);
   };
 
   const toggleLoginPopUp = () => {
-    setShowSignUpPopUp(false)
-    setShowLoginPopUp(!showLoginPopUp)
+    setShowSignUpPopUp(false);
+    setShowLoginPopUp(!showLoginPopUp);
   };
 
   return (
@@ -74,6 +73,7 @@ function App() {
                     ) : (
                       <SignUpTypePopUp
                         showSignUpForm={toggleSignUpForm}
+                        handleRouteChange={handleRouteChange}
                         toggleLoginPopUp={toggleLoginPopUp}
                       />
                     )}
@@ -119,8 +119,8 @@ function App() {
         } />
         <Route path="/login" element={<NewLogin handleRouteChange={handleRouteChange} />} />
         <Route path='/signup' element={<SignUpTypePopUp handleRouteChange={handleRouteChange} />} />
-        <Route path='/signup/parent' element={<ParentSignup />} />
         <Route path='/signup/child' element={<ChildSignup handleRouteChange={handleRouteChange} />} />
+        <Route path="/parenthub/:userId" element={<ParentHub />} />
         <Route path="/roadmap/:uid" element={<Roadmap />} />
         <Route path="/activity/:uid/:activityTitle/:activityOrder" element={<Activity />} />
         <Route path="/lessons/:uid" element={<Lessons />} />
