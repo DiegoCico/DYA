@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, getDocs, addDoc, deleteDoc } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage'; // Import Firebase Storage
 import activitiesDataPython from './activitiesPython.json';
 import lessonsDataPython from './lessonsPython.json'; 
 
@@ -17,6 +18,7 @@ const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const storage = getStorage(app); // Initialize and export Firebase Storage
 
 export const initializeActivities = async () => {
   try {
