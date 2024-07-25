@@ -1,51 +1,65 @@
 import React, { useState } from "react";
-import Header from "../components/Header";
-import { auth, db } from '../firebase'
+import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import '../css/Signup.css';
 
+const generateUniqueId = () => {
+    return Math.random().toString(36).substring(2, 12);
+};
+
 export default function NewLogin(props) {
-    const { handleRouteChange, toggleSignUpPopUp, toggleLoginPopUp } = props
+    const { handleRouteChange, toggleSignUpPopUp, toggleLoginPopUp } = props;
 
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
-    const [error, setError] = useState()
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-    const handleSubmit = async(e) => {
-        e.preventDefault()
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password)
-            const user = userCredential.user
-            const docRef = doc(db, 'users', user.uid)
-            const docSnap = await getDoc(docRef)
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            const docRef = doc(db, 'users', user.uid);
+            const docSnap = await getDoc(docRef);
+
             if (!docSnap.exists()) {
-                setError('User does not exist, create a new account')
+                setError('User does not exist, create a new account');
+                return;
             }
 
-            handleRouteChange(`/roadmap/${user.uid}`)
+            handleRouteChange(`/roadmap/${user.uid}`);
         } catch (error) {
-            setError(error.message || 'Login failed. Please try again.')
+            setError(error.message || 'Login failed. Please try again.');
         }
-    }
+    };
 
-    const handleGoogleSignIn = async() => {
-        const googleProvider = new GoogleAuthProvider()
+    const handleGoogleSignIn = async () => {
+        const googleProvider = new GoogleAuthProvider();
         try {
-            const res = await signInWithPopup(auth, googleProvider)
-            const user = res.user
-            const docRef = doc(db, 'users', user.uid)
-            const docSnap = await getDoc(docRef)
+            const res = await signInWithPopup(auth, googleProvider);
+            const user = res.user;
+            const docRef = doc(db, 'users', user.uid);
+            const docSnap = await getDoc(docRef);
 
-            if (!docSnap.exists) {
-                console.log('Create account')
+            if (!docSnap.exists()) {
+                await setDoc(docRef, {
+                    email: user.email,
+                    currentActivity: 0,
+                    programmingLanguages: ['Python'],
+                    uniqueId: generateUniqueId(),
+                    name: user.displayName || '',
+                    username: '',
+                    age: '',
+                    currentLanguage: 'Python'
+                });
             }
-            handleRouteChange(`roadmap/${user.uid}`)
+            handleRouteChange(`/roadmap/${user.uid}`);
         } catch (error) {
-
+            setError(error.message || 'Login with Google failed. Please try again.');
         }
-    }
+    };
 
     return (
         <div className="child-signup-container">
@@ -57,8 +71,8 @@ export default function NewLogin(props) {
                 <button
                     className="signin-button"
                     onClick={() => {
-                        toggleLoginPopUp()
-                        toggleSignUpPopUp()
+                        toggleLoginPopUp();
+                        toggleSignUpPopUp();
                     }}
                 >Sign Up</button>
             </div>
@@ -89,5 +103,5 @@ export default function NewLogin(props) {
                 </form>
             </div>
         </div>
-    )
+    );
 }

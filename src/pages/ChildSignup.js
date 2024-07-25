@@ -10,42 +10,42 @@ const generateUniqueId = () => {
 };
 
 export default function ChildSignup(props) {
-    const { setShowSignUpForm, toggleLoginPopUp } = props
+    const { setShowSignUpForm, toggleLoginPopUp } = props;
 
-    const [userId, setUserId] = useState()
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [step, setStep] = useState(1)
-    const [name, setName] = useState('')
-    const [username, setUsername] = useState('')
-    const [age, setAge] = useState('')
-    const [programmingLanguage, setProgrammingLanguage] = useState('')
-    const [error, setError] = useState('')
+    const [userId, setUserId] = useState();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [step, setStep] = useState(1);
+    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
+    const [age, setAge] = useState('');
+    const [programmingLanguage, setProgrammingLanguage] = useState('');
+    const [error, setError] = useState('');
 
     const handleNext = (lang) => {
         if (step === 2 && !name) {
             setError('Please enter your name.');
-            return
+            return;
         }
         if (step === 3 && !username) {
             setError('Please enter your username.');
-            return
+            return;
         }
         if (step === 4 && !age) {
             setError('Please enter your age.');
-            return
+            return;
         }
         if (step < 5) {
             setStep(step + 1);
-            setError('')
+            setError('');
         } else {
             handleCompleteSignUp(lang);
         }
-    }
-    const handlePrev = () => setStep(step - 1)
+    };
+    const handlePrev = () => setStep(step - 1);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const initializeUser = async (user) => {
         const uniqueId = generateUniqueId();
@@ -53,8 +53,9 @@ export default function ChildSignup(props) {
             email: user.email,
             currentActivity: 0,
             programmingLanguages: ['Python'],
-            uniqueId: uniqueId
-        })
+            uniqueId: uniqueId,
+            currentLanguage: 'Python'
+        }, { merge: true });
     };
 
     const handleSubmit = async (e) => {
@@ -72,9 +73,9 @@ export default function ChildSignup(props) {
             await initializeUser(user);
 
             console.log('Signup successful', user.uid);
-            setUserId(user.uid)
+            setUserId(user.uid);
             
-            handleNext()
+            handleNext();
             
         } catch (error) {
             setError(error.message || 'Signup failed. Please try again.');
@@ -87,37 +88,37 @@ export default function ChildSignup(props) {
                 name,
                 username,
                 age,
-                programmingLanguages: [language]
+                programmingLanguages: [language],
+                currentLanguage: language
             }, { merge: true });
 
             console.log('Programming language saved successfully');
-            navigate(`/roadmap/${userId}`)
+            navigate(`/roadmap/${userId}`);
         } catch (error) {
             setError(error.message || 'Failed to save programming language. Please try again.');
         }
     };
 
-    const googleProvider = new GoogleAuthProvider()
+    const googleProvider = new GoogleAuthProvider();
     const handleGoogleSignUp = async() => {
         try {
-            const res = await signInWithPopup(auth, googleProvider)
-            const user = res.user 
+            const res = await signInWithPopup(auth, googleProvider);
+            const user = res.user;
             
-            const docRef = doc(db, 'users', user.uid)
-            const docSnap = await getDoc(docRef)
+            const docRef = doc(db, 'users', user.uid);
+            const docSnap = await getDoc(docRef);
             if (!docSnap.exists()) {
-                await initializeUser(user)
+                await initializeUser(user);
                 setUserId(user.uid);
-                setName(user.displayName || "")
+                setName(user.displayName || "");
                 setStep(3);
             } else {
-                navigate(`/roadmap/${user.uid}`)
+                navigate(`/roadmap/${user.uid}`);
             }
         } catch (error) {
-            const errorMessage = error.message
-            setError(errorMessage)
+            setError(error.message);
         }
-    }
+    };
 
     return (
         <>
@@ -132,8 +133,8 @@ export default function ChildSignup(props) {
                             <button
                                 className="signin-button"
                                 onClick={() => {
-                                    setShowSignUpForm(false)
-                                    toggleLoginPopUp()
+                                    setShowSignUpForm(false);
+                                    toggleLoginPopUp();
                                 }}
                             >Log In</button>
                         </div>
@@ -270,6 +271,5 @@ function InfoStep({ step, type, length, placeholder, dataValue, setDataValue, ha
                 {error && <p className="error-message">{error}</p>}
             </div>
         </div>
-    )
+    );
 }
-

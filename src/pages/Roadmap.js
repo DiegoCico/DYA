@@ -4,6 +4,7 @@ import { db } from '../firebase';
 import { collection, getDocs, query, orderBy, doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../css/Roadmap.css';
 import UserProfileSidebar from '../components/UserProfileSidebar';
+import LanguageDropdown from '../components/LanguageDropdown';
 
 function Roadmap() {
   const { uid } = useParams();
@@ -31,6 +32,17 @@ function Roadmap() {
         }
         const userData = userDocSnap.data();
 
+        // Check and set the current language
+        if (!userData.currentLanguage) {
+          const programmingLanguagesCollection = collection(db, 'programmingLanguages');
+          const programmingLanguagesQuery = query(programmingLanguagesCollection, orderBy('name'));
+          const programmingLanguagesSnapshot = await getDocs(programmingLanguagesQuery);
+          const firstLanguage = programmingLanguagesSnapshot.docs[0].data();
+
+          await updateDoc(userDocRef, { currentLanguage: firstLanguage.name });
+          userData.currentLanguage = firstLanguage.name;
+        }
+
         const activitiesCollection = collection(db, 'activities');
         const activitiesQuery = query(activitiesCollection, orderBy('order'));
         const activitiesSnapshot = await getDocs(activitiesQuery);
@@ -38,7 +50,7 @@ function Roadmap() {
 
         activitiesData = activitiesData.sort((a, b) => a.order - b.order);
 
-        const lessonsCollection = collection(db, 'LessonPython');
+        const lessonsCollection = collection(db, `Lesson${userData.currentLanguage}`);
         const lessonsQuery = query(lessonsCollection, orderBy('order'));
         const lessonsSnapshot = await getDocs(lessonsQuery);
         const lessonsData = lessonsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -87,34 +99,35 @@ function Roadmap() {
 
   return (
     <>
-      <UserProfileSidebar userData={userData}/>
+      <UserProfileSidebar userData={userData} />
       <div className="roadmap-page">
+        <div className="roadmap-header">
+          <h2 className="roadmap-title">{userData.username}'s Roadmap</h2>
+          <LanguageDropdown uid={uid} />
+        </div>
         {showAnimation && <div className="unlock-animation">New Activity Unlocked!</div>}
         {userData && (
-          <>
-            <h2 className="roadmap-title">{userData.username}'s Roadmap</h2>
-            <div className="roadmap-container">
-              {activities.map((activity, index) => (
-                <div key={activity.id} className="roadmap-item-container">
-                  <div className="lesson-icon">
-                    {lessons[index] && (
-                      <div className="lesson-circle" title={lessons[index].title}>
-                        L{lessons[index].order + 1}
-                      </div>
-                    )}
-                  </div>
-                  <div
-                    className={`roadmap-item ${activity.order > userData.currentActivity ? 'locked' : ''}`}
-                    onClick={() => handleActivityClick(activity)}
-                  >
-                    <h3 className="roadmap-item-title">{activity.title}</h3>
-                    <p className="roadmap-item-description">{activity.description}</p>
-                    {activity.order > userData.currentActivity && <p className="locked-message">Locked</p>}
-                  </div>
+          <div className="roadmap-container">
+            {activities.map((activity, index) => (
+              <div key={activity.id} className={`roadmap-item-container ${index % 2 === 0 ? 'even' : 'odd'}`}>
+                <div className="lesson-icon">
+                  {lessons[index] && (
+                    <div className="lesson-circle" title={lessons[index].title}>
+                      L{lessons[index].order + 1}
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          </>
+                <div
+                  className={`roadmap-item ${activity.order > userData.currentActivity ? 'locked' : ''}`}
+                  onClick={() => handleActivityClick(activity)}
+                >
+                  <h3 className="roadmap-item-title">{activity.title}</h3>
+                  <p className="roadmap-item-description">{activity.description}</p>
+                  {activity.order > userData.currentActivity && <p className="locked-message">Locked</p>}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </>
