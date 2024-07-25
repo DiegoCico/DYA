@@ -101,6 +101,7 @@ export default function ParentSignup(props) {
     };
 
     const googleProvider = new GoogleAuthProvider();
+    googleProvider.setCustomParameters({ prompt: 'select_account' });
     const handleGoogleSignUp = async() => {
         try {
             const res = await signInWithPopup(auth, googleProvider);

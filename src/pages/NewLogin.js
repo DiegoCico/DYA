@@ -29,7 +29,12 @@ export default function NewLogin(props) {
                 return;
             }
 
-            handleRouteChange(`/roadmap/${user.uid}`);
+            const userData = docSnap.data();
+            if (userData.isParent) {
+                handleRouteChange(`/parenthub/${user.uid}`);
+            } else {
+                handleRouteChange(`/roadmap/${user.uid}`);
+            }
         } catch (error) {
             setError(error.message || 'Login failed. Please try again.');
         }
@@ -37,6 +42,7 @@ export default function NewLogin(props) {
 
     const handleGoogleSignIn = async () => {
         const googleProvider = new GoogleAuthProvider();
+        googleProvider.setCustomParameters({ prompt: 'select_account' });
         try {
             const res = await signInWithPopup(auth, googleProvider);
             const user = res.user;
@@ -52,10 +58,18 @@ export default function NewLogin(props) {
                     name: user.displayName || '',
                     username: '',
                     age: '',
-                    currentLanguage: 'Python'
+                    currentLanguage: 'Python',
+                    isParent: false 
                 });
+                handleRouteChange(`/roadmap/${user.uid}`);
+            } else {
+                const userData = docSnap.data();
+                if (userData.isParent) {
+                    handleRouteChange(`/parenthub/${user.uid}`);
+                } else {
+                    handleRouteChange(`/roadmap/${user.uid}`);
+                }
             }
-            handleRouteChange(`/roadmap/${user.uid}`);
         } catch (error) {
             setError(error.message || 'Login with Google failed. Please try again.');
         }
