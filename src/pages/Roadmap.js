@@ -43,7 +43,9 @@ function Roadmap() {
           userData.currentLanguage = firstLanguage.name;
         }
 
-        const activitiesCollection = collection(db, 'activities');
+        // Fetch activities based on the user's current language
+        const activitiesCollectionName = `activities${userData.currentLanguage}`;
+        const activitiesCollection = collection(db, activitiesCollectionName);
         const activitiesQuery = query(activitiesCollection, orderBy('order'));
         const activitiesSnapshot = await getDocs(activitiesQuery);
         let activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -63,7 +65,7 @@ function Roadmap() {
           const firstActivity = activitiesData[0];
           if (!firstActivity.unlocked) {
             setShowAnimation(true);
-            const activityDocRef = doc(db, 'activities', firstActivity.id);
+            const activityDocRef = doc(db, activitiesCollectionName, firstActivity.id);
             await updateDoc(activityDocRef, { unlocked: true });
             setTimeout(() => setShowAnimation(false), 3000);
           }

@@ -2,15 +2,18 @@
 import React, { useEffect, useState } from 'react';
 import { useCodeMirror } from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
+import { java } from '@codemirror/lang-java';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { getCodeTemplate } from './codeTemplate';
 import '../css/Activity.css';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
-const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, activityOrder, setOutput }) => {
+const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, activityOrder, setOutput, currentLanguage }) => {
   const [userCode, setUserCode] = useState('');
   const [originalCode, setOriginalCode] = useState('');
+  
+  const languageExtension = currentLanguage === 'Java' ? java() : python();
 
   const handleCodeChange = (value) => {
     setUserCode(value);
@@ -20,7 +23,7 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, activ
   const { setContainer } = useCodeMirror({
     value: userCode,
     theme: oneDark,
-    extensions: [python()],
+    extensions: [languageExtension],
     onChange: handleCodeChange,
   });
 
@@ -33,37 +36,43 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, activ
         setUserCode(savedCode);
       } else {
         const functionName = currentQuestion.functionName;
-        const functionTemplate = getCodeTemplate(functionName);
+        const functionTemplate = getCodeTemplate(functionName, currentLanguage);
         setUserCode(functionTemplate);
         setOriginalCode(functionTemplate);
       }
     };
 
     loadUserCode();
-  }, [currentQuestion, userId, activityOrder]);
+  }, [currentQuestion, userId, activityOrder, currentLanguage]);
 
   const runCode = () => {
-    const outf = (text) => {
-      setOutput((prevOutput) => prevOutput + text + '\n');
-    };
+    if (currentLanguage === 'Python') {
+      const outf = (text) => {
+        setOutput((prevOutput) => prevOutput + text + '\n');
+      };
 
-    const builtinRead = (x) => {
-      if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
-        throw new Error("File not found: '" + x + "'");
-      }
-      return Sk.builtinFiles["files"][x];
-    };
+      const builtinRead = (x) => {
+        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
+          throw new Error("File not found: '" + x + "'");
+        }
+        return Sk.builtinFiles["files"][x];
+      };
 
-    Sk.pre = "output";
-    Sk.configure({ output: outf, read: builtinRead });
+      Sk.pre = "output";
+      Sk.configure({ output: outf, read: builtinRead });
 
-    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+      (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
 
-    Sk.misceval.asyncToPromise(() => {
-      return Sk.importMainWithBody("<stdin>", false, userCode, true);
-    }).catch((err) => {
-      outf(err.toString());
-    });
+      Sk.misceval.asyncToPromise(() => {
+        return Sk.importMainWithBody("<stdin>", false, userCode, true);
+      }).catch((err) => {
+        outf(err.toString());
+      });
+    } else {
+      // Running Java code is more complex and would typically involve a server-side solution.
+      // For the sake of this example, we'll just set the output to a mock result.
+      setOutput("Running Java code is not supported in this demo. Please set up a server-side environment to compile and run Java code.");
+    }
   };
 
   const restartCode = () => {

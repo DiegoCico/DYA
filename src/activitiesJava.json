@@ -1,0 +1,73 @@
+{
+    "activities": [
+      {
+        "title": "Basic Math Operations",
+        "description": "Complete these coding tasks to test basic math operations.",
+        "questions": [
+          {
+            "id": "q1",
+            "codingQuestion": "Write a Java function to add two numbers.",
+            "functionName": "add"
+          },
+          {
+            "id": "q2",
+            "codingQuestion": "Write a Java function to subtract two numbers.",
+            "functionName": "subtract"
+          },
+          {
+            "id": "q3",
+            "codingQuestion": "Write a Java function to multiply two numbers.",
+            "functionName": "multiply"
+          },
+          {
+            "id": "q4",
+            "codingQuestion": "Write a Java function to divide two numbers.",
+            "functionName": "divide"
+          },
+          {
+            "id": "q5",
+            "codingQuestion": "Write a Java function to find the power of a number.",
+            "functionName": "power"
+          },
+          {
+            "id": "q6",
+            "codingQuestion": "Write a Java function to find the modulo of two numbers.",
+            "functionName": "mod"
+          }
+        ]
+      },
+      {
+        "title": "String Operations",
+        "description": "Complete these coding tasks to test string operations.",
+        "questions": [
+          {
+            "id": "q7",
+            "codingQuestion": "Write a Java function to concatenate two strings.",
+            "functionName": "concatStrings"
+          }
+        ]
+      },
+      {
+        "title": "Number Properties",
+        "description": "Complete these coding tasks to test number properties.",
+        "questions": [
+          {
+            "id": "q8",
+            "codingQuestion": "Write a Java function to find the maximum of two numbers.",
+            "functionName": "findMax"
+          },
+          {
+            "id": "q9",
+            "codingQuestion": "Write a Java function to check if a number is even.",
+            "functionName": "isEven"
+          },
+          {
+            "id": "q10",
+            "codingQuestion": "Write a Java function to calculate the factorial of a number.",
+            "functionName": "factorial"
+          }
+        ]
+      }
+    ]
+  }
+  

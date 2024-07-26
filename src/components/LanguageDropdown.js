@@ -3,7 +3,7 @@ import { db } from '../firebase';
 import { collection, getDocs, query, orderBy, doc, updateDoc, getDoc } from 'firebase/firestore';
 import '../css/LanguageDropdown.css';
 
-function LanguageDropdown({ uid }) {
+function LanguageDropdown({ uid, onLanguageChange }) {
   const [languages, setLanguages] = useState([]);
   const [currentLanguage, setCurrentLanguage] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -62,6 +62,7 @@ function LanguageDropdown({ uid }) {
       });
       setCurrentLanguage(language.name);
       setDropdownOpen(false);
+      onLanguageChange(language.name); // Trigger the animation and language change in the Activity component
     } catch (err) {
       console.error('Error updating language:', err);
     }

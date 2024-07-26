@@ -6,6 +6,7 @@ import '../css/Activity.css';
 import CodeEditor from '../components/CodeEditor';
 import axios from 'axios';
 import TestResultsPopup from '../components/TestResultsPopup';
+import LanguageDropdown from '../components/LanguageDropdown'; 
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:5002');
@@ -30,6 +31,8 @@ function Activity() {
   const [userCode, setUserCode] = useState('');
   const [shake, setShake] = useState(false);
   const [fireworks, setFireworks] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState('Python'); // Default to Python
+  const [slideDown, setSlideDown] = useState(false);
 
   useEffect(() => {
     const fetchActivityAndUserProgress = async () => {
@@ -46,7 +49,10 @@ function Activity() {
           return;
         }
 
-        const activitiesCollection = collection(db, 'activities');
+        const userData = userDocSnap.data();
+        setCurrentLanguage(userData.currentLanguage || 'Python'); // Set the current language from user data
+
+        const activitiesCollection = collection(db, `activities${userData.currentLanguage}`);
         const activitiesSnapshot = await getDocs(activitiesCollection);
         const activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
@@ -155,7 +161,8 @@ function Activity() {
         activityOrder: activityOrder,
         userId: uid,
         questionId: currentQuestion.id,
-        userCode: userCode
+        userCode: userCode,
+        language: currentLanguage // Pass the current language to the backend
       };
 
       // Send the payload to the backend
@@ -200,6 +207,14 @@ function Activity() {
     }
   };
 
+  const handleLanguageChange = (newLanguage) => {
+    setSlideDown(true);
+    setTimeout(() => {
+      setCurrentLanguage(newLanguage);
+      setSlideDown(false);
+    }, 300); // duration of slide-down animation
+  };
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
@@ -230,7 +245,6 @@ function Activity() {
           <div></div>
           <div></div>
           <div></div>
-          <div></div>
         </div>
       )}
       {activity && (
@@ -246,14 +260,17 @@ function Activity() {
             <div className="status correct-count">Correct: {correctCount}</div>
             <div className="status incorrect-count">Incorrect: {incorrectCount}</div>
           </div>
-          <CodeEditor 
-            currentQuestion={currentQuestion} 
-            onCodeSubmit={handleCodeSubmit}
-            onCodeChange={handleCodeChange}
-            userId={uid}
-            activityOrder={activityOrder}
-            setOutput={setOutput}
-          />
+          <div className={`activities-container ${slideDown ? 'slide-down' : ''}`}>
+            <CodeEditor 
+              currentQuestion={currentQuestion} 
+              onCodeSubmit={handleCodeSubmit}
+              onCodeChange={handleCodeChange}
+              userId={uid}
+              activityOrder={activityOrder}
+              setOutput={setOutput}
+              currentLanguage={currentLanguage} // Pass the current language to CodeEditor
+            />
+          </div>
           <div className="output-section">
             <h3>Output:</h3>
             <pre id="output">{output}</pre>

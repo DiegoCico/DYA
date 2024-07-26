@@ -1,3 +1,11 @@
+.activities-container {
+  transition: transform 0.3s ease-in-out;
+}
+
+.activities-container.slide-down {
+  transform: translateY(100%);
+}
+
 /* Activity Page */
 .activity-page {
   padding: 20px;

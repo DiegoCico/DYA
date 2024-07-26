@@ -1,9 +1,10 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, getDocs, addDoc, deleteDoc } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage'; // Import Firebase Storage
+import { getStorage } from 'firebase/storage'; 
 import activitiesDataPython from './activitiesPython.json';
-import lessonsDataPython from './lessonsPython.json'; 
+import lessonsDataPython from './lessonsPython.json';
+import activitiesDataJava from './activitiesJava.json';  // Importing the new Java activities JSON
 
 const firebaseConfig = {
   apiKey: "AIzaSyBI37lzWhWSv7VQif5mlNbZm0Bso5W05OA",
@@ -18,24 +19,24 @@ const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const storage = getStorage(app); // Initialize and export Firebase Storage
+export const storage = getStorage(app); 
 
-export const initializeActivities = async () => {
+export const initializeActivitiesPython = async () => {
   try {
-    const activitiesCollection = collection(db, 'activities');
+    const activitiesCollection = collection(db, 'activitiesPython');
 
-    // Fetch all existing activities
+    // Fetch all existing Python activities
     const activitiesSnapshot = await getDocs(activitiesCollection);
-    console.log(`Found ${activitiesSnapshot.docs.length} existing activities. Deleting them...`);
+    console.log(`Found ${activitiesSnapshot.docs.length} existing Python activities. Deleting them...`);
 
     const deletePromises = activitiesSnapshot.docs.map(doc => deleteDoc(doc.ref));
 
     // Wait for all delete operations to complete
     await Promise.all(deletePromises);
 
-    console.log('All existing activities deleted');
+    console.log('All existing Python activities deleted');
 
-    // Add activities from JSON with order field starting from 1
+    // Add activities from Python JSON with order field starting from 1
     const addPromises = activitiesDataPython.activities.map((activity, index) => {
       const activityWithOrder = { ...activity, order: index };
       return addDoc(activitiesCollection, activityWithOrder);
@@ -43,9 +44,38 @@ export const initializeActivities = async () => {
 
     await Promise.all(addPromises);
 
-    console.log('New activities added to Firestore');
+    console.log('New Python activities added to Firestore');
   } catch (error) {
-    console.error('Error initializing activities:', error);
+    console.error('Error initializing Python activities:', error);
+  }
+};
+
+export const initializeActivitiesJava = async () => {
+  try {
+    const activitiesCollection = collection(db, 'activitiesJava');
+
+    // Fetch all existing Java activities
+    const activitiesSnapshot = await getDocs(activitiesCollection);
+    console.log(`Found ${activitiesSnapshot.docs.length} existing Java activities. Deleting them...`);
+
+    const deletePromises = activitiesSnapshot.docs.map(doc => deleteDoc(doc.ref));
+
+    // Wait for all delete operations to complete
+    await Promise.all(deletePromises);
+
+    console.log('All existing Java activities deleted');
+
+    // Add activities from Java JSON with order field starting from 1
+    const addPromises = activitiesDataJava.activities.map((activity, index) => {
+      const activityWithOrder = { ...activity, order: index };
+      return addDoc(activitiesCollection, activityWithOrder);
+    });
+
+    await Promise.all(addPromises);
+
+    console.log('New Java activities added to Firestore');
+  } catch (error) {
+    console.error('Error initializing Java activities:', error);
   }
 };
 
@@ -78,7 +108,8 @@ export const initializeLessons = async () => {
   }
 };
 
-initializeActivities();
+initializeActivitiesPython();
+initializeActivitiesJava();
 initializeLessons();
 
 export default app;

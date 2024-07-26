@@ -1,10 +1,10 @@
-// src/backend/server.js
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { exec } = require('child_process');
+const fs = require('fs');
 const testCases = require('./testCases');
 
 const app = express();
@@ -25,10 +25,10 @@ app.get('/ping', (req, res) => {
 });
 
 app.post('/test-function', async (req, res) => {
-  const { functionName, userCode } = req.body;
+  const { functionName, userCode, language } = req.body;
 
   // Run the code and get the test results
-  const testResults = await runTests(functionName, userCode);
+  const testResults = await runTests(functionName, userCode, language);
 
   // Emit the test results to the client
   io.emit('test_results', { testResults, success: testResults.every(result => result.passed) });
@@ -36,7 +36,7 @@ app.post('/test-function', async (req, res) => {
   res.send({ message: 'Tests are being processed' });
 });
 
-const runTests = async (functionName, userCode) => {
+const runTests = async (functionName, userCode, language) => {
   if (!testCases[functionName]) {
     return [{ passed: false, message: `No test cases defined for function ${functionName}` }];
   }
@@ -44,20 +44,55 @@ const runTests = async (functionName, userCode) => {
   const results = await Promise.all(testCases[functionName].map(testCase => {
     return new Promise((resolve, reject) => {
       const { inputs, expected } = testCase;
-      const pythonCode = `
+
+      if (language === 'Python') {
+        const pythonCode = `
 ${userCode}
 print(${functionName}(${inputs.join(', ')}))
-      `;
+        `;
 
-      exec(`python3 -c "${pythonCode}"`, (error, stdout, stderr) => {
-        if (error) {
-          resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
-        } else {
-          const actual = stdout.trim();
-          const passed = actual == expected;
-          resolve({ inputs, expected, actual, passed, message: passed ? 'Test passed' : 'Test failed' });
-        }
-      });
+        exec(`python3 -c "${pythonCode}"`, (error, stdout, stderr) => {
+          if (error) {
+            resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
+          } else {
+            const actual = stdout.trim();
+            const passed = actual == expected;
+            resolve({ inputs, expected, actual, passed, message: passed ? 'Test passed' : 'Test failed' });
+          }
+        });
+      } else if (language === 'Java') {
+        const javaCode = `
+public class Temp {
+  ${userCode}
+
+  public static void main(String[] args) {
+    System.out.println(${functionName}(${inputs.join(', ')}));
+  }
+}
+        `;
+
+        const javaFileName = 'Temp.java';
+
+        fs.writeFileSync(javaFileName, javaCode);
+
+        exec(`javac ${javaFileName}`, (error, stdout, stderr) => {
+          if (error) {
+            resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
+          } else {
+            exec(`java Temp`, (error, stdout, stderr) => {
+              if (error) {
+                resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
+              } else {
+                const actual = stdout.trim();
+                const passed = actual == expected;
+                resolve({ inputs, expected, actual, passed, message: passed ? 'Test passed' : 'Test failed' });
+              }
+            });
+          }
+        });
+      } else {
+        resolve({ passed: false, message: `Unsupported language ${language}` });
+      }
     });
   }));
 
