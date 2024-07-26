@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
-import { doc, getDoc, collection, getDocs, updateDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, setDoc } from 'firebase/firestore';
 import '../css/Activity.css';
 import CodeEditor from '../components/CodeEditor';
 import axios from 'axios';
@@ -86,7 +86,7 @@ function Activity() {
 
   useEffect(() => {
     socket.on('test_results', (data) => {
-      console.log('Received test results:', data); // Debugging statement
+      console.log('Received test results:', data);
       setTestResults(data.testResults || []);
       setResult(data.success ? 'Success! You got it right.' : `Incorrect output:\n${data.message}`);
       
@@ -183,7 +183,7 @@ function Activity() {
       });
     } catch (error) {
       console.error(`Error testing ${funcName}:`, error);
-      setIsSubmitting(false); // Ensure we stop the submitting state even if there's an error
+      setIsSubmitting(false);
     }
   };
 
@@ -222,7 +222,7 @@ function Activity() {
     setTimeout(() => {
       setCurrentLanguage(newLanguage);
       setSlideDown(false);
-    }, 300); // duration of slide-down animation
+    }, 300);
   };
 
   if (loading) return <div className="loading">Loading...</div>;
@@ -275,7 +275,7 @@ function Activity() {
               onCodeSubmit={handleCodeSubmit}
               onCodeChange={handleCodeChange}
               userId={uid}
-              language={currentLanguage} // Pass the current language to CodeEditor
+              language={currentLanguage}
               activityOrder={activityOrder}
               setOutput={setOutput}
             />
