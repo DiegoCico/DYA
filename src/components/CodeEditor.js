@@ -9,11 +9,11 @@ import '../css/Activity.css';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
-const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, activityOrder, setOutput, currentLanguage }) => {
+const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, language, activityOrder, setOutput }) => {
   const [userCode, setUserCode] = useState('');
   const [originalCode, setOriginalCode] = useState('');
-  
-  const languageExtension = currentLanguage === 'Java' ? java() : python();
+
+  const languageExtension = language === 'Java' ? java() : python();
 
   const handleCodeChange = (value) => {
     setUserCode(value);
@@ -29,24 +29,24 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, activ
 
   useEffect(() => {
     const loadUserCode = async () => {
-      const docRef = doc(db, 'users', userId, 'activities', currentLanguage, activityOrder, 'questions', currentQuestion.id);
+      const docRef = doc(db, 'users', userId, 'activities', language, 'activityOrder', activityOrder, 'questions', currentQuestion.id);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const savedCode = docSnap.data().userCode;
         setUserCode(savedCode);
       } else {
         const functionName = currentQuestion.functionName;
-        const functionTemplate = getCodeTemplate(functionName, currentLanguage);
+        const functionTemplate = getCodeTemplate(functionName, language);
         setUserCode(functionTemplate);
         setOriginalCode(functionTemplate);
       }
     };
 
     loadUserCode();
-  }, [currentQuestion, userId, activityOrder, currentLanguage]);
+  }, [currentQuestion, userId, language, activityOrder]);
 
   const runCode = () => {
-    if (currentLanguage === 'Python') {
+    if (language === 'Python') {
       const outf = (text) => {
         setOutput((prevOutput) => prevOutput + text + '\n');
       };

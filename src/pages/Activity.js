@@ -67,7 +67,7 @@ function Activity() {
         setCurrentQuestionIndex(0);
 
         // Load the user's progress
-        const progressDocRef = doc(db, 'users', uid, 'activities', userData.currentLanguage, activityOrder);
+        const progressDocRef = doc(db, 'users', uid, 'activities', userData.currentLanguage, 'activityOrder', activityOrder);
         const progressDocSnap = await getDoc(progressDocRef);
         if (progressDocSnap.exists()) {
           const progressData = progressDocSnap.data();
@@ -134,7 +134,7 @@ function Activity() {
   }, [correctCount, incorrectCount, shuffledQuestions]);
 
   const updateUserProgress = async (progressUpdates) => {
-    const progressDocRef = doc(db, 'users', uid, 'activities', currentLanguage, activityOrder);
+    const progressDocRef = doc(db, 'users', uid, 'activities', currentLanguage, 'activityOrder', activityOrder);
     const progressDocSnap = await getDoc(progressDocRef);
 
     const progressData = progressDocSnap.exists() ? progressDocSnap.data() : {};
@@ -160,7 +160,7 @@ function Activity() {
       }
 
       // Save the user's code to Firestore
-      await setDoc(doc(db, 'users', uid, 'activities', currentLanguage, activityOrder, 'questions', currentQuestion.id), {
+      await setDoc(doc(db, 'users', uid, 'activities', currentLanguage, 'activityOrder', activityOrder, 'questions', currentQuestion.id), {
         functionName: funcName,
         userCode: userCode,
       });
@@ -275,9 +275,9 @@ function Activity() {
               onCodeSubmit={handleCodeSubmit}
               onCodeChange={handleCodeChange}
               userId={uid}
+              language={currentLanguage} // Pass the current language to CodeEditor
               activityOrder={activityOrder}
               setOutput={setOutput}
-              currentLanguage={currentLanguage} // Pass the current language to CodeEditor
             />
           </div>
           <div className="output-section">
