@@ -61,7 +61,7 @@ print(${functionName}(${inputs.join(', ')}))
         fs.writeFileSync(pythonFileName, pythonCode);
 
         exec(`python3 ${pythonFileName}`, (error, stdout, stderr) => {
-          fs.unlinkSync(pythonFileName);  // Clean up the temporary file
+          fs.unlinkSync(pythonFileName); 
 
           if (error) {
             resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });

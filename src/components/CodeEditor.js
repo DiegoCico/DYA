@@ -29,7 +29,7 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, activ
 
   useEffect(() => {
     const loadUserCode = async () => {
-      const docRef = doc(db, 'users', userId, 'activities', activityOrder, 'questions', currentQuestion.id);
+      const docRef = doc(db, 'users', userId, 'activities', currentLanguage, activityOrder, 'questions', currentQuestion.id);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const savedCode = docSnap.data().userCode;

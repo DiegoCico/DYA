@@ -65,6 +65,15 @@ function Activity() {
         setActivity(activity);
         setShuffledQuestions(shuffleArray(activity.questions));
         setCurrentQuestionIndex(0);
+
+        // Load the user's progress
+        const progressDocRef = doc(db, 'users', uid, 'activities', userData.currentLanguage, activityOrder);
+        const progressDocSnap = await getDoc(progressDocRef);
+        if (progressDocSnap.exists()) {
+          const progressData = progressDocSnap.data();
+          setCorrectCount(progressData.correctCount || 0);
+          setIncorrectCount(progressData.incorrectCount || 0);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -85,8 +94,9 @@ function Activity() {
         setFireworks(true);
         setTimeout(() => setFireworks(false), 1000);
         setCorrectCount(prevCount => prevCount + 1);
+        updateUserProgress({ correctCount: correctCount + 1 });
         if (correctCount + 1 === 5) {
-          updateUserProgress();
+          updateUserProgress({ completed: true });
           setShowAnimation(true);
           setCompleted(true);
           setTimeout(() => {
@@ -103,6 +113,7 @@ function Activity() {
         setShake(true);
         setTimeout(() => setShake(false), 1000);
         setIncorrectCount(prevCount => prevCount + 1);
+        updateUserProgress({ incorrectCount: incorrectCount + 1 });
         if (incorrectCount + 1 === 3) {
           alert('You have 3 incorrect answers. Restarting...');
           setCorrectCount(0);
@@ -122,16 +133,15 @@ function Activity() {
     };
   }, [correctCount, incorrectCount, shuffledQuestions]);
 
-  const updateUserProgress = async () => {
-    const userDocRef = doc(db, 'users', uid);
-    const userDocSnap = await getDoc(userDocRef);
-    const userData = userDocSnap.data();
+  const updateUserProgress = async (progressUpdates) => {
+    const progressDocRef = doc(db, 'users', uid, 'activities', currentLanguage, activityOrder);
+    const progressDocSnap = await getDoc(progressDocRef);
 
-    if (parseInt(activityOrder) === userData.currentActivity) {
-      await updateDoc(userDocRef, {
-        currentActivity: userData.currentActivity + 1
-      });
-    }
+    const progressData = progressDocSnap.exists() ? progressDocSnap.data() : {};
+    await setDoc(progressDocRef, {
+      ...progressData,
+      ...progressUpdates,
+    });
   };
 
   const handleCodeChange = (newCode) => {
@@ -150,7 +160,7 @@ function Activity() {
       }
 
       // Save the user's code to Firestore
-      await setDoc(doc(db, 'users', uid, 'activities', activityOrder, 'questions', currentQuestion.id), {
+      await setDoc(doc(db, 'users', uid, 'activities', currentLanguage, activityOrder, 'questions', currentQuestion.id), {
         functionName: funcName,
         userCode: userCode,
       });
@@ -238,7 +248,6 @@ function Activity() {
     <div className={`activity-page ${shake ? 'shake' : ''}`}>
       {fireworks && (
         <div className="fireworks">
-          <div></div>
           <div></div>
           <div></div>
           <div></div>
