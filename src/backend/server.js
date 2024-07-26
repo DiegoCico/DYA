@@ -6,6 +6,8 @@ const cors = require('cors');
 const { exec } = require('child_process');
 const fs = require('fs');
 const testCases = require('./testCases');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const server = http.createServer(app);
@@ -27,8 +29,11 @@ app.get('/ping', (req, res) => {
 app.post('/test-function', async (req, res) => {
   const { functionName, userCode, language } = req.body;
 
+  // Generate a unique identifier for the user's session
+  const sessionId = uuidv4();
+
   // Run the code and get the test results
-  const testResults = await runTests(functionName, userCode, language);
+  const testResults = await runTests(functionName, userCode, language, sessionId);
 
   // Emit the test results to the client
   io.emit('test_results', { testResults, success: testResults.every(result => result.passed) });
@@ -36,7 +41,7 @@ app.post('/test-function', async (req, res) => {
   res.send({ message: 'Tests are being processed' });
 });
 
-const runTests = async (functionName, userCode, language) => {
+const runTests = async (functionName, userCode, language, sessionId) => {
   if (!testCases[functionName]) {
     return [{ passed: false, message: `No test cases defined for function ${functionName}` }];
   }
@@ -51,7 +56,13 @@ ${userCode}
 print(${functionName}(${inputs.join(', ')}))
         `;
 
-        exec(`python3 -c "${pythonCode}"`, (error, stdout, stderr) => {
+        const pythonFileName = path.join(__dirname, `temp_${sessionId}.py`);
+
+        fs.writeFileSync(pythonFileName, pythonCode);
+
+        exec(`python3 ${pythonFileName}`, (error, stdout, stderr) => {
+          fs.unlinkSync(pythonFileName);  // Clean up the temporary file
+
           if (error) {
             resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
           } else {
@@ -62,7 +73,7 @@ print(${functionName}(${inputs.join(', ')}))
         });
       } else if (language === 'Java') {
         const javaCode = `
-public class Temp {
+public class Temp_${sessionId} {
   ${userCode}
 
   public static void main(String[] args) {
@@ -71,15 +82,19 @@ public class Temp {
 }
         `;
 
-        const javaFileName = 'Temp.java';
+        const javaFileName = `Temp_${sessionId}.java`;
 
         fs.writeFileSync(javaFileName, javaCode);
 
         exec(`javac ${javaFileName}`, (error, stdout, stderr) => {
           if (error) {
+            fs.unlinkSync(javaFileName);  // Clean up the temporary file
             resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
           } else {
-            exec(`java Temp`, (error, stdout, stderr) => {
+            exec(`java Temp_${sessionId}`, (error, stdout, stderr) => {
+              fs.unlinkSync(javaFileName);  // Clean up the temporary file
+              fs.unlinkSync(`Temp_${sessionId}.class`);  // Clean up the compiled class file
+
               if (error) {
                 resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
               } else {
