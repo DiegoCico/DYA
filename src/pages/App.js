@@ -123,7 +123,7 @@ function App() {
         <Route path="/parenthub/:userId" element={<ParentHub />} />
         <Route path="/roadmap/:uid" element={<Roadmap />} />
         <Route path="/activity/:uid/:activityTitle/:activityOrder" element={<Activity />} />
-        <Route path="/lessons/:uid" element={<Lessons />} />
+        <Route path="/lessons/:uid/:language/:lessonTitle" element={<Lessons />} />
       </Routes>
     </div>
   );
