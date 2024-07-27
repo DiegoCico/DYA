@@ -7,32 +7,38 @@
         {
           "id": "q1",
           "codingQuestion": "Write a Python function to add two numbers.",
-          "functionName": "add"
+          "functionName": "add",
+          "lesson": "Addition Function"
         },
         {
           "id": "q2",
           "codingQuestion": "Write a Python function to subtract two numbers.",
-          "functionName": "subtract"
+          "functionName": "subtract",
+          "lesson": "Subtraction Function"
         },
         {
           "id": "q3",
           "codingQuestion": "Write a Python function to multiply two numbers.",
-          "functionName": "multiply"
+          "functionName": "multiply",
+          "lesson": "Multiplication Function"
         },
         {
           "id": "q4",
           "codingQuestion": "Write a Python function to divide two numbers.",
-          "functionName": "divide"
+          "functionName": "divide",
+          "lesson": "Division Function"
         },
         {
           "id": "q5",
           "codingQuestion": "Write a Python function to find the power of a number.",
-          "functionName": "power"
+          "functionName": "power",
+          "lesson": "Power Function"
         },
         {
           "id": "q6",
           "codingQuestion": "Write a Python function to find the modulo of two numbers.",
-          "functionName": "mod"
+          "functionName": "mod",
+          "lesson": "Modulo Function"
         }
       ]
     },
@@ -67,6 +73,21 @@
           "functionName": "factorial"
         }
       ]
+    },
+    {
+      "title": "Another Section 4"
+    },
+    {
+      "title": "Another Section 5"
+    },
+    {
+      "title": "Another Section 6"
+    },
+    {
+      "title": "Another Section 7"
+    },
+    {
+      "title": "Another Section 8"
     }
   ]
 }

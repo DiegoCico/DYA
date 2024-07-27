@@ -96,6 +96,10 @@
     flex-direction: column;
     justify-content: center;
 }
+
+.user-data i {
+    cursor: pointer;
+}
 .user-languages-container, .user-language-progress {
     background-color:rgb(241, 241, 241);
     border-radius: 20px;

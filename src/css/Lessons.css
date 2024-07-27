@@ -46,4 +46,55 @@
   .lesson-details-button:hover {
     background-color: #0056b3;
   }
+
+/* New CSS */
+.lesson-page-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  background-color: #f5f5f5;
+}
+
+.back-btn {
+  margin-right: 20px;
+}
+
+h1 {
+  flex: 1;
+  text-align: center;
+}
+
+.lesson-content-container {
+  display: flex; /* Use Flexbox */
+}
+
+.lesson-tabs {
+  display: flex; /* Use Flexbox for the tabs container */
+  flex-direction: column; /* Stack buttons vertically */
+  align-items: flex-start; /* Align items to the start (left) */
+  width: 200px; /* Set a fixed width for the buttons container */
+  background-color: #f4f4f4; /* Optional: background color for better visibility */
+  padding: 10px; /* Optional: spacing around the buttons */
+}
+
+.tablinks {
+  background-color: #228B22; /* Background color for buttons */
+  border: none; /* Remove border */
+  padding: 10px 20px; /* Add padding to buttons */
+  margin-bottom: 5px; /* Space between buttons */
+  cursor: pointer; /* Pointer cursor on hover */
+  text-align: left; /* Align text to the left */
+  width: 100%; /* Make buttons full width */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.tablinks:hover {
+  background-color: #1B5E20;
+}
+
+.tablinks.active {
+  background-color: #E6735A; /* Background color for active button */
+  color: white; /* Text color for active button */
+}
   

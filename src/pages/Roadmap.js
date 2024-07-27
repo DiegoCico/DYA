@@ -31,6 +31,7 @@ function Roadmap() {
           return;
         }
         const userData = userDocSnap.data();
+        console.log(userData)
 
         // Check and set the current language
         if (!userData.currentLanguage) {
@@ -49,18 +50,16 @@ function Roadmap() {
         const activitiesQuery = query(activitiesCollection, orderBy('order'));
         const activitiesSnapshot = await getDocs(activitiesQuery);
         let activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
         activitiesData = activitiesData.sort((a, b) => a.order - b.order);
-
-        const lessonsCollection = collection(db, `Lesson${userData.currentLanguage}`);
-        const lessonsQuery = query(lessonsCollection, orderBy('order'));
-        const lessonsSnapshot = await getDocs(lessonsQuery);
-        const lessonsData = lessonsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
+        // const lessonsCollection = collection(db, `Lesson${userData.currentLanguage}`);
+        // const lessonsQuery = query(lessonsCollection, orderBy('order'));
+        // const lessonsSnapshot = await getDocs(lessonsQuery);
+        // const lessonsData = lessonsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
         setUserData(userData);
         setActivities(activitiesData);
-        setLessons(lessonsData);
-
+        // setLessons(lessonsData);
+        
         if (userData.currentActivity === 1 && activitiesData.length > 0) {
           const firstActivity = activitiesData[0];
           if (!firstActivity.unlocked) {
@@ -76,21 +75,21 @@ function Roadmap() {
         setLoading(false);
       }
     };
-
-    const timer = setTimeout(fetchUserDataAndActivities, 500);
-
+    
+    const timer = setTimeout(fetchUserDataAndActivities, 2000);
+    
     return () => clearTimeout(timer);
   }, [uid]);
-
+  
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
-
+  
   const handleActivityClick = (activity) => {
     if (!activity || !activity.title) {
       console.error("Activity or activity title is undefined.");
       return;
     }
-
+    
     const activityTitleUrl = activity.title.replace(/\s+/g, '-');
     if (activity.order <= userData.currentActivity) {
       navigate(`/activity/${uid}/${activityTitleUrl}/${activity.order}`);
@@ -99,6 +98,28 @@ function Roadmap() {
     }
   };
 
+  const handleLessonClick = (order, title) => {
+    if (!title) {
+      return
+    }
+    const lessonTitleUrl = title.replace(/\s+/g, '-')
+    if (order <= userData.currentActivity) {
+      navigate(`/lessons/${uid}/${userData.currentLanguage}/${lessonTitleUrl}`)
+    } else {
+      alert('You need to complete the previous activities first!');
+    }
+  }
+  const groupActivitiessByRow = (acts, rowSize) => {
+    const row = []
+    for (let i = 0; i<acts.length; i+=rowSize) {
+      row.push(acts.slice(i, i+rowSize))
+    }
+    return row
+  }
+
+  const rowedActivities = groupActivitiessByRow(activities, 3)
+  console.log(lessons)
+  console.log(activities[0].title)
   return (
     <>
       <UserProfileSidebar userData={userData} />
@@ -108,29 +129,30 @@ function Roadmap() {
           <LanguageDropdown uid={uid} />
         </div>
         {showAnimation && <div className="unlock-animation">New Activity Unlocked!</div>}
+
         {userData && (
-          <div className="roadmap-container">
-            {activities.map((activity, index) => (
-              <div key={activity.id} className={`roadmap-item-container ${index % 2 === 0 ? 'even' : 'odd'}`}>
-                <div className="lesson-icon">
-                  {lessons[index] && (
-                    <div className="lesson-circle" title={lessons[index].title}>
-                      L{lessons[index].order + 1}
-                    </div>
-                  )}
+          <div className='roadmap-container'>
+              {rowedActivities.map((row, rowIndex) => (
+                <div className='roadmap-row' key={rowIndex}>
+                    {(rowIndex % 2 === 1 ? row.reverse() : row).map((activity, index) => (
+                      <div className='activity-container' key={index}>
+                        <div className='activity-title'>
+                          <h2>{index} {activity.title}</h2>
+                        </div>
+                        {activity.order > userData.currentActivity ? (
+                          <p className="locked-message">Locked</p>
+                        ) : (
+                          <div className='activity-buttons'>
+                            <button onClick={() => handleLessonClick(activity.order, activity.title)}>Learn It!</button>
+                            <button onClick={() => handleActivityClick(activity)}>Complete Task!</button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                 </div>
-                <div
-                  className={`roadmap-item ${activity.order > userData.currentActivity ? 'locked' : ''}`}
-                  onClick={() => handleActivityClick(activity)}
-                >
-                  <h3 className="roadmap-item-title">{activity.title}</h3>
-                  <p className="roadmap-item-description">{activity.description}</p>
-                  {activity.order > userData.currentActivity && <p className="locked-message">Locked</p>}
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
-        )}
+        )} 
       </div>
     </>
   );

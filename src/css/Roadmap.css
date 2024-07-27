@@ -66,7 +66,8 @@
   margin-left: 240px;
   padding: 20px;
   background-color: #F0FFF0; /* Honeydew background */
-  font-family: 'Comic Sans MS', cursive, sans-serif;
+  /* font-family: 'Comic Sans MS', cursive, sans-serif; */
+  font-family: Arial, Helvetica, sans-serif;
   position: relative;
 }
 
@@ -131,16 +132,16 @@
 }
 
 /* Roadmap Container */
-.roadmap-container {
+/* .roadmap-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px; /* Adjusted gap for better spacing */
+  gap: 40px;
   position: relative;
-}
+} */
 
 /* Roadmap Item */
-.roadmap-item-container {
+/* .roadmap-item-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -148,8 +149,8 @@
 }
 
 .roadmap-item {
-  background: linear-gradient(135deg, #76c7c0 0%, #34a0a4 100%); /* Gradient background */
-  border: 2px solid #FF7F50; /* Coral */
+  background: linear-gradient(135deg, #76c7c0 0%, #34a0a4 100%); 
+  border: 2px solid #FF7F50;
   border-radius: 10px;
   padding: 16px;
   width: 260px;
@@ -160,9 +161,9 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-}
+} */
 
-.roadmap-item.even {
+/* .roadmap-item.even {
   align-self: flex-start;
   margin-left: 0;
 }
@@ -176,12 +177,12 @@
   content: '';
   position: absolute;
   width: 2px;
-  height: 60px; /* Adjust height based on the gap */
-  background: #FF7F50; /* Coral */
+  height: 60px;
+  background: #FF7F50; 
   top: 100%;
-}
+} */
 
-.roadmap-item.even::after {
+/* .roadmap-item.even::after {
   left: 50%;
   transform: translateX(-50%) rotate(135deg);
 }
@@ -198,7 +199,7 @@
 
 .roadmap-item-title {
   font-size: 1.5em;
-  color: #FF7F50; /* Coral */
+  color: #FF7F50;
   margin-bottom: 8px;
   text-shadow: 1px 1px 2px #000;
 }
@@ -206,32 +207,32 @@
 .roadmap-item-description {
   font-size: 1em;
   color: #000;
-}
+} */
 
 /* Locked Message */
-.locked-message {
+/* .locked-message {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: #ff4500; /* Orange Red */
+  background: #ff4500;
   color: #fff;
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 0.9em;
-}
+} */
 
 /* Loading and Error Messages */
-.loading,
+/* .loading,
 .error {
   font-size: 1.5em;
-  color: #ff4500; /* Orange Red */
+  color: #ff4500;
   margin-top: 20px;
-}
+} */
 
 /* Unlock Animation */
-.unlock-animation {
+/* .unlock-animation {
   font-size: 1.5em;
-  color: #2ecc71; /* Green */
+  color: #2ecc71;
   background: #fff;
   padding: 10px 20px;
   border-radius: 10px;
@@ -242,6 +243,51 @@
   transform: translateX(-50%);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   animation: unlockAnim 3s ease-in-out;
+} */
+
+/* New CSS  */
+.roadmap-row {
+  background-color: #95a395;
+  width: 90%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.activity-container {
+  background-color: #76c7c0;
+  margin: 20px;
+  flex: 1 1 calc(33.33% - 40px); /* 33.33% width minus margin */
+  box-sizing: border-box;
+  height: 200px; /* Adjust height as needed */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Distributes space between items */
+  align-items: center;
+  position: relative; /* For positioning the locked message */
+  text-align: center;
+}
+
+.activity-title {
+  margin-bottom: 10px; /* Space between title and buttons */
+}
+
+.activity-title h2 {
+  margin: 10px 0 10px 0;
+}
+
+.activity-buttons {
+  display: flex;
+  margin: 0 15px 15px 15px;
+}
+
+.locked-message {
+  position: absolute;
+  top: 10px; /* Adjust top position as needed */
+  right: 10px; /* Adjust right position as needed */
+  background-color: rgba(255, 0, 0, 0.7); /* Semi-transparent background for visibility */
+  color: #fff; /* White text color */
+  padding: 5px 10px; /* Padding for the message */
+  border-radius: 3px; /* Rounded corners for the message */
 }
 
 @keyframes unlockAnim {
