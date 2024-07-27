@@ -6,7 +6,7 @@ import '../css/Activity.css';
 import CodeEditor from '../components/CodeEditor';
 import axios from 'axios';
 import TestResultsPopup from '../components/TestResultsPopup';
-import LanguageDropdown from '../components/LanguageDropdown'; 
+import LanguageDropdown from '../components/LanguageDropdown';
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:5002');
@@ -99,6 +99,7 @@ function Activity() {
           updateUserProgress({ completed: true });
           setShowAnimation(true);
           setCompleted(true);
+          unlockNextActivity(); // Unlock the next activity
           setTimeout(() => {
             setShowAnimation(false);
             alert('Congratulations! You have completed this phase.');
@@ -142,6 +143,23 @@ function Activity() {
       ...progressData,
       ...progressUpdates,
     });
+  };
+
+  const unlockNextActivity = async () => {
+    const userDocRef = doc(db, 'users', uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      const newActivityOrder = parseInt(activityOrder) + 1;
+
+      await setDoc(userDocRef, {
+        ...userData,
+        currentActivity: newActivityOrder,
+      }, { merge: true });
+
+      console.log(`Next activity unlocked: ${newActivityOrder}`);
+    }
   };
 
   const handleCodeChange = (newCode) => {
