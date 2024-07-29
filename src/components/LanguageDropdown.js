@@ -71,11 +71,7 @@ function LanguageDropdown({ uid, onLanguageChange }) {
       setCurrentLanguage(language.name);
       setDropdownOpen(false);
       onLanguageChange(language.name); 
-
-      // Add a 1-second delay before reloading the page
-      setTimeout(() => {
         window.location.reload();
-      }, 1000);
     } catch (err) {
       console.error('Error updating language:', err);
     }

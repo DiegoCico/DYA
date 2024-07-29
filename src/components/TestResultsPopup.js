@@ -24,34 +24,26 @@ function TestResultsPopup({ results, onClose }) {
   };
 
   const highlightDifferences = (actual, expected) => {
-    const tolerance = 1e-10; // Define a tolerance level for numerical comparison
+    const actualString = actual.toString();
+    const expectedString = expected.toString();
 
-    const actualNum = parseFloat(actual);
-    const expectedNum = parseFloat(expected);
+    const diff = diffWords(expectedString, actualString);
 
-    console.log('Actual:', actual, 'Expected:', expected);
-    console.log('Parsed Actual:', actualNum, 'Parsed Expected:', expectedNum);
-    console.log('Difference:', Math.abs(actualNum - expectedNum));
+    let highlightedExpected = '';
+    let highlightedActual = '';
 
-    // Check if both actual and expected are numbers and within the tolerance
-    if (!isNaN(actualNum) && !isNaN(expectedNum) && Math.abs(actualNum - expectedNum) < tolerance) {
-      // If the values are numerically close, consider them equal
-      console.log('Values are within tolerance, considered equal.');
-      return (
-        <span style={{ backgroundColor: 'lightgreen' }}>
-          {actual.toString()}
-        </span>
-      );
-    }
+    diff.forEach(part => {
+      if (part.removed) {
+        highlightedExpected += `<span style="background-color: salmon;">${part.value}</span>`;
+      } else if (part.added) {
+        highlightedActual += `<span style="background-color: salmon;">${part.value}</span>`;
+      } else {
+        highlightedExpected += part.value;
+        highlightedActual += part.value;
+      }
+    });
 
-    console.log('Values are not within tolerance, highlighting differences.');
-    // Perform string comparison if they are not within the tolerance
-    const diff = diffWords(actual.toString(), expected.toString());
-    return diff.map((part, index) => (
-      <span key={index} style={{ backgroundColor: part.added ? 'lightgreen' : part.removed ? 'salmon' : 'transparent' }}>
-        {part.value}
-      </span>
-    ));
+    return { highlightedExpected, highlightedActual };
   };
 
   return (
@@ -60,21 +52,25 @@ function TestResultsPopup({ results, onClose }) {
         <h2>Test Results</h2>
         <button onClick={onClose} className="close-btn">X</button>
         <ul className="results-list">
-          {results.map((result, index) => (
-            <li key={index} className="result-item" onClick={() => handleResultClick(index)}>
-              <div className={`result-summary ${result.passed ? 'passed' : 'failed'}`}>
-                <p>Test {index + 1}</p>
-                <p>{result.passed ? 'PASSED' : 'FAILED'}</p>
-              </div>
-              {selectedResult === index && (
-                <div className="result-details">
-                  <p><strong>Inputs:</strong> {JSON.stringify(result.inputs)}</p>
-                  <p><strong>Expected:</strong> {highlightDifferences(result.expected, result.actual)}</p>
-                  <p><strong>Actual:</strong> {highlightDifferences(result.actual, result.expected)}</p>
+          {results.map((result, index) => {
+            const { highlightedExpected, highlightedActual } = highlightDifferences(result.actual, result.expected);
+
+            return (
+              <li key={index} className="result-item" onClick={() => handleResultClick(index)}>
+                <div className={`result-summary ${result.passed ? 'passed' : 'failed'}`}>
+                  <p>Test {index + 1}</p>
+                  <p>{result.passed ? 'PASSED' : 'FAILED'}</p>
                 </div>
-              )}
-            </li>
-          ))}
+                {selectedResult === index && (
+                  <div className="result-details">
+                    <p><strong>Inputs:</strong> {JSON.stringify(result.inputs)}</p>
+                    <p><strong>Expected Output:</strong> <span dangerouslySetInnerHTML={{ __html: highlightedExpected }} /></p>
+                    <p><strong>Actual Output:</strong> <span dangerouslySetInnerHTML={{ __html: highlightedActual }} /></p>
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>
