@@ -45,7 +45,7 @@ const runTests = async (functionName, userCode, language) => {
   const results = await Promise.all(testCases[functionName].map(testCase => {
     return new Promise((resolve, reject) => {
       const { inputs, expected } = testCase;
-      const uniqueId = uuidv4().replace(/-/g, '_'); // Ensure the unique ID is a valid Java identifier
+      const uniqueId = uuidv4().replace(/-/g, '_'); 
 
       if (language === 'Python') {
         const pythonCode = `
@@ -115,7 +115,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 5002;
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
