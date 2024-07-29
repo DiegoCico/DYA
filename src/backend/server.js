@@ -45,7 +45,7 @@ const runTests = async (functionName, userCode, language) => {
   const results = await Promise.all(testCases[functionName].map(testCase => {
     return new Promise((resolve, reject) => {
       const { inputs, expected } = testCase;
-      const uniqueId = uuidv4();
+      const uniqueId = uuidv4().replace(/-/g, '_'); // Ensure the unique ID is a valid Java identifier
 
       if (language === 'Python') {
         const pythonCode = `
@@ -72,7 +72,7 @@ public class Temp_${uniqueId} {
   ${userCode}
 
   public static void main(String[] args) {
-    System.out.println(${functionName}(${inputs.join(', ')}));
+    System.out.println(new Temp_${uniqueId}().${functionName}(${inputs.map(input => JSON.stringify(input)).join(', ')}));
   }
 }
         `;
@@ -106,6 +106,7 @@ public class Temp_${uniqueId} {
 
   return results;
 };
+
 
 io.on('connection', (socket) => {
   console.log('a user connected');
