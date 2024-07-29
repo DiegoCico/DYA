@@ -8,6 +8,7 @@ import { getCodeTemplate } from './codeTemplate';
 import '../css/Activity.css';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import axios from 'axios';
 
 const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, language, activityOrder, setOutput }) => {
   const [userCode, setUserCode] = useState('');
@@ -45,7 +46,7 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, langu
     loadUserCode();
   }, [currentQuestion, userId, language, activityOrder]);
 
-  const runCode = () => {
+  const runCode = async () => {
     if (language === 'Python') {
       const outf = (text) => {
         setOutput((prevOutput) => prevOutput + text + '\n');
@@ -68,10 +69,17 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, langu
       }).catch((err) => {
         outf(err.toString());
       });
-    } else {
-      // Running Java code is more complex and would typically involve a server-side solution.
-      // For the sake of this example, we'll just set the output to a mock result.
-      setOutput("Running Java code is not supported in this demo. Please set up a server-side environment to compile and run Java code.");
+    } else if (language === 'Java') {
+      try {
+        const response = await axios.post('http://localhost:5002/run-code', { userCode, language });
+        if (response.data.error) {
+          setOutput(response.data.error);
+        } else {
+          setOutput(response.data.output);
+        }
+      } catch (error) {
+        setOutput('Error running code: ' + error.message);
+      }
     }
   };
 

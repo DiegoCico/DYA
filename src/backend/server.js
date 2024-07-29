@@ -25,6 +25,45 @@ app.get('/ping', (req, res) => {
   res.send({ message: 'Server is running' });
 });
 
+app.post('/run-code', (req, res) => {
+  const { userCode, language } = req.body;
+  const uniqueId = uuidv4().replace(/-/g, '_');
+
+  if (language === 'Java') {
+    const javaFileName = `Temp_${uniqueId}.java`;
+    const javaClassName = `Temp_${uniqueId}`;
+    const javaCode = `
+public class ${javaClassName} {
+  ${userCode}
+  public static void main(String[] args) {
+    // Example main method call, you may need to adjust this based on userCode
+    System.out.println(${javaClassName}.mod(2, 3)); // Replace with actual method call
+  }
+}
+`;
+    fs.writeFileSync(javaFileName, javaCode);
+
+    exec(`javac --enable-preview -source 21 ${javaFileName}`, (error, stdout, stderr) => {
+      if (error) {
+        fs.unlinkSync(javaFileName);
+        return res.json({ error: stderr });
+      } else {
+        exec(`java --enable-preview ${javaClassName}`, (error, stdout, stderr) => {
+          fs.unlinkSync(javaFileName);
+          fs.unlinkSync(`${javaClassName}.class`);
+          if (error) {
+            return res.json({ error: stderr });
+          } else {
+            return res.json({ output: stdout });
+          }
+        });
+      }
+    });
+  } else {
+    return res.json({ error: `Unsupported language ${language}` });
+  }
+});
+
 app.post('/test-function', async (req, res) => {
   const { functionName, userCode, language } = req.body;
 
@@ -45,7 +84,7 @@ const runTests = async (functionName, userCode, language) => {
   const results = await Promise.all(testCases[functionName].map(testCase => {
     return new Promise((resolve, reject) => {
       const { inputs, expected } = testCase;
-      const uniqueId = uuidv4().replace(/-/g, '_'); 
+      const uniqueId = uuidv4().replace(/-/g, '_');
 
       if (language === 'Python') {
         const pythonCode = `
@@ -67,27 +106,28 @@ print(${functionName}(${inputs.join(', ')}))
           }
         });
       } else if (language === 'Java') {
+        const javaClassName = `Temp_${uniqueId}`;
         const javaCode = `
-public class Temp_${uniqueId} {
+public class ${javaClassName} {
   ${userCode}
 
   public static void main(String[] args) {
-    System.out.println(new Temp_${uniqueId}().${functionName}(${inputs.map(input => JSON.stringify(input)).join(', ')}));
+    System.out.println(new ${javaClassName}().${functionName}(${inputs.map(input => JSON.stringify(input)).join(', ')}));
   }
 }
         `;
-        const javaFileName = `Temp_${uniqueId}.java`;
+        const javaFileName = `${javaClassName}.java`;
 
         fs.writeFileSync(javaFileName, javaCode);
 
-        exec(`javac ${javaFileName}`, (error, stdout, stderr) => {
+        exec(`javac --enable-preview -source 21 ${javaFileName}`, (error, stdout, stderr) => {
           if (error) {
             fs.unlinkSync(javaFileName);
             resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
           } else {
-            exec(`java Temp_${uniqueId}`, (error, stdout, stderr) => {
+            exec(`java --enable-preview ${javaClassName}`, (error, stdout, stderr) => {
               fs.unlinkSync(javaFileName);
-              fs.unlinkSync(`Temp_${uniqueId}.class`);
+              fs.unlinkSync(`${javaClassName}.class`);
               if (error) {
                 resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
               } else {
@@ -106,7 +146,6 @@ public class Temp_${uniqueId} {
 
   return results;
 };
-
 
 io.on('connection', (socket) => {
   console.log('a user connected');
