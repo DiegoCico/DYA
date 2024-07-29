@@ -76,7 +76,7 @@ function Roadmap() {
       }
     };
     
-    const timer = setTimeout(fetchUserDataAndActivities, 2000);
+    const timer = setTimeout(fetchUserDataAndActivities, 1000);
     
     return () => clearTimeout(timer);
   }, [uid]);
@@ -132,8 +132,6 @@ function Roadmap() {
   }
 
   const rowedActivities = groupActivitiessByRow(activities, 3)
-  console.log(lessons)
-  console.log(activities[0].title)
   return (
     <>
       <UserProfileSidebar userData={userData} />
