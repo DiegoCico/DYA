@@ -131,121 +131,6 @@
   margin-top: 10px;
 }
 
-/* Roadmap Container */
-/* .roadmap-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 40px;
-  position: relative;
-} */
-
-/* Roadmap Item */
-/* .roadmap-item-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.roadmap-item {
-  background: linear-gradient(135deg, #76c7c0 0%, #34a0a4 100%); 
-  border: 2px solid #FF7F50;
-  border-radius: 10px;
-  padding: 16px;
-  width: 260px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-} */
-
-/* .roadmap-item.even {
-  align-self: flex-start;
-  margin-left: 0;
-}
-
-.roadmap-item.odd {
-  align-self: flex-end;
-  margin-right: 0;
-}
-
-.roadmap-item::after {
-  content: '';
-  position: absolute;
-  width: 2px;
-  height: 60px;
-  background: #FF7F50; 
-  top: 100%;
-} */
-
-/* .roadmap-item.even::after {
-  left: 50%;
-  transform: translateX(-50%) rotate(135deg);
-}
-
-.roadmap-item.odd::after {
-  right: 50%;
-  transform: translateX(50%) rotate(-45deg);
-}
-
-.roadmap-item:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.roadmap-item-title {
-  font-size: 1.5em;
-  color: #FF7F50;
-  margin-bottom: 8px;
-  text-shadow: 1px 1px 2px #000;
-}
-
-.roadmap-item-description {
-  font-size: 1em;
-  color: #000;
-} */
-
-/* Locked Message */
-/* .locked-message {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #ff4500;
-  color: #fff;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 0.9em;
-} */
-
-/* Loading and Error Messages */
-/* .loading,
-.error {
-  font-size: 1.5em;
-  color: #ff4500;
-  margin-top: 20px;
-} */
-
-/* Unlock Animation */
-/* .unlock-animation {
-  font-size: 1.5em;
-  color: #2ecc71;
-  background: #fff;
-  padding: 10px 20px;
-  border-radius: 10px;
-  text-align: center;
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  animation: unlockAnim 3s ease-in-out;
-} */
-
-/* New CSS  */
 .roadmap-row {
   background-color: none;
   width: 90%;
@@ -255,8 +140,8 @@
 
 .activity-container {
   background-color: #76c7c0;
-  margin: 20px;
-  flex: 1 1 calc(33.33% - 40px);
+  margin: 10px;
+  flex: 1 1 calc(33.33% - 20px);
   box-sizing: border-box;
   height: 200px;
   display: flex;
@@ -265,10 +150,12 @@
   align-items: center;
   position: relative;
   text-align: center;
+  border-radius: 10px;
 }
 
 .activity-title {
   margin-bottom: 10px;
+  font-size: large;
 }
 
 .activity-title h2 {
@@ -278,6 +165,32 @@
 .activity-buttons {
   display: flex;
   margin: 0 15px 15px 15px;
+}
+
+.connection {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: #000;
+}
+
+.connection.right {
+  top: 50%;
+  left: 100%;
+  width: 50px;
+}
+
+.connection.down {
+  top: 100%;
+  left: 50%;
+  height: 20px;
+  width: 2px;
+}
+
+.connection.left {
+  top: 50%;
+  right: 100%;
+  width: 20px;
 }
 
 .locked-message {
