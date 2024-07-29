@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { exec } = require('child_process');
 const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 const testCases = require('./testCases');
 
 const app = express();
@@ -44,14 +45,19 @@ const runTests = async (functionName, userCode, language) => {
   const results = await Promise.all(testCases[functionName].map(testCase => {
     return new Promise((resolve, reject) => {
       const { inputs, expected } = testCase;
+      const uniqueId = uuidv4();
 
       if (language === 'Python') {
         const pythonCode = `
 ${userCode}
 print(${functionName}(${inputs.join(', ')}))
         `;
+        const pythonFileName = `temp_${uniqueId}.py`;
 
-        exec(`python3 -c "${pythonCode}"`, (error, stdout, stderr) => {
+        fs.writeFileSync(pythonFileName, pythonCode);
+
+        exec(`python3 ${pythonFileName}`, (error, stdout, stderr) => {
+          fs.unlinkSync(pythonFileName);
           if (error) {
             resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
           } else {
@@ -62,7 +68,7 @@ print(${functionName}(${inputs.join(', ')}))
         });
       } else if (language === 'Java') {
         const javaCode = `
-public class Temp {
+public class Temp_${uniqueId} {
   ${userCode}
 
   public static void main(String[] args) {
@@ -70,16 +76,18 @@ public class Temp {
   }
 }
         `;
-
-        const javaFileName = 'Temp.java';
+        const javaFileName = `Temp_${uniqueId}.java`;
 
         fs.writeFileSync(javaFileName, javaCode);
 
         exec(`javac ${javaFileName}`, (error, stdout, stderr) => {
           if (error) {
+            fs.unlinkSync(javaFileName);
             resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
           } else {
-            exec(`java Temp`, (error, stdout, stderr) => {
+            exec(`java Temp_${uniqueId}`, (error, stdout, stderr) => {
+              fs.unlinkSync(javaFileName);
+              fs.unlinkSync(`Temp_${uniqueId}.class`);
               if (error) {
                 resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
               } else {
