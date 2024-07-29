@@ -9,7 +9,7 @@ import TestResultsPopup from '../components/TestResultsPopup';
 import LanguageDropdown from '../components/LanguageDropdown';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:5000');
+const socket = io('http://localhost:5002');
 
 function Activity() {
   const { uid, activityTitle, activityOrder } = useParams();
@@ -194,7 +194,7 @@ function Activity() {
       };
 
       // Send the payload to the backend
-      await axios.post('http://localhost:5000/test-function', payload, {
+      await axios.post('http://localhost:5002/test-function', payload, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -228,7 +228,7 @@ function Activity() {
 
   const checkServerStatus = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/ping');
+      const response = await axios.get('http://localhost:5002/ping');
       setServerStatus(response.data.message);
     } catch (error) {
       setServerStatus('Error: Unable to reach the server.');
