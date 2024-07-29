@@ -52,16 +52,16 @@ function LanguageDropdown({ uid, onLanguageChange }) {
       const userDocSnap = await getDoc(userDocRef);
       const userData = userDocSnap.data();
 
-      const currentActivityForLang = userData.programmingLanguages.find((lang) => lang.langName === language.name)?.currentActivity || 0
+      const currentActivityForLang = userData.programmingLanguages.find((lang) => lang.langName === language.name)?.currentActivity || 0;
 
       const updatedProgrammingLanguages = userData.programmingLanguages
         ? [
           ...userData.programmingLanguages.filter(
             (lang) => lang.langName !== language.name
           ),
-          { langName: language.name, currentActivity: currentActivityForLang},
+          { langName: language.name, currentActivity: currentActivityForLang },
         ]
-        : [{ langName: language.name, currentActivity: 0}]
+        : [{ langName: language.name, currentActivity: 0 }];
 
       await updateDoc(userDocRef, {
         currentLanguage: language.name,
@@ -70,7 +70,12 @@ function LanguageDropdown({ uid, onLanguageChange }) {
       });
       setCurrentLanguage(language.name);
       setDropdownOpen(false);
-      onLanguageChange(language.name); // Trigger the animation and language change in the Activity component
+      onLanguageChange(language.name); 
+
+      // Add a 1-second delay before reloading the page
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (err) {
       console.error('Error updating language:', err);
     }

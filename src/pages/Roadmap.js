@@ -14,6 +14,7 @@ function Roadmap() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [fadeIn, setFadeIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,14 +52,9 @@ function Roadmap() {
         const activitiesSnapshot = await getDocs(activitiesQuery);
         let activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         activitiesData = activitiesData.sort((a, b) => a.order - b.order);
-        // const lessonsCollection = collection(db, `Lesson${userData.currentLanguage}`);
-        // const lessonsQuery = query(lessonsCollection, orderBy('order'));
-        // const lessonsSnapshot = await getDocs(lessonsQuery);
-        // const lessonsData = lessonsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        
+
         setUserData(userData);
         setActivities(activitiesData);
-        // setLessons(lessonsData);
         
         if (userData.currentActivity === 1 && activitiesData.length > 0) {
           const firstActivity = activitiesData[0];
@@ -69,27 +65,28 @@ function Roadmap() {
             setTimeout(() => setShowAnimation(false), 3000);
           }
         }
+        
+        // Trigger fade-in animation
+        setTimeout(() => setFadeIn(true), 300); // Delay to allow CSS class to apply properly
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    
-    const timer = setTimeout(fetchUserDataAndActivities, 1000);
-    
-    return () => clearTimeout(timer);
+
+    fetchUserDataAndActivities();
   }, [uid]);
-  
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
-  
+
   const handleActivityClick = (activity) => {
     if (!activity || !activity.title) {
       console.error("Activity or activity title is undefined.");
       return;
     }
-    
+
     const activityTitleUrl = activity.title.replace(/\s+/g, '-');
     if (activity.order <= userData.currentActivity) {
       navigate(`/activity/${uid}/${activityTitleUrl}/${activity.order}`);
@@ -100,72 +97,74 @@ function Roadmap() {
 
   const handleLessonClick = (order, title) => {
     if (!title) {
-      return
+      return;
     }
-    const lessonTitleUrl = title.replace(/\s+/g, '-')
+    const lessonTitleUrl = title.replace(/\s+/g, '-');
     if (order <= userData.currentActivity) {
-      navigate(`/lessons/${uid}/${userData.currentLanguage}/${lessonTitleUrl}`)
+      navigate(`/lessons/${uid}/${userData.currentLanguage}/${lessonTitleUrl}`);
     } else {
       alert('You need to complete the previous activities first!');
     }
-  }
-  const groupActivitiessByRow = (acts, rowSize) => {
-    const row = []
-    for (let i = 0; i<acts.length; i+=rowSize) {
-      row.push(acts.slice(i, i+rowSize))
+  };
+
+  const groupActivitiesByRow = (acts, rowSize) => {
+    const row = [];
+    for (let i = 0; i < acts.length; i += rowSize) {
+      row.push(acts.slice(i, i + rowSize));
     }
-    return row
-  }
+    return row;
+  };
 
   const getLineClass = (rowIndex, index, rowLength) => {
     if (rowIndex % 2 === 0) {
       if (index < rowLength - 1) {
-        return "right"
+        return "right";
       }
-      return "down"
+      return "down";
     } else {
       if (index > 0) {
-        return "left"
+        return "left";
       }
-      return "down"
+      return "down";
     }
-  }
+  };
 
-  const rowedActivities = groupActivitiessByRow(activities, 3)
+  const rowedActivities = groupActivitiesByRow(activities, 3);
+
   return (
     <>
       <UserProfileSidebar userData={userData} />
       <div className="roadmap-page">
         <div className="roadmap-header">
           <h2 className="roadmap-title">{userData.username}'s Roadmap</h2>
-          <LanguageDropdown uid={uid} />
+          <LanguageDropdown uid={uid} onLanguageChange={() => setFadeIn(false)} />
         </div>
         {showAnimation && <div className="unlock-animation">New Activity Unlocked!</div>}
 
         {userData && (
-          <div className='roadmap-container'>
-              {rowedActivities.map((row, rowIndex) => (
-                <div className='roadmap-row' key={rowIndex}>
-                    {(rowIndex % 2 === 1 ? row.reverse() : row).map((activity, index) => (
-                      <div className='activity-container' key={index}>
-                        <div className='activity-title'>
-                          <h2>{index} {activity.title}</h2>
-                        </div>
-                        {activity.order > userData.currentActivity ? (
-                          <p className="locked-message">Locked</p>
-                        ) : (
-                          <div className='activity-buttons'>
-                            <button onClick={() => handleLessonClick(activity.order, activity.title)}>Learn It!</button>
-                            <button onClick={() => handleActivityClick(activity)}>Complete Task!</button>
-                          </div>
-                        )}
-                        { !(rowIndex === rowedActivities.length - 1 && index === row.length - 1) && <div className={`connection ${getLineClass(rowIndex, index, row.length)}`}></div>}
+          <div className={`roadmap-container ${fadeIn ? 'fade-in' : ''}`}>
+            {rowedActivities.map((row, rowIndex) => (
+              <div className="roadmap-row" key={rowIndex}>
+                {(rowIndex % 2 === 1 ? row.reverse() : row).map((activity, index) => (
+                  <div className="activity-container" key={index}>
+                    <div className="activity-title">
+                      <h2>{index} {activity.title}</h2>
+                    </div>
+                    {activity.order > userData.currentActivity ? (
+                      <p className="locked-message">Locked</p>
+                    ) : (
+                      <div className="activity-buttons">
+                        <button onClick={() => handleLessonClick(activity.order, activity.title)}>Learn It!</button>
+                        <button onClick={() => handleActivityClick(activity)}>Complete Task!</button>
                       </div>
-                    ))}
-                </div>
-              ))}
+                    )}
+                    {!(rowIndex === rowedActivities.length - 1 && index === row.length - 1) && <div className={`connection ${getLineClass(rowIndex, index, row.length)}`}></div>}
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
-        )} 
+        )}
       </div>
     </>
   );

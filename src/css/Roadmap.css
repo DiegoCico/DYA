@@ -226,3 +226,12 @@
     transform: translateY(-15px);
   }
 }
+
+.fade-in {
+  opacity: 0;
+  transition: opacity 2s ease-in;
+}
+
+.fade-in {
+  opacity: 1;
+}
