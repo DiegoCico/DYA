@@ -117,6 +117,20 @@ function Roadmap() {
     return row
   }
 
+  const getLineClass = (rowIndex, index, rowLength) => {
+    if (rowIndex % 2 === 0) {
+      if (index < rowLength - 1) {
+        return "right"
+      }
+      return "down"
+    } else {
+      if (index > 0) {
+        return "left"
+      }
+      return "down"
+    }
+  }
+
   const rowedActivities = groupActivitiessByRow(activities, 3)
   console.log(lessons)
   console.log(activities[0].title)
@@ -147,6 +161,7 @@ function Roadmap() {
                             <button onClick={() => handleActivityClick(activity)}>Complete Task!</button>
                           </div>
                         )}
+                        { !(rowIndex === rowedActivities.length - 1 && index === row.length - 1) && <div className={`connection ${getLineClass(rowIndex, index, row.length)}`}></div>}
                       </div>
                     ))}
                 </div>
