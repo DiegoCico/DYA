@@ -10,7 +10,6 @@ function Roadmap() {
   const { uid } = useParams();
   const [userData, setUserData] = useState(null);
   const [activities, setActivities] = useState([]);
-  const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
@@ -32,7 +31,7 @@ function Roadmap() {
           return;
         }
         const userData = userDocSnap.data();
-        console.log(userData)
+        setUserData(userData);
 
         // Check and set the current language
         if (!userData.currentLanguage) {
@@ -50,10 +49,8 @@ function Roadmap() {
         const activitiesCollection = collection(db, activitiesCollectionName);
         const activitiesQuery = query(activitiesCollection, orderBy('order'));
         const activitiesSnapshot = await getDocs(activitiesQuery);
-        let activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        activitiesData = activitiesData.sort((a, b) => a.order - b.order);
+        const activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => a.order - b.order);
 
-        setUserData(userData);
         setActivities(activitiesData);
         
         if (userData.currentActivity === 1 && activitiesData.length > 0) {
@@ -67,7 +64,7 @@ function Roadmap() {
         }
         
         // Trigger fade-in animation
-        setTimeout(() => setFadeIn(true), 300); // Delay to allow CSS class to apply properly
+        setTimeout(() => setFadeIn(true), 1000); // Delay to allow CSS class to apply properly
       } catch (err) {
         setError(err.message);
       } finally {
@@ -75,7 +72,9 @@ function Roadmap() {
       }
     };
 
-    fetchUserDataAndActivities();
+    setTimeout(() => {
+      fetchUserDataAndActivities();
+    }, 1000); // Adding a delay of 2000ms (2 seconds)
   }, [uid]);
 
   if (loading) return <div className="loading">Loading...</div>;

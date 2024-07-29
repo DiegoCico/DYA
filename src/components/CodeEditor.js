@@ -1,4 +1,3 @@
-/* global Sk */
 import React, { useEffect, useState } from 'react';
 import { useCodeMirror } from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
@@ -10,7 +9,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import axios from 'axios';
 
-const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, language, activityOrder, setOutput }) => {
+const CodeEditor = ({ currentQuestion, onCodeSubmit, onRunTests, onCodeChange, userId, language, activityOrder }) => {
   const [userCode, setUserCode] = useState('');
   const [originalCode, setOriginalCode] = useState('');
 
@@ -46,41 +45,8 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, langu
     loadUserCode();
   }, [currentQuestion, userId, language, activityOrder]);
 
-  const runCode = async () => {
-    if (language === 'Python') {
-      const outf = (text) => {
-        setOutput((prevOutput) => prevOutput + text + '\n');
-      };
-
-      const builtinRead = (x) => {
-        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
-          throw new Error("File not found: '" + x + "'");
-        }
-        return Sk.builtinFiles["files"][x];
-      };
-
-      Sk.pre = "output";
-      Sk.configure({ output: outf, read: builtinRead });
-
-      (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
-
-      Sk.misceval.asyncToPromise(() => {
-        return Sk.importMainWithBody("<stdin>", false, userCode, true);
-      }).catch((err) => {
-        outf(err.toString());
-      });
-    } else if (language === 'Java') {
-      try {
-        const response = await axios.post('http://localhost:5002/run-code', { userCode, language });
-        if (response.data.error) {
-          setOutput(response.data.error);
-        } else {
-          setOutput(response.data.output);
-        }
-      } catch (error) {
-        setOutput('Error running code: ' + error.message);
-      }
-    }
+  const runTests = async () => {
+    onRunTests(userCode, 5); // Pass 5 as the number of tests to run
   };
 
   const restartCode = () => {
@@ -91,9 +57,9 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onCodeChange, userId, langu
     <div className="coding-section">
       <p className="coding-question">{currentQuestion.codingQuestion}</p>
       <div ref={setContainer} className="code-editor" />
-      <button onClick={runCode}>Run</button>
-      <button onClick={() => onCodeSubmit(userCode)}>Submit</button>
       <button onClick={restartCode}>Restart</button>
+      <button onClick={runTests}>Run Tests</button>
+      <button onClick={() => onCodeSubmit(userCode, 50)}>Submit</button> {/* Pass 50 as the number of tests to run */}
     </div>
   );
 };

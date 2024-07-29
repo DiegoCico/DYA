@@ -17,7 +17,6 @@ const io = new Server(server, {
   }
 });
 
-// Use CORS middleware
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -25,73 +24,36 @@ app.get('/ping', (req, res) => {
   res.send({ message: 'Server is running' });
 });
 
-app.post('/run-code', (req, res) => {
-  const { userCode, language } = req.body;
-  const uniqueId = uuidv4().replace(/-/g, '_');
-
-  if (language === 'Java') {
-    const javaFileName = `Temp_${uniqueId}.java`;
-    const javaClassName = `Temp_${uniqueId}`;
-    const javaCode = `
-public class ${javaClassName} {
-  ${userCode}
-  public static void main(String[] args) {
-    // Example main method call, you may need to adjust this based on userCode
-    System.out.println(${javaClassName}.mod(2, 3)); // Replace with actual method call
-  }
-}
-`;
-    fs.writeFileSync(javaFileName, javaCode);
-
-    exec(`javac --enable-preview -source 21 ${javaFileName}`, (error, stdout, stderr) => {
-      if (error) {
-        fs.unlinkSync(javaFileName);
-        return res.json({ error: stderr });
-      } else {
-        exec(`java --enable-preview ${javaClassName}`, (error, stdout, stderr) => {
-          fs.unlinkSync(javaFileName);
-          fs.unlinkSync(`${javaClassName}.class`);
-          if (error) {
-            return res.json({ error: stderr });
-          } else {
-            return res.json({ output: stdout });
-          }
-        });
-      }
-    });
-  } else {
-    return res.json({ error: `Unsupported language ${language}` });
-  }
-});
-
 app.post('/test-function', async (req, res) => {
-  const { functionName, userCode, language } = req.body;
+  const { functionName, userCode, language, testCount } = req.body;
+  const allTestCases = testCases[functionName] || [];
+  const selectedTestCases = allTestCases.slice(0, testCount);
 
-  // Run the code and get the test results
-  const testResults = await runTests(functionName, userCode, language);
+  const testResults = await runTests(functionName, userCode, language, selectedTestCases);
 
-  // Emit the test results to the client
   io.emit('test_results', { testResults, success: testResults.every(result => result.passed) });
 
-  res.send({ message: 'Tests are being processed' });
+  res.send({ testResults });
 });
 
-const runTests = async (functionName, userCode, language) => {
-  if (!testCases[functionName]) {
-    return [{ passed: false, message: `No test cases defined for function ${functionName}` }];
-  }
+const runTests = async (functionName, userCode, language, selectedTestCases) => {
+  const tolerance = 1e-10; 
 
-  const results = await Promise.all(testCases[functionName].map(testCase => {
+  const results = await Promise.all(selectedTestCases.map(testCase => {
     return new Promise((resolve, reject) => {
       const { inputs, expected } = testCase;
       const uniqueId = uuidv4().replace(/-/g, '_');
 
       if (language === 'Python') {
+        const formattedInputs = inputs.map(input => typeof input === 'string' ? `"${input}"` : input).join(', ');
         const pythonCode = `
 ${userCode}
-print(${functionName}(${inputs.join(', ')}))
+print(${functionName}(${formattedInputs}))
         `;
         const pythonFileName = `temp_${uniqueId}.py`;
+
+        console.log(`Generated Python code for test case: ${JSON.stringify(testCase)}`);
+        console.log(pythonCode);
 
         fs.writeFileSync(pythonFileName, pythonCode);
 
@@ -101,18 +63,25 @@ print(${functionName}(${inputs.join(', ')}))
             resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
           } else {
             const actual = stdout.trim();
-            const passed = actual == expected;
+            const actualNum = parseFloat(actual);
+            const expectedNum = parseFloat(expected);
+
+            const passed = !isNaN(actualNum) && !isNaN(expectedNum)
+              ? Math.abs(actualNum - expectedNum) < tolerance
+              : actual === expected;
+
             resolve({ inputs, expected, actual, passed, message: passed ? 'Test passed' : 'Test failed' });
           }
         });
       } else if (language === 'Java') {
+        const formattedInputs = inputs.map(input => JSON.stringify(input)).join(', ');
         const javaClassName = `Temp_${uniqueId}`;
         const javaCode = `
 public class ${javaClassName} {
   ${userCode}
 
   public static void main(String[] args) {
-    System.out.println(new ${javaClassName}().${functionName}(${inputs.map(input => JSON.stringify(input)).join(', ')}));
+    System.out.println(new ${javaClassName}().${functionName}(${formattedInputs}));
   }
 }
         `;
@@ -132,7 +101,13 @@ public class ${javaClassName} {
                 resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
               } else {
                 const actual = stdout.trim();
-                const passed = actual == expected;
+                const actualNum = parseFloat(actual);
+                const expectedNum = parseFloat(expected);
+
+                const passed = !isNaN(actualNum) && !isNaN(expectedNum)
+                  ? Math.abs(actualNum - expectedNum) < tolerance
+                  : actual === expected;
+
                 resolve({ inputs, expected, actual, passed, message: passed ? 'Test passed' : 'Test failed' });
               }
             });
@@ -146,6 +121,8 @@ public class ${javaClassName} {
 
   return results;
 };
+
+
 
 io.on('connection', (socket) => {
   console.log('a user connected');

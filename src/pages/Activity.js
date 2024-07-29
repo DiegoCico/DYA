@@ -6,7 +6,6 @@ import '../css/Activity.css';
 import CodeEditor from '../components/CodeEditor';
 import axios from 'axios';
 import TestResultsPopup from '../components/TestResultsPopup';
-import LanguageDropdown from '../components/LanguageDropdown';
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:5002');
@@ -18,7 +17,6 @@ function Activity() {
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [output, setOutput] = useState('');
   const [result, setResult] = useState(null);
   const [serverStatus, setServerStatus] = useState('');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -73,6 +71,11 @@ function Activity() {
           const progressData = progressDocSnap.data();
           setCorrectCount(progressData.correctCount || 0);
           setIncorrectCount(progressData.incorrectCount || 0);
+          
+          // If the activity was completed, reset progress
+          if (progressData.completed) {
+            resetProgress();
+          }
         }
       } catch (err) {
         setError(err.message);
@@ -90,7 +93,7 @@ function Activity() {
       setTestResults(data.testResults || []);
       setResult(data.success ? 'Success! You got it right.' : `Incorrect output:\n${data.message}`);
       
-      if (data.success) {
+      if (data.success && isSubmitting) {
         setFireworks(true);
         setTimeout(() => setFireworks(false), 1000);
         setCorrectCount(prevCount => prevCount + 1);
@@ -107,10 +110,9 @@ function Activity() {
           }, 3000); // duration of the animation
         } else {
           setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-          setOutput('');
           setResult(null);
         }
-      } else {
+      } else if (!data.success && isSubmitting) {
         setShake(true);
         setTimeout(() => setShake(false), 1000);
         setIncorrectCount(prevCount => prevCount + 1);
@@ -121,7 +123,6 @@ function Activity() {
           setIncorrectCount(0);
           setCurrentQuestionIndex(0);
           setShuffledQuestions(shuffleArray(activity.questions));
-          setOutput('');
           setResult(null);
         }
       }
@@ -132,7 +133,7 @@ function Activity() {
     return () => {
       socket.off('test_results');
     };
-  }, [correctCount, incorrectCount, shuffledQuestions]);
+  }, [correctCount, incorrectCount, shuffledQuestions, isSubmitting]);
 
   const updateUserProgress = async (progressUpdates) => {
     const progressDocRef = doc(db, 'users', uid, 'activities', currentLanguage, 'activityOrder', activityOrder);
@@ -145,6 +146,19 @@ function Activity() {
     });
   };
 
+  const resetProgress = async () => {
+    const progressDocRef = doc(db, 'users', uid, 'activities', currentLanguage, 'activityOrder', activityOrder);
+    await setDoc(progressDocRef, {
+      correctCount: 0,
+      incorrectCount: 0,
+      completed: false,
+    }, { merge: true });
+
+    setCorrectCount(0);
+    setIncorrectCount(0);
+    setCompleted(false);
+  };
+
   const unlockNextActivity = async () => {
     const userDocRef = doc(db, 'users', uid);
     const userDocSnap = await getDoc(userDocRef);
@@ -153,8 +167,8 @@ function Activity() {
       const userData = userDocSnap.data();
       const newActivityOrder = parseInt(activityOrder) + 1;
 
-      const currentLanguage = userData.currentLanguage
-      const updatedProgrammingLanguages = userData.programmingLanguages.map(lang => lang.langName === currentLanguage ? {...lang, currentActivity: newActivityOrder} : lang)
+      const currentLanguage = userData.currentLanguage;
+      const updatedProgrammingLanguages = userData.programmingLanguages.map(lang => lang.langName === currentLanguage ? {...lang, currentActivity: newActivityOrder} : lang);
 
       await setDoc(userDocRef, {
         ...userData,
@@ -170,7 +184,39 @@ function Activity() {
     setUserCode(newCode);
   };
 
-  const handleCodeSubmit = async (userCode) => {
+  const handleRunTests = async (userCode, testCount) => {
+    const currentQuestion = shuffledQuestions[currentQuestionIndex];
+    const funcName = currentQuestion.functionName;
+
+    try {
+      if (!currentQuestion.id || !uid || !activityOrder) {
+        setError('Missing parameters for Firestore document reference');
+        return;
+      }
+
+      // Create the JSON payload
+      const payload = {
+        functionName: funcName,
+        activityOrder: activityOrder,
+        userId: uid,
+        questionId: currentQuestion.id,
+        userCode: userCode,
+        language: currentLanguage, // Pass the current language to the backend
+        testCount // Pass the number of tests to run
+      };
+
+      // Send the payload to the backend
+      await axios.post('http://localhost:5002/test-function', payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    } catch (error) {
+      console.error(`Error testing ${funcName}:`, error);
+    }
+  };
+
+  const handleCodeSubmit = async (userCode, testCount) => {
     setIsSubmitting(true);
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
     const funcName = currentQuestion.functionName;
@@ -194,7 +240,8 @@ function Activity() {
         userId: uid,
         questionId: currentQuestion.id,
         userCode: userCode,
-        language: currentLanguage // Pass the current language to the backend
+        language: currentLanguage,
+        testCount 
       };
 
       // Send the payload to the backend
@@ -295,16 +342,13 @@ function Activity() {
             <CodeEditor 
               currentQuestion={currentQuestion} 
               onCodeSubmit={handleCodeSubmit}
+              onRunTests={handleRunTests}
               onCodeChange={handleCodeChange}
               userId={uid}
               language={currentLanguage}
               activityOrder={activityOrder}
-              setOutput={setOutput}
+              setOutput={() => {}}
             />
-          </div>
-          <div className="output-section">
-            <h3>Output:</h3>
-            <pre id="output">{output}</pre>
           </div>
           {result && <div className="result-section"><pre>{result}</pre></div>}
           {isSubmitting && <div className="loading">Submitting...</div>}
