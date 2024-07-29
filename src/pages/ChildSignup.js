@@ -20,7 +20,7 @@ export default function ChildSignup(props) {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [age, setAge] = useState('');
-    const [programmingLanguage, setProgrammingLanguage] = useState('');
+    // const [programmingLanguage, setProgrammingLanguage] = useState('');
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
@@ -53,7 +53,7 @@ export default function ChildSignup(props) {
         await setDoc(doc(db, 'users', user.uid), {
             email: user.email,
             currentActivity: 0,
-            programmingLanguages: ['Python'],
+            programmingLanguages: [],
             uniqueId: uniqueId,
             isParent: false,
             currentLanguage: 'Python'
@@ -86,11 +86,23 @@ export default function ChildSignup(props) {
 
     const handleCompleteSignUp = async (language) => {
         try {
+            const userDocRef = doc(db, 'users', userId);
+            const userDocSnap = await getDoc(userDocRef);
+            const userData = userDocSnap.data();
+
+            const existingLanguage = userData.programmingLanguages.find((lang) => lang.langName === language)
+            const existingCurrentActivity = existingLanguage ? existingLanguage.currentActivity : 0
             await setDoc(doc(db, 'users', userId), {
                 name,
                 username,
                 age,
-                programmingLanguages: [language],
+                currentActivity: existingCurrentActivity,
+                programmingLanguages: [
+                    {
+                        langName: language,
+                        currentActivity: existingCurrentActivity
+                    }
+                ],
                 currentLanguage: language
             }, { merge: true });
 

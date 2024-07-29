@@ -51,13 +51,21 @@ function LanguageDropdown({ uid, onLanguageChange }) {
       const userDocRef = doc(db, 'users', uid);
       const userDocSnap = await getDoc(userDocRef);
       const userData = userDocSnap.data();
-      
+
+      const currentActivityForLang = userData.programmingLanguages.find((lang) => lang.langName === language.name)?.currentActivity || 0
+
       const updatedProgrammingLanguages = userData.programmingLanguages
-        ? [...new Set([...userData.programmingLanguages, language.name])]
-        : [language.name];
+        ? [
+          ...userData.programmingLanguages.filter(
+            (lang) => lang.langName !== language.name
+          ),
+          { langName: language.name, currentActivity: currentActivityForLang},
+        ]
+        : [{ langName: language.name, currentActivity: 0}]
 
       await updateDoc(userDocRef, {
         currentLanguage: language.name,
+        currentActivity: currentActivityForLang,
         programmingLanguages: updatedProgrammingLanguages,
       });
       setCurrentLanguage(language.name);

@@ -153,9 +153,13 @@ function Activity() {
       const userData = userDocSnap.data();
       const newActivityOrder = parseInt(activityOrder) + 1;
 
+      const currentLanguage = userData.currentLanguage
+      const updatedProgrammingLanguages = userData.programmingLanguages.map(lang => lang.langName === currentLanguage ? {...lang, currentActivity: newActivityOrder} : lang)
+
       await setDoc(userDocRef, {
         ...userData,
         currentActivity: newActivityOrder,
+        programmingLanguages: updatedProgrammingLanguages
       }, { merge: true });
 
       console.log(`Next activity unlocked: ${newActivityOrder}`);

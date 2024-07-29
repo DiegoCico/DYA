@@ -6,9 +6,9 @@ import { doc, getDoc, updateDoc, collection, getDocs } from "firebase/firestore"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function UserProfile(props) {
-    const { close } = props;
+    const { userData, close } = props;
     const { uid } = useParams();
-    const [totalParts, setTotalParts] = useState(10);
+    const [totalParts, setTotalParts] = useState([]);
     const [userFormData, setUserFormData] = useState({
         name: '',
         username: '',
@@ -18,7 +18,6 @@ export default function UserProfile(props) {
         currentActivity: 0
     });
     const [isEdit, setIsEdit] = useState(false);
-
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -26,6 +25,7 @@ export default function UserProfile(props) {
                 const userDocSnap = await getDoc(userDocRef);
                 if (userDocSnap.exists()) {
                     const userData = userDocSnap.data();
+                    // console.log(userData)
                     setUserFormData({
                         name: userData.name,
                         username: userData.username,
@@ -41,11 +41,20 @@ export default function UserProfile(props) {
         };
 
         const fetchTotalParts = async () => {
+            // console.log(userData.userData.programmingLanguages.length)
             try {
-                const activitiesRef = collection(db, "activities");
-                const activitiesSnapshot = await getDocs(activitiesRef);
-                const totalPartsCount = activitiesSnapshot.size;
-                setTotalParts(totalPartsCount);
+                const parts = []
+                for (let i=0; i<userData.userData.programmingLanguages.length; i++) {
+                    const activitiesRef = collection(db, `activities${userData.userData.programmingLanguages[i].langName}`);
+                    const activitiesSnapshot = await getDocs(activitiesRef);
+                    const totalPartsCount = activitiesSnapshot.size;
+                    const langSize = {
+                        name: userData.userData.programmingLanguages[i].langName,
+                        totalSize: totalPartsCount
+                    }
+                    parts.push(langSize)
+                }
+                setTotalParts(parts);
             } catch (error) {
                 console.log(error);
             }
@@ -100,7 +109,13 @@ export default function UserProfile(props) {
         }
     };
 
-    const progressPercent = (userFormData.currentActivity / totalParts) * 100;
+    const getLangLength = (name) => {
+        const language = totalParts.find(lang => lang.name === name)
+        return language ? language.totalSize : null
+    }
+    const getUserProgressPercent = (current, length) => {
+        return (current / length) * 100
+    }
 
     return (
         <div className="profile-window-overlay">
@@ -140,7 +155,9 @@ export default function UserProfile(props) {
                     <div className="user-languages-container">
                         <h2>My languages</h2>
                         <div className="border-gray"></div>
-                        <p>{userFormData.programmingLanguages.join(', ')}</p>
+                        {userFormData.programmingLanguages.map((language, index) => (
+                            <p key={index}>{language.langName}</p>
+                        ))}
                     </div>
                     <div className="user-language-progress">
                         <h2>My progress in...</h2>
@@ -149,12 +166,14 @@ export default function UserProfile(props) {
                             userFormData.programmingLanguages.map((language, index) => (
                                 <div className="progress-container" key={index}>
                                     <div className="border-gray"></div>
-                                    <p>{language}: {userFormData.currentActivity} of {totalParts} sections completed</p>
-                                    <div className="progress-bar" style={{ width: `${progressPercent}%` }}></div>
+                                    <p>{language.langName}: {language.currentActivity} of {getLangLength(language.langName)} completed</p>
+                                    <div className="progress-bar-outline">
+                                        <div className="progress-bar" style={{ width: `${getUserProgressPercent(language.currentActivity, getLangLength(language.langName))}%` }}></div>
+                                    </div>
                                 </div>
                             ))
                         ) : (
-                            <p>No programming languages found.</p>
+                            <div>No languages found.</div>
                         )}
                     </div>
                 </div>

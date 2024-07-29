@@ -115,6 +115,16 @@
     border-radius: 5px;
     text-align: left;
     overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-bar-outline {
+    width: 90%;
+    height: 20px; /* Adjust the height as needed */
+    border: 2px solid gray; /* Adjust the border color as needed */
+    border-radius: 5px; /* Optional: to give rounded corners */
+    overflow: hidden; /* Ensure inner bar stays within the outline */
+    background-color: #f3f3f3; /* Background color for the outline */
 }
 
 .progress-bar {
