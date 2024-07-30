@@ -45,6 +45,33 @@ export const getCodeTemplate = (functionName, language) => {
       default:
         return `// Write your code here\n// You can start coding right away\n// The editor will scroll if the content gets too long\n`;
     }
+  } else if (language === 'JavaScript') {
+    switch (functionName) {
+      case 'add':
+      case 'subtract':
+      case 'multiply':
+      case 'divide':
+      case 'power':
+      case 'mod':
+      case 'concat_strings':
+        return `function ${functionName}(a, b) {
+    // Write your code here
+}`;
+      case 'find_max':
+        return `function ${functionName}(a, b) {
+    // Write your code here
+}`;
+      case 'is_even':
+        return `function ${functionName}(a) {
+    // Write your code here
+}`;
+      case 'factorial':
+        return `function ${functionName}(n) {
+    // Write your code here
+}`;
+      default:
+        return `// Write your code here\n// You can start coding right away\n// The editor will scroll if the content gets too long\n`;
+    }
   } else {
     switch (functionName) {
       case 'add':

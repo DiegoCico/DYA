@@ -7,7 +7,7 @@ function LanguageDropdown({ uid, onLanguageChange }) {
   const [languages, setLanguages] = useState([]);
   const [currentLanguage, setCurrentLanguage] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [offeredLanguages] = useState(["Java", "Python", "HTML/CSS"]);
+  const [offeredLanguages] = useState(["Java", "Python", "JavaScript"]);
   const dropdownRef = useRef(null);
 
   useEffect(() => {

@@ -52,9 +52,6 @@ print(${functionName}(${formattedInputs}))
         `;
         const pythonFileName = `temp_${uniqueId}.py`;
 
-        console.log(`Generated Python code for test case: ${JSON.stringify(testCase)}`);
-        console.log(pythonCode);
-
         fs.writeFileSync(pythonFileName, pythonCode);
 
         exec(`python3 ${pythonFileName}`, (error, stdout, stderr) => {
@@ -113,6 +110,32 @@ public class ${javaClassName} {
             });
           }
         });
+      } else if (language === 'JavaScript') {
+        const formattedInputs = inputs.map(input => JSON.stringify(input)).join(', ');
+        const jsCode = `
+${userCode}
+console.log(${functionName}(${formattedInputs}));
+        `;
+        const jsFileName = `temp_${uniqueId}.js`;
+
+        fs.writeFileSync(jsFileName, jsCode);
+
+        exec(`node ${jsFileName}`, (error, stdout, stderr) => {
+          fs.unlinkSync(jsFileName);
+          if (error) {
+            resolve({ inputs, expected, actual: stderr, passed: false, message: stderr });
+          } else {
+            const actual = stdout.trim();
+            const actualNum = parseFloat(actual);
+            const expectedNum = parseFloat(expected);
+
+            const passed = !isNaN(actualNum) && !isNaN(expectedNum)
+              ? Math.abs(actualNum - expectedNum) < tolerance
+              : actual === expected;
+
+            resolve({ inputs, expected, actual, passed, message: passed ? 'Test passed' : 'Test failed' });
+          }
+        });
       } else {
         resolve({ passed: false, message: `Unsupported language ${language}` });
       }
@@ -121,8 +144,6 @@ public class ${javaClassName} {
 
   return results;
 };
-
-
 
 io.on('connection', (socket) => {
   console.log('a user connected');

@@ -4,7 +4,8 @@ import { getFirestore, collection, getDocs, addDoc, deleteDoc } from 'firebase/f
 import { getStorage } from 'firebase/storage'; 
 import activitiesDataPython from './activitiesPython.json';
 import lessonsDataPython from './lessonsPython.json';
-import activitiesDataJava from './activitiesJava.json';  // Importing the new Java activities JSON
+import activitiesDataJava from './activitiesJava.json';
+import activitiesDataJavaScript from './activitiesJavaScript.json'; 
 
 const firebaseConfig = {
   apiKey: "AIzaSyBI37lzWhWSv7VQif5mlNbZm0Bso5W05OA",
@@ -79,6 +80,35 @@ export const initializeActivitiesJava = async () => {
   }
 };
 
+export const initializeActivitiesJavaScript = async () => {
+  try {
+    const activitiesCollection = collection(db, 'activitiesJavaScript');
+
+    // Fetch all existing JavaScript activities
+    const activitiesSnapshot = await getDocs(activitiesCollection);
+    console.log(`Found ${activitiesSnapshot.docs.length} existing JavaScript activities. Deleting them...`);
+
+    const deletePromises = activitiesSnapshot.docs.map(doc => deleteDoc(doc.ref));
+
+    // Wait for all delete operations to complete
+    await Promise.all(deletePromises);
+
+    console.log('All existing JavaScript activities deleted');
+
+    // Add activities from JavaScript JSON with order field starting from 1
+    const addPromises = activitiesDataJavaScript.activities.map((activity, index) => {
+      const activityWithOrder = { ...activity, order: index };
+      return addDoc(activitiesCollection, activityWithOrder);
+    });
+
+    await Promise.all(addPromises);
+
+    console.log('New JavaScript activities added to Firestore');
+  } catch (error) {
+    console.error('Error initializing JavaScript activities:', error);
+  }
+};
+
 export const initializeLessons = async () => {
   try {
     const lessonsCollection = collection(db, 'LessonPython');
@@ -110,6 +140,7 @@ export const initializeLessons = async () => {
 
 initializeActivitiesPython();
 initializeActivitiesJava();
+initializeActivitiesJavaScript(); 
 initializeLessons();
 
 export default app;

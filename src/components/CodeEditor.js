@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useCodeMirror } from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { java } from '@codemirror/lang-java';
+import { javascript } from '@codemirror/lang-javascript';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { getCodeTemplate } from './codeTemplate';
 import '../css/Activity.css';
@@ -13,7 +14,11 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onRunTests, onCodeChange, u
   const [userCode, setUserCode] = useState('');
   const [originalCode, setOriginalCode] = useState('');
 
-  const languageExtension = language === 'Java' ? java() : python();
+  const languageExtension = language === 'Java' 
+    ? java() 
+    : language === 'JavaScript' 
+    ? javascript() 
+    : python();
 
   const handleCodeChange = (value) => {
     setUserCode(value);
