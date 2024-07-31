@@ -3,6 +3,7 @@ import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import '../css/Signup.css';
+import ChildSignup from "./ChildSignup";
 
 const generateUniqueId = () => {
     return Math.random().toString(36).substring(2, 12);
@@ -14,6 +15,7 @@ export default function NewLogin(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [showSignUpForm, setShowSignUpForm] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -50,18 +52,8 @@ export default function NewLogin(props) {
             const docSnap = await getDoc(docRef);
 
             if (!docSnap.exists()) {
-                await setDoc(docRef, {
-                    email: user.email,
-                    currentActivity: 0,
-                    programmingLanguages: ['Python'],
-                    uniqueId: generateUniqueId(),
-                    name: user.displayName || '',
-                    username: '',
-                    age: '',
-                    currentLanguage: 'Python',
-                    isParent: false 
-                });
-                handleRouteChange(`/roadmap/${user.uid}`);
+                setShowSignUpForm(true);
+                toggleLoginPopUp(); // Hide the login pop-up
             } else {
                 const userData = docSnap.data();
                 if (userData.isParent) {
@@ -112,7 +104,7 @@ export default function NewLogin(props) {
                     <div className="signup-form-buttons">
                         <button className="signup-form-submit-btn" type="submit">Log In</button>
                         <h2 className="signup-form-or">or</h2>
-                        <button onClick={handleGoogleSignIn} className="signup-form-google-btn"><i className="fa-brands fa-google"></i>Continue with Google</button>
+                        {/* <button onClick={handleGoogleSignIn} className="signup-form-google-btn"><i className="fa-brands fa-google"></i>Continue with Google</button> */}
                     </div>
                 </form>
             </div>
