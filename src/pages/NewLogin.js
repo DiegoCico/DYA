@@ -103,7 +103,7 @@ export default function NewLogin(props) {
                     {error && <p>{error}</p>}
                     <div className="signup-form-buttons">
                         <button className="signup-form-submit-btn" type="submit">Log In</button>
-                        <h2 className="signup-form-or">or</h2>
+                        {/* <h2 className="signup-form-or">or</h2> */}
                         {/* <button onClick={handleGoogleSignIn} className="signup-form-google-btn"><i className="fa-brands fa-google"></i>Continue with Google</button> */}
                     </div>
                 </form>
