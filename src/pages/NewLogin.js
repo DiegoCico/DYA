@@ -48,17 +48,29 @@ export default function NewLogin(props) {
         try {
             const res = await signInWithPopup(auth, googleProvider);
             const user = res.user;
-            const docRef = doc(db, 'users', user.uid);
-            const docSnap = await getDoc(docRef);
-
-            if (!docSnap.exists()) {
+            console.log(user)
+            const userDocRef = doc(db, 'users', user.uid);
+            const userDocSnap = await getDoc(userDocRef);
+            const parentDocRef = doc(db, 'parents', user.uid);
+            const parentDocSnap = await getDoc(parentDocRef);
+            
+            if (!userDocSnap.exists() && !parentDocSnap.exists()) {
                 setShowSignUpForm(true);
                 toggleLoginPopUp(); // Hide the login pop-up
+                console.log('new account')
             } else {
-                const userData = docSnap.data();
-                if (userData.isParent) {
+                let fetchedData
+                if (parentDocSnap.exists()) {
+                    fetchedData = parentDocSnap.data()
+                } else if (userDocSnap.exists()) {
+                    fetchedData = userDocSnap.data()
+                }
+
+                if (fetchedData.isParent) {
+                    console.log('parent')
                     handleRouteChange(`/parenthub/${user.uid}`);
                 } else {
+                    console.log('not parent')
                     handleRouteChange(`/roadmap/${user.uid}`);
                 }
             }
@@ -66,7 +78,7 @@ export default function NewLogin(props) {
             setError(error.message || 'Login with Google failed. Please try again.');
         }
     };
-
+            
     return (
         <div className="child-signup-container">
             <div className="title">
@@ -103,8 +115,8 @@ export default function NewLogin(props) {
                     {error && <p>{error}</p>}
                     <div className="signup-form-buttons">
                         <button className="signup-form-submit-btn" type="submit">Log In</button>
-                        {/* <h2 className="signup-form-or">or</h2> */}
-                        {/* <button onClick={handleGoogleSignIn} className="signup-form-google-btn"><i className="fa-brands fa-google"></i>Continue with Google</button> */}
+                        <h2 className="signup-form-or">or</h2>
+                        <button onClick={handleGoogleSignIn} className="signup-form-google-btn"><i className="fa-brands fa-google"></i>Continue with Google</button>
                     </div>
                 </form>
             </div>

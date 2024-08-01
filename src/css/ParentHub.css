@@ -87,3 +87,9 @@ html, body {
     background-color: none;
     flex: 1;
 }
+
+/* ---CSS for profile content--- */
+.parent-hub-profile-main-container {
+    background-color: none;
+    flex: 1;
+}
