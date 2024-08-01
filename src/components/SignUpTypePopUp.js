@@ -65,7 +65,7 @@ function AccountType({ title, imgSrc, overlayClass, desc, handleRouteChange }) {
                 <img src={imgSrc} alt={title} className="image" />
                 <div className={overlayClass}>
                     <div className="desc">
-                        <p>{desc}</p>
+                        {/* <p>{desc}</p>  Commented temporarily */}
                         <button className="overlay-btn" onClick={handleRouteChange}>Sign Up</button>
                     </div>
                 </div>

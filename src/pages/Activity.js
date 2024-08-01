@@ -304,8 +304,8 @@ function Activity() {
         <p className="activity-description">Congratulations! You've completed all the questions.</p>
         {showAnimation && <div className="animation">Next Activity Unlocked!</div>}
         <div className="completion-buttons">
-          <button onClick={handleNextActivity}>Next Activity</button>
-          <button onClick={handleMainMenu}>Main Menu</button>
+          <button className='activity-button' onClick={handleNextActivity}>Next Activity</button>
+          <button className='activity-button' onClick={handleMainMenu}>Main Menu</button>
         </div>
       </div>
     );
@@ -353,7 +353,7 @@ function Activity() {
           {result && <div className="result-section"><pre>{result}</pre></div>}
           {isSubmitting && <div className="loading">Submitting...</div>}
           <div id="mycanvas"></div>
-          <button onClick={checkServerStatus}>Check Server Status</button>
+          <button className='code-editor-button' onClick={checkServerStatus}>Check Server Status</button>
           {serverStatus && <div className="server-status">{serverStatus}</div>}
           {testResults.length > 0 && (
             <TestResultsPopup results={testResults} onClose={() => setTestResults([])} />
