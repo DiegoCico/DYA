@@ -19,6 +19,7 @@ export default function ParentSignup(props) {
     const [step, setStep] = useState(1);
     const [name, setName] = useState('');
     const [age, setAge] = useState('');
+    const [tempChildren, setTempChildren] = useState([])
     const [childID, setChildID] = useState('');
     const [error, setError] = useState('');
 
@@ -33,16 +34,13 @@ export default function ParentSignup(props) {
             setError('Please enter your age.');
             return;
         }
-        if (step === 4 && !childID) {
-            setError('Please enter a valid child ID.');
-            return;
-        }
-        if (step === 4) {
+        if (step === 4 && childID) {
             const isValidChildID = await checkChildIDExists(childID);
             if (!isValidChildID) {
                 setError('Invalid child ID. Please enter a valid child ID.');
                 return;
             }
+            addChild(); 
         }
         if (step < 4) {
             setStep(step + 1);
@@ -60,13 +58,13 @@ export default function ParentSignup(props) {
         return !querySnapshot.empty;
     };
 
-    const initializeUser = async (id) => {
+    const initializeUser = async (id, children) => {
         const uniqueId = generateUniqueId();
         await setDoc(doc(db, 'parents', id), {
             email: email,
             name: name,
             age: age,
-            childID: childID,
+            children: children,
             uniqueId: uniqueId,
             isParent: true 
         }, { merge: true });
@@ -96,9 +94,29 @@ export default function ParentSignup(props) {
         }
     };
 
+    const addChild = async() => {
+        if (!tempChildren.includes(childID)) {
+            const isValidChildID = await checkChildIDExists(childID);
+            if (!isValidChildID) {
+                setError('Invalid child ID. Please enter a valid child ID.');
+                return;
+            }
+            setTempChildren([...tempChildren, childID])
+            setChildID('')
+            setError('Child added successfully')
+        } else {
+            setError('Child already added')
+        }
+    }
+
     const handleCompleteSignUp = async () => {
-        await initializeUser(userId);
-        navigate(`/parenthub/${userId}`);
+        if (tempChildren.length > 0) {
+            console.log(tempChildren)
+            await initializeUser(userId, tempChildren);
+            navigate(`/parenthub/${userId}`);
+        } else {
+            setError('Add at least one child')
+        }
     };
 
     const googleProvider = new GoogleAuthProvider();
@@ -205,6 +223,8 @@ export default function ParentSignup(props) {
                         placeholder='Child ID'
                         dataValue={childID}
                         setDataValue={setChildID}
+                        tempChildren={tempChildren}
+                        addChild={addChild}
                         handleNext={handleNext}
                         handlePrev={handlePrev}
                         error={error}
@@ -215,22 +235,28 @@ export default function ParentSignup(props) {
     );
 }
 
-function InfoStep({ step, type, length, placeholder, dataValue, setDataValue, handleNext, handlePrev, error }) {
+
+function InfoStep({ step, type, length, placeholder, dataValue, setDataValue, addChild, handleNext, handlePrev, error }) {
     return (
         <div className="main-container info">
-            <div className="parent-signup-container info">
+            <div className="parent-signup-container">
                 <div className="title">
                     <h1>Almost there</h1>
                 </div>
-                <input
-                    className="info-input"
-                    type={type}
-                    maxLength={length}
-                    placeholder={placeholder}
-                    value={dataValue}
-                    onChange={(e) => setDataValue(e.target.value)}
-                    required
-                />
+                <div className="info-input-container">
+                    <input
+                        className="info-input"
+                        type={type}
+                        maxLength={length}
+                        placeholder={placeholder}
+                        value={dataValue}
+                        onChange={(e) => setDataValue(e.target.value)}
+                        required
+                    />
+                    {step === 4 && (
+                        <button className="add-child-button" onClick={addChild}>+</button>
+                    )}
+                </div>
                 <div className="signup-form-buttons">
                     {step > 1 && <button className="signup-form-submit-btn step" onClick={handlePrev}>Back</button>}
                     <button className="signup-form-submit-btn step" onClick={handleNext}>Next</button>
