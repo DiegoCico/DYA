@@ -60,10 +60,10 @@ export default function ParentSignup(props) {
         return !querySnapshot.empty;
     };
 
-    const initializeUser = async (user) => {
+    const initializeUser = async (id) => {
         const uniqueId = generateUniqueId();
-        await setDoc(doc(db, 'parents', user.uid), {
-            email: user.email,
+        await setDoc(doc(db, 'parents', id), {
+            email: email,
             name: name,
             age: age,
             childID: childID,
@@ -97,6 +97,7 @@ export default function ParentSignup(props) {
     };
 
     const handleCompleteSignUp = async () => {
+        await initializeUser(userId);
         navigate(`/parenthub/${userId}`);
     };
 
@@ -106,10 +107,10 @@ export default function ParentSignup(props) {
         try {
             const res = await signInWithPopup(auth, googleProvider);
             const user = res.user;
-            
-            await initializeUser(user);
+            console.log(user.displayName)
             setUserId(user.uid);
             setName(user.displayName || "");
+            setEmail(user.email)
             setStep(3);
         } catch (error) {
             setError(error.message);
