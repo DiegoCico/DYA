@@ -120,11 +120,11 @@
 
 .progress-bar-outline {
     width: 90%;
-    height: 20px; /* Adjust the height as needed */
-    border: 2px solid gray; /* Adjust the border color as needed */
-    border-radius: 5px; /* Optional: to give rounded corners */
-    overflow: hidden; /* Ensure inner bar stays within the outline */
-    background-color: #f3f3f3; /* Background color for the outline */
+    height: 20px;
+    border: 2px solid gray;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #f3f3f3;
 }
 
 .progress-bar {
@@ -135,12 +135,13 @@
 }
 
 .close-btn {
-    color: black;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
+    padding: 10px 10px;
+    font-size: 16px;
     cursor: pointer;
+    background-color: #FF7F50;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    margin: 0 10px;
 }
