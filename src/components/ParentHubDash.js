@@ -43,9 +43,9 @@ export default function ParentsHubDash(props) {
                     <button><i className="fa-solid fa-plus"></i></button>
                 </div>
             </div>
-            <div className="add-child-pop-up">
+            {/* <div className="add-child-pop-up">
                 <div className="popup-overlay"></div>
-            </div>
+            </div> */}
         </div>
     )
 }
