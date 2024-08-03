@@ -166,6 +166,40 @@ html, body {
     color: #383838;
 }
 
+.add-child-button {
+    height: 150px;
+    width: 60px;
+}
+
+.add-child-button button {
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+    border-color: #383838;
+    opacity: 50%;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.add-child-button button i {
+    font-size: 25px;
+    color: #383838;
+    opacity: 50%;
+    transition: color 0.3s ease;
+}
+
+.add-child-button button:hover {
+    background-color: #383838;
+    border: none;
+    opacity: 100%;
+}
+
+.add-child-button button:hover i {
+    color: #FFFFFF;
+    opacity: 100%;
+}
+
 /* ---CSS for profile content--- */
 .parent-hub-profile-main-container {
     background-color: none;

@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import '../css/ParentHub.css';
 
 export default function ParentsHubDash(props) {
     const { userId, children } = props
+    const [showAddChildPopUp, setShowAddChildPopUp] = useState(false)
+
+    const handleAddChildClick = () => {
+        setShowAddChildPopUp(!showAddChildPopUp)
+    }
 
     return (
         <div className="parent-hub-main-container">
@@ -34,6 +39,12 @@ export default function ParentsHubDash(props) {
                         </div>
                     </div>
                 ))}
+                <div className="add-child-button">
+                    <button><i className="fa-solid fa-plus"></i></button>
+                </div>
+            </div>
+            <div className="add-child-pop-up">
+                <div className="popup-overlay"></div>
             </div>
         </div>
     )
