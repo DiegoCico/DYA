@@ -1,13 +1,9 @@
 import React, { useState } from "react";
 import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import '../css/Signup.css';
 import ChildSignup from "./ChildSignup";
-
-const generateUniqueId = () => {
-    return Math.random().toString(36).substring(2, 12);
-};
 
 export default function NewLogin(props) {
     const { handleRouteChange, toggleSignUpPopUp, toggleLoginPopUp } = props;
@@ -16,6 +12,7 @@ export default function NewLogin(props) {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [showSignUpForm, setShowSignUpForm] = useState(false);
+    const [showGoogleErrorPopup, setShowGoogleErrorPopup] = useState(false); 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -48,7 +45,6 @@ export default function NewLogin(props) {
         try {
             const res = await signInWithPopup(auth, googleProvider);
             const user = res.user;
-            console.log(user)
             const userDocRef = doc(db, 'users', user.uid);
             const userDocSnap = await getDoc(userDocRef);
             const parentDocRef = doc(db, 'parents', user.uid);
@@ -56,21 +52,19 @@ export default function NewLogin(props) {
             
             if (!userDocSnap.exists() && !parentDocSnap.exists()) {
                 setShowSignUpForm(true);
-                toggleLoginPopUp(); // Hide the login pop-up
-                console.log('new account')
+                setShowGoogleErrorPopup(true);
+                toggleLoginPopUp(); 
             } else {
-                let fetchedData
+                let fetchedData;
                 if (parentDocSnap.exists()) {
-                    fetchedData = parentDocSnap.data()
+                    fetchedData = parentDocSnap.data();
                 } else if (userDocSnap.exists()) {
-                    fetchedData = userDocSnap.data()
+                    fetchedData = userDocSnap.data();
                 }
 
                 if (fetchedData.isParent) {
-                    console.log('parent')
                     handleRouteChange(`/parenthub/${user.uid}`);
                 } else {
-                    console.log('not parent')
                     handleRouteChange(`/roadmap/${user.uid}`);
                 }
             }
@@ -78,7 +72,7 @@ export default function NewLogin(props) {
             setError(error.message || 'Login with Google failed. Please try again.');
         }
     };
-            
+
     return (
         <div className="child-signup-container">
             <div className="title">
@@ -120,6 +114,15 @@ export default function NewLogin(props) {
                     </div>
                 </form>
             </div>
+            {showGoogleErrorPopup && (
+                <div className="popup">
+                    <div className="popup-inner">
+                        <h3>Account Not Found</h3>
+                        <p>No account found with the provided Google credentials. Please sign up.</p>
+                        <button onClick={() => setShowGoogleErrorPopup(false)}>Close</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
