@@ -5,7 +5,7 @@ import { signOut } from "firebase/auth";
 import UserProfile from "../pages/UserProfile";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 export default function UserProfileSidebar({ userData }) {
     const { uid } = useParams();
@@ -85,7 +85,9 @@ export default function UserProfileSidebar({ userData }) {
                 </div>
             </div>
             <div className="btn-container">
-                <button onClick={() => handleRouteClick(`/roadmap/${uid}`)}>Roadmap</button>
+            <button onClick={() => handleRouteClick(`/roadmap/${uid}`)}>Roadmap</button>
+                <button onClick={() => handleRouteClick(`/pratice/${uid}`)}>Pratice</button>
+                <button onClick={() => handleRouteClick(`/ranking/${uid}`)}>Ranking</button>
                 <button onClick={toggleUserProfile}>Profile</button>
                 <button className="logout-btn" onClick={handleSignOut}>
                     <i className="fa-solid fa-arrow-right-from-bracket"></i>

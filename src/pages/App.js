@@ -10,7 +10,8 @@ import Footer from '../components/Footer';
 import LanguageSlider from '../components/LanguageSlider';
 import MascotSection from '../components/MascotSection';
 import Lessons from "./Lessons";
-import ParentHub from "./ParentHub"
+import ParentHub from "./ParentHub";
+import Pratice from "./Pratice"
 
 function App() {
   const navigate = useNavigate();
@@ -122,6 +123,7 @@ function App() {
         <Route path='/signup/child' element={<ChildSignup handleRouteChange={handleRouteChange} />} />
         <Route path="/parenthub/:userId" element={<ParentHub />} />
         <Route path="/roadmap/:uid" element={<Roadmap />} />
+        <Route path="/pratice/:uid" element={<Pratice />} />
         <Route path="/activity/:uid/:activityTitle/:activityOrder" element={<Activity />} />
         <Route path="/lessons/:uid/:language/:lessonTitle" element={<Lessons />} />
       </Routes>

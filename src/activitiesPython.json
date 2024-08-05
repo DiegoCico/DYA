@@ -8,37 +8,49 @@
           "id": "q1",
           "codingQuestion": "Write a Python function to add two numbers.",
           "functionName": "add",
-          "lesson": "Addition Function"
+          "lesson": "Addition Function",
+          "difficulty": "Easy",
+          "xp": 10
         },
         {
           "id": "q2",
           "codingQuestion": "Write a Python function to subtract two numbers.",
           "functionName": "subtract",
-          "lesson": "Subtraction Function"
+          "lesson": "Subtraction Function",
+          "difficulty": "Easy",
+          "xp": 10
         },
         {
           "id": "q3",
           "codingQuestion": "Write a Python function to multiply two numbers.",
           "functionName": "multiply",
-          "lesson": "Multiplication Function"
+          "lesson": "Multiplication Function",
+          "difficulty": "Easy",
+          "xp": 10
         },
         {
           "id": "q4",
           "codingQuestion": "Write a Python function to divide two numbers.",
           "functionName": "divide",
-          "lesson": "Division Function"
+          "lesson": "Division Function",
+          "difficulty": "Easy",
+          "xp": 10
         },
         {
           "id": "q5",
           "codingQuestion": "Write a Python function to find the power of a number.",
           "functionName": "power",
-          "lesson": "Power Function"
+          "lesson": "Power Function",
+          "difficulty": "Medium",
+          "xp": 20
         },
         {
           "id": "q6",
           "codingQuestion": "Write a Python function to find the modulo of two numbers.",
           "functionName": "mod",
-          "lesson": "Modulo Function"
+          "lesson": "Modulo Function",
+          "difficulty": "Medium",
+          "xp": 20
         }
       ]
     },
@@ -49,7 +61,9 @@
         {
           "id": "q7",
           "codingQuestion": "Write a Python function to concatenate two strings.",
-          "functionName": "concat_strings"
+          "functionName": "concat_strings",
+          "difficulty": "Easy",
+          "xp": 10
         }
       ]
     },
@@ -60,17 +74,23 @@
         {
           "id": "q8",
           "codingQuestion": "Write a Python function to find the maximum of two numbers.",
-          "functionName": "find_max"
+          "functionName": "find_max",
+          "difficulty": "Easy",
+          "xp": 10
         },
         {
           "id": "q9",
           "codingQuestion": "Write a Python function to check if a number is even.",
-          "functionName": "is_even"
+          "functionName": "is_even",
+          "difficulty": "Easy",
+          "xp": 10
         },
         {
           "id": "q10",
           "codingQuestion": "Write a Python function to calculate the factorial of a number.",
-          "functionName": "factorial"
+          "functionName": "factorial",
+          "difficulty": "Hard",
+          "xp": 30
         }
       ]
     },
