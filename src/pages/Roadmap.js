@@ -147,7 +147,7 @@ function Roadmap() {
                 {(rowIndex % 2 === 1 ? row.reverse() : row).map((activity, index) => (
                   <div className="activity-container" key={index}>
                     <div className="activity-title">
-                      <h2>{index} {activity.title}</h2>
+                      <h2>{activity.title}</h2>
                     </div>
                     {activity.order > userData.currentActivity ? (
                       <p className="locked-message">Locked</p>
