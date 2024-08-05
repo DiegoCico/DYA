@@ -1,73 +1,434 @@
 {
-    "activities": [
-      {
-        "title": "Basic Math Operations",
-        "description": "Complete these coding tasks to test basic math operations.",
-        "questions": [
-          {
-            "id": "q1",
-            "codingQuestion": "Write a JavaScript function to add two numbers.",
-            "functionName": "add"
-          },
-          {
-            "id": "q2",
-            "codingQuestion": "Write a JavaScript function to subtract two numbers.",
-            "functionName": "subtract"
-          },
-          {
-            "id": "q3",
-            "codingQuestion": "Write a JavaScript function to multiply two numbers.",
-            "functionName": "multiply"
-          },
-          {
-            "id": "q4",
-            "codingQuestion": "Write a JavaScript function to divide two numbers.",
-            "functionName": "divide"
-          },
-          {
-            "id": "q5",
-            "codingQuestion": "Write a JavaScript function to find the power of a number.",
-            "functionName": "power"
-          },
-          {
-            "id": "q6",
-            "codingQuestion": "Write a JavaScript function to find the modulo of two numbers.",
-            "functionName": "mod"
-          }
-        ]
-      },
-      {
-        "title": "String Operations",
-        "description": "Complete these coding tasks to test string operations.",
-        "questions": [
-          {
-            "id": "q7",
-            "codingQuestion": "Write a JavaScript function to concatenate two strings.",
-            "functionName": "concatStrings"
-          }
-        ]
-      },
-      {
-        "title": "Number Properties",
-        "description": "Complete these coding tasks to test number properties.",
-        "questions": [
-          {
-            "id": "q8",
-            "codingQuestion": "Write a JavaScript function to find the maximum of two numbers.",
-            "functionName": "findMax"
-          },
-          {
-            "id": "q9",
-            "codingQuestion": "Write a JavaScript function to check if a number is even.",
-            "functionName": "isEven"
-          },
-          {
-            "id": "q10",
-            "codingQuestion": "Write a JavaScript function to calculate the factorial of a number.",
-            "functionName": "factorial"
-          }
-        ]
-      }
-    ]
-  }
-  
+  "activities": [
+    {
+      "title": "JavaScript Basic Math Operations",
+      "description": "Complete these coding tasks to test basic math operations in JavaScript.",
+      "questions": [
+        {
+          "id": "q1",
+          "codingQuestion": "Write a JavaScript function to add two numbers.",
+          "functionName": "add",
+          "lesson": "Addition Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q2",
+          "codingQuestion": "Write a JavaScript function to subtract two numbers.",
+          "functionName": "subtract",
+          "lesson": "Subtraction Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q3",
+          "codingQuestion": "Write a JavaScript function to multiply two numbers.",
+          "functionName": "multiply",
+          "lesson": "Multiplication Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q4",
+          "codingQuestion": "Write a JavaScript function to divide two numbers.",
+          "functionName": "divide",
+          "lesson": "Division Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q5",
+          "codingQuestion": "Write a JavaScript function to find the power of a number.",
+          "functionName": "power",
+          "lesson": "Power Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q6",
+          "codingQuestion": "Write a JavaScript function to find the modulo of two numbers.",
+          "functionName": "mod",
+          "lesson": "Modulo Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q7",
+          "codingQuestion": "Write a JavaScript function to find the maximum of two numbers.",
+          "functionName": "findMax",
+          "lesson": "Max Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q8",
+          "codingQuestion": "Write a JavaScript function to check if a number is even.",
+          "functionName": "isEven",
+          "lesson": "Even Check Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q9",
+          "codingQuestion": "Write a JavaScript function to calculate the factorial of a number.",
+          "functionName": "factorial",
+          "lesson": "Factorial Function",
+          "difficulty": "Hard",
+          "xp": 30
+        },
+        {
+          "id": "q10",
+          "codingQuestion": "Write a JavaScript function to check if a number is prime.",
+          "functionName": "isPrime",
+          "lesson": "Prime Check Function",
+          "difficulty": "Medium",
+          "xp": 20
+        }
+      ]
+    },
+    {
+      "title": "JavaScript String Operations",
+      "description": "Complete these coding tasks to test string operations in JavaScript.",
+      "questions": [
+        {
+          "id": "q11",
+          "codingQuestion": "Write a JavaScript function to concatenate two strings.",
+          "functionName": "concatStrings",
+          "lesson": "Concatenation Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q12",
+          "codingQuestion": "Write a JavaScript function to find the length of a string.",
+          "functionName": "stringLength",
+          "lesson": "Length Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q13",
+          "codingQuestion": "Write a JavaScript function to reverse a string.",
+          "functionName": "reverseString",
+          "lesson": "Reversal Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q14",
+          "codingQuestion": "Write a JavaScript function to convert a string to uppercase.",
+          "functionName": "toUpperCase",
+          "lesson": "Uppercase Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q15",
+          "codingQuestion": "Write a JavaScript function to convert a string to lowercase.",
+          "functionName": "toLowerCase",
+          "lesson": "Lowercase Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q16",
+          "codingQuestion": "Write a JavaScript function to check if a string is a palindrome.",
+          "functionName": "isPalindrome",
+          "lesson": "Palindrome Check Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q17",
+          "codingQuestion": "Write a JavaScript function to replace a substring within a string.",
+          "functionName": "replaceSubstring",
+          "lesson": "Replace Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q18",
+          "codingQuestion": "Write a JavaScript function to find a substring within a string.",
+          "functionName": "findSubstring",
+          "lesson": "Find Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q19",
+          "codingQuestion": "Write a JavaScript function to split a string by a delimiter.",
+          "functionName": "splitString",
+          "lesson": "Split Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q20",
+          "codingQuestion": "Write a JavaScript function to join a list of strings into a single string with a delimiter.",
+          "functionName": "joinStrings",
+          "lesson": "Join Function",
+          "difficulty": "Medium",
+          "xp": 20
+        }
+      ]
+    },
+    {
+      "title": "JavaScript Array Operations",
+      "description": "Complete these coding tasks to test array operations in JavaScript.",
+      "questions": [
+        {
+          "id": "q21",
+          "codingQuestion": "Write a JavaScript function to add an item to an array.",
+          "functionName": "addItem",
+          "lesson": "Add Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q22",
+          "codingQuestion": "Write a JavaScript function to remove an item from an array.",
+          "functionName": "removeItem",
+          "lesson": "Remove Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q23",
+          "codingQuestion": "Write a JavaScript function to find the index of an item in an array.",
+          "functionName": "findIndex",
+          "lesson": "Index Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q24",
+          "codingQuestion": "Write a JavaScript function to sort an array.",
+          "functionName": "sortArray",
+          "lesson": "Sort Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q25",
+          "codingQuestion": "Write a JavaScript function to reverse an array.",
+          "functionName": "reverseArray",
+          "lesson": "Reverse Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q26",
+          "codingQuestion": "Write a JavaScript function to merge two arrays.",
+          "functionName": "mergeArrays",
+          "lesson": "Merge Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q27",
+          "codingQuestion": "Write a JavaScript function to find the maximum value in an array.",
+          "functionName": "maxValue",
+          "lesson": "Max Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q28",
+          "codingQuestion": "Write a JavaScript function to find the minimum value in an array.",
+          "functionName": "minValue",
+          "lesson": "Min Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q29",
+          "codingQuestion": "Write a JavaScript function to count the number of occurrences of an item in an array.",
+          "functionName": "countOccurrences",
+          "lesson": "Count Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q30",
+          "codingQuestion": "Write a JavaScript function to remove duplicates from an array.",
+          "functionName": "removeDuplicates",
+          "lesson": "Remove Duplicates Function",
+          "difficulty": "Medium",
+          "xp": 20
+        }
+      ]
+    },
+    {
+      "title": "JavaScript Object Operations",
+      "description": "Complete these coding tasks to test object operations in JavaScript.",
+      "questions": [
+        {
+          "id": "q31",
+          "codingQuestion": "Write a JavaScript function to add a key-value pair to an object.",
+          "functionName": "addKeyValue",
+          "lesson": "Add Key-Value Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q32",
+          "codingQuestion": "Write a JavaScript function to remove a key-value pair from an object.",
+          "functionName": "removeKeyValue",
+          "lesson": "Remove Key-Value Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q33",
+          "codingQuestion": "Write a JavaScript function to find a value by key in an object.",
+          "functionName": "findValue",
+          "lesson": "Find Value Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q34",
+          "codingQuestion": "Write a JavaScript function to merge two objects.",
+          "functionName": "mergeObjects",
+          "lesson": "Merge Objects Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q35",
+          "codingQuestion": "Write a JavaScript function to check if a key exists in an object.",
+          "functionName": "keyExists",
+          "lesson": "Key Exists Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q36",
+          "codingQuestion": "Write a JavaScript function to get all keys in an object.",
+          "functionName": "getKeys",
+          "lesson": "Get Keys Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q37",
+          "codingQuestion": "Write a JavaScript function to get all values in an object.",
+          "functionName": "getValues",
+          "lesson": "Get Values Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q38",
+          "codingQuestion": "Write a JavaScript function to find the key with the maximum value in an object.",
+          "functionName": "maxValueKey",
+          "lesson": "Max Value Key Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q39",
+          "codingQuestion": "Write a JavaScript function to invert an object (swap keys and values).",
+          "functionName": "invertObject",
+          "lesson": "Invert Object Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q40",
+          "codingQuestion": "Write a JavaScript function to sort an object by its keys.",
+          "functionName": "sortByKeys",
+          "lesson": "Sort by Keys Function",
+          "difficulty": "Medium",
+          "xp": 20
+        }
+      ]
+    },
+    {
+      "title": "JavaScript Set Operations",
+      "description": "Complete these coding tasks to test set operations in JavaScript.",
+      "questions": [
+        {
+          "id": "q41",
+          "codingQuestion": "Write a JavaScript function to add an element to a set.",
+          "functionName": "addElement",
+          "lesson": "Add Element Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q42",
+          "codingQuestion": "Write a JavaScript function to remove an element from a set.",
+          "functionName": "removeElement",
+          "lesson": "Remove Element Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q43",
+          "codingQuestion": "Write a JavaScript function to find the union of two sets.",
+          "functionName": "unionSets",
+          "lesson": "Union Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q44",
+          "codingQuestion": "Write a JavaScript function to find the intersection of two sets.",
+          "functionName": "intersectionSets",
+          "lesson": "Intersection Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q45",
+          "codingQuestion": "Write a JavaScript function to find the difference between two sets.",
+          "functionName": "differenceSets",
+          "lesson": "Difference Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q46",
+          "codingQuestion": "Write a JavaScript function to check if a set is a subset of another set.",
+          "functionName": "isSubset",
+          "lesson": "Subset Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q47",
+          "codingQuestion": "Write a JavaScript function to check if a set is a superset of another set.",
+          "functionName": "isSuperset",
+          "lesson": "Superset Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q48",
+          "codingQuestion": "Write a JavaScript function to clear a set.",
+          "functionName": "clearSet",
+          "lesson": "Clear Set Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q49",
+          "codingQuestion": "Write a JavaScript function to find the length of a set.",
+          "functionName": "lengthSet",
+          "lesson": "Length Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q50",
+          "codingQuestion": "Write a JavaScript function to convert an array to a set.",
+          "functionName": "arrayToSet",
+          "lesson": "Convert Array Function",
+          "difficulty": "Easy",
+          "xp": 10
+        }
+      ]
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 {
   "activities": [
     {
-      "title": "Basic Math Operations",
-      "description": "Complete these coding tasks to test basic math operations.",
+      "title": "Python Basic Math Operations",
+      "description": "Complete these coding tasks to test basic math operations in Python.",
       "questions": [
         {
           "id": "q1",
@@ -51,63 +51,384 @@
           "lesson": "Modulo Function",
           "difficulty": "Medium",
           "xp": 20
-        }
-      ]
-    },
-    {
-      "title": "String Operations",
-      "description": "Complete these coding tasks to test string operations.",
-      "questions": [
+        },
         {
           "id": "q7",
-          "codingQuestion": "Write a Python function to concatenate two strings.",
-          "functionName": "concat_strings",
-          "difficulty": "Easy",
-          "xp": 10
-        }
-      ]
-    },
-    {
-      "title": "Number Properties",
-      "description": "Complete these coding tasks to test number properties.",
-      "questions": [
-        {
-          "id": "q8",
           "codingQuestion": "Write a Python function to find the maximum of two numbers.",
           "functionName": "find_max",
+          "lesson": "Max Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q8",
+          "codingQuestion": "Write a Python function to check if a number is even.",
+          "functionName": "is_even",
+          "lesson": "Even Check Function",
           "difficulty": "Easy",
           "xp": 10
         },
         {
           "id": "q9",
-          "codingQuestion": "Write a Python function to check if a number is even.",
-          "functionName": "is_even",
-          "difficulty": "Easy",
-          "xp": 10
+          "codingQuestion": "Write a Python function to calculate the factorial of a number.",
+          "functionName": "factorial",
+          "lesson": "Factorial Function",
+          "difficulty": "Hard",
+          "xp": 30
         },
         {
           "id": "q10",
-          "codingQuestion": "Write a Python function to calculate the factorial of a number.",
-          "functionName": "factorial",
-          "difficulty": "Hard",
-          "xp": 30
+          "codingQuestion": "Write a Python function to check if a number is prime.",
+          "functionName": "is_prime",
+          "lesson": "Prime Check Function",
+          "difficulty": "Medium",
+          "xp": 20
         }
       ]
     },
     {
-      "title": "Another Section 4"
+      "title": "Python String Operations",
+      "description": "Complete these coding tasks to test string operations in Python.",
+      "questions": [
+        {
+          "id": "q11",
+          "codingQuestion": "Write a Python function to concatenate two strings.",
+          "functionName": "concat_strings",
+          "lesson": "Concatenation Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q12",
+          "codingQuestion": "Write a Python function to find the length of a string.",
+          "functionName": "string_length",
+          "lesson": "Length Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q13",
+          "codingQuestion": "Write a Python function to reverse a string.",
+          "functionName": "reverse_string",
+          "lesson": "Reversal Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q14",
+          "codingQuestion": "Write a Python function to convert a string to uppercase.",
+          "functionName": "to_uppercase",
+          "lesson": "Uppercase Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q15",
+          "codingQuestion": "Write a Python function to convert a string to lowercase.",
+          "functionName": "to_lowercase",
+          "lesson": "Lowercase Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q16",
+          "codingQuestion": "Write a Python function to check if a string is a palindrome.",
+          "functionName": "is_palindrome",
+          "lesson": "Palindrome Check Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q17",
+          "codingQuestion": "Write a Python function to replace a substring within a string.",
+          "functionName": "replace_substring",
+          "lesson": "Replace Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q18",
+          "codingQuestion": "Write a Python function to find a substring within a string.",
+          "functionName": "find_substring",
+          "lesson": "Find Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q19",
+          "codingQuestion": "Write a Python function to split a string by a delimiter.",
+          "functionName": "split_string",
+          "lesson": "Split Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q20",
+          "codingQuestion": "Write a Python function to join a list of strings into a single string with a delimiter.",
+          "functionName": "join_strings",
+          "lesson": "Join Function",
+          "difficulty": "Medium",
+          "xp": 20
+        }
+      ]
     },
     {
-      "title": "Another Section 5"
+      "title": "Python List Operations",
+      "description": "Complete these coding tasks to test list operations in Python.",
+      "questions": [
+        {
+          "id": "q21",
+          "codingQuestion": "Write a Python function to append an item to a list.",
+          "functionName": "append_item",
+          "lesson": "Append Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q22",
+          "codingQuestion": "Write a Python function to remove an item from a list.",
+          "functionName": "remove_item",
+          "lesson": "Remove Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q23",
+          "codingQuestion": "Write a Python function to find the index of an item in a list.",
+          "functionName": "find_index",
+          "lesson": "Index Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q24",
+          "codingQuestion": "Write a Python function to sort a list.",
+          "functionName": "sort_list",
+          "lesson": "Sort Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q25",
+          "codingQuestion": "Write a Python function to reverse a list.",
+          "functionName": "reverse_list",
+          "lesson": "Reverse Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q26",
+          "codingQuestion": "Write a Python function to merge two lists.",
+          "functionName": "merge_lists",
+          "lesson": "Merge Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q27",
+          "codingQuestion": "Write a Python function to find the maximum value in a list.",
+          "functionName": "max_value",
+          "lesson": "Max Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q28",
+          "codingQuestion": "Write a Python function to find the minimum value in a list.",
+          "functionName": "min_value",
+          "lesson": "Min Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q29",
+          "codingQuestion": "Write a Python function to count the number of occurrences of an item in a list.",
+          "functionName": "count_occurrences",
+          "lesson": "Count Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q30",
+          "codingQuestion": "Write a Python function to remove duplicates from a list.",
+          "functionName": "remove_duplicates",
+          "lesson": "Remove Duplicates Function",
+          "difficulty": "Medium",
+          "xp": 20
+        }
+      ]
     },
     {
-      "title": "Another Section 6"
+      "title": "Python Dictionary Operations",
+      "description": "Complete these coding tasks to test dictionary operations in Python.",
+      "questions": [
+        {
+          "id": "q31",
+          "codingQuestion": "Write a Python function to add a key-value pair to a dictionary.",
+          "functionName": "add_kv",
+          "lesson": "Add Key-Value Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q32",
+          "codingQuestion": "Write a Python function to remove a key-value pair from a dictionary.",
+          "functionName": "remove_kv",
+          "lesson": "Remove Key-Value Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q33",
+          "codingQuestion": "Write a Python function to find a value by key in a dictionary.",
+          "functionName": "find_value",
+          "lesson": "Find Value Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q34",
+          "codingQuestion": "Write a Python function to merge two dictionaries.",
+          "functionName": "merge_dicts",
+          "lesson": "Merge Dictionaries Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q35",
+          "codingQuestion": "Write a Python function to check if a key exists in a dictionary.",
+          "functionName": "key_exists",
+          "lesson": "Key Exists Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q36",
+          "codingQuestion": "Write a Python function to get all keys in a dictionary.",
+          "functionName": "get_keys",
+          "lesson": "Get Keys Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q37",
+          "codingQuestion": "Write a Python function to get all values in a dictionary.",
+          "functionName": "get_values",
+          "lesson": "Get Values Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q38",
+          "codingQuestion": "Write a Python function to find the key with the maximum value in a dictionary.",
+          "functionName": "max_value_key",
+          "lesson": "Max Value Key Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q39",
+          "codingQuestion": "Write a Python function to invert a dictionary (swap keys and values).",
+          "functionName": "invert_dict",
+          "lesson": "Invert Dictionary Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q40",
+          "codingQuestion": "Write a Python function to sort a dictionary by its keys.",
+          "functionName": "sort_by_keys",
+          "lesson": "Sort by Keys Function",
+          "difficulty": "Medium",
+          "xp": 20
+        }
+      ]
     },
     {
-      "title": "Another Section 7"
-    },
-    {
-      "title": "Another Section 8"
+      "title": "Python Set Operations",
+      "description": "Complete these coding tasks to test set operations in Python.",
+      "questions": [
+        {
+          "id": "q41",
+          "codingQuestion": "Write a Python function to add an element to a set.",
+          "functionName": "add_element",
+          "lesson": "Add Element Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q42",
+          "codingQuestion": "Write a Python function to remove an element from a set.",
+          "functionName": "remove_element",
+          "lesson": "Remove Element Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q43",
+          "codingQuestion": "Write a Python function to find the union of two sets.",
+          "functionName": "union_sets",
+          "lesson": "Union Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q44",
+          "codingQuestion": "Write a Python function to find the intersection of two sets.",
+          "functionName": "intersection_sets",
+          "lesson": "Intersection Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q45",
+          "codingQuestion": "Write a Python function to find the difference between two sets.",
+          "functionName": "difference_sets",
+          "lesson": "Difference Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q46",
+          "codingQuestion": "Write a Python function to check if a set is a subset of another set.",
+          "functionName": "is_subset",
+          "lesson": "Subset Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q47",
+          "codingQuestion": "Write a Python function to check if a set is a superset of another set.",
+          "functionName": "is_superset",
+          "lesson": "Superset Function",
+          "difficulty": "Medium",
+          "xp": 20
+        },
+        {
+          "id": "q48",
+          "codingQuestion": "Write a Python function to clear a set.",
+          "functionName": "clear_set",
+          "lesson": "Clear Set Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q49",
+          "codingQuestion": "Write a Python function to find the length of a set.",
+          "functionName": "length_set",
+          "lesson": "Length Function",
+          "difficulty": "Easy",
+          "xp": 10
+        },
+        {
+          "id": "q50",
+          "codingQuestion": "Write a Python function to convert a list to a set.",
+          "functionName": "list_to_set",
+          "lesson": "Convert List Function",
+          "difficulty": "Easy",
+          "xp": 10
+        }
+      ]
     }
   ]
 }
