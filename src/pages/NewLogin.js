@@ -24,7 +24,11 @@ export default function NewLogin(props) {
             const docSnap = await getDoc(docRef);
 
             if (!docSnap.exists()) {
-                setError('User does not exist, create a new account');
+                alert('User does not exist, please sign up!');
+                toggleLoginPopUp(); // Close the login popup
+                setTimeout(() => {
+                    toggleSignUpPopUp(); // Open the signup popup
+                }, 300); 
                 return;
             }
 
@@ -54,6 +58,9 @@ export default function NewLogin(props) {
                 setShowSignUpForm(true);
                 setShowGoogleErrorPopup(true);
                 toggleLoginPopUp(); 
+                setTimeout(() => {
+                    toggleSignUpPopUp(); // Open the signup popup
+                }, 300); // Adding a delay to ensure the login popup fully closes before opening signup
             } else {
                 let fetchedData;
                 if (parentDocSnap.exists()) {
