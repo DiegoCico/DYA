@@ -59,12 +59,12 @@ function Roadmap() {
             setShowAnimation(true);
             const activityDocRef = doc(db, activitiesCollectionName, firstActivity.id);
             await updateDoc(activityDocRef, { unlocked: true });
-            setTimeout(() => setShowAnimation(false), 3000);
+            setTimeout(() => setShowAnimation(false), 600);
           }
         }
         
         // Trigger fade-in animation
-        setTimeout(() => setFadeIn(true), 1000); // Delay to allow CSS class to apply properly
+        setTimeout(() => setFadeIn(true), 400); // Delay to allow CSS class to apply properly
       } catch (err) {
         setError(err.message);
       } finally {
