@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import '../css/ParentHub.css';
 import ParentHubAddChildPopUp from "./ParentHubAddChildPopUp";
+import DeleteChildPopUp from "./DeleteChildPopUp";
 
 export default function ParentsHubDash(props) {
-    const { userId, children, setChildren, getUserData, getChildData } = props
+    const { userId, children, getUserData, handleDeleteChild } = props
     const [showAddChildPopUp, setShowAddChildPopUp] = useState(false)
+    const [showDeleteChildPopUp, setShowDeleteChildPopUp] = useState(false)
+    const [childToDeleteID, setChildToDeleteID] = useState('')
 
     const handleChildPopUp = () => {
         setShowAddChildPopUp(!showAddChildPopUp)
+    }
+
+    const handleDeletePopUp = (id) => {
+        setShowDeleteChildPopUp(!showDeleteChildPopUp)
     }
 
     return (
@@ -38,6 +45,7 @@ export default function ParentsHubDash(props) {
                             </div>
                             <div className="child-name-container">
                                 <p>{child.name}</p>
+                                <button onClick={handleDeletePopUp}><i className="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
                     ))
@@ -54,6 +62,10 @@ export default function ParentsHubDash(props) {
                         <ParentHubAddChildPopUp userId={userId} children={children} getUserData={getUserData} setShowAddChildPopUp={setShowAddChildPopUp}/>
                     </div>
                 </div>
+            )}
+
+            {showDeleteChildPopUp && (
+                <DeleteChildPopUp />
             )}
         </div>
     )

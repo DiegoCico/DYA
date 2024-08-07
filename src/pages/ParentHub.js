@@ -4,7 +4,7 @@ import '../css/ParentHub.css';
 import ParentHubSidebar from '../components/ParentHubSidebar';
 import ParentHubDash from '../components/ParentHubDash';
 import ParentHubProfile from '../components/ParentHubProfile';
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, doc, getDoc, updateDoc, getDocs, query, where, arrayRemove } from 'firebase/firestore';
 import { db } from "../firebase";
 
 export default function ParentHub() {
@@ -48,6 +48,10 @@ export default function ParentHub() {
         setChildren(tempChildren)
     }
 
+    const handleDeleteChild = async(childID) => {
+        console.log(childID)
+    }
+
     useEffect(() => {
         const getData = async() => {
             await getUserData()
@@ -68,7 +72,7 @@ export default function ParentHub() {
         <div className="parent-hub-page">
             <ParentHubSidebar openDash={openDash} openProfile={openProfile}/>
             { dashOpen && (
-                <ParentHubDash userId={userId} children={children} setChildren={setChildren} getUserData={getUserData} getChildData={getChildData}/>
+                <ParentHubDash userId={userId} children={children} getUserData={getUserData} handleDeleteChild={handleDeleteChild} />
             )}
             { profileOpen && (
                 <ParentHubProfile/>
