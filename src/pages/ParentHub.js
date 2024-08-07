@@ -48,10 +48,6 @@ export default function ParentHub() {
         setChildren(tempChildren)
     }
 
-    const handleDeleteChild = async(childID) => {
-        console.log(childID)
-    }
-
     useEffect(() => {
         const getData = async() => {
             await getUserData()
@@ -72,7 +68,7 @@ export default function ParentHub() {
         <div className="parent-hub-page">
             <ParentHubSidebar openDash={openDash} openProfile={openProfile}/>
             { dashOpen && (
-                <ParentHubDash userId={userId} children={children} getUserData={getUserData} handleDeleteChild={handleDeleteChild} />
+                <ParentHubDash userId={userId} children={children} getUserData={getUserData} getChildData={getChildData} />
             )}
             { profileOpen && (
                 <ParentHubProfile/>

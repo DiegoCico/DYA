@@ -216,7 +216,7 @@ html, body {
 }
 
 /* ---CSS for add child pop up--- */
-.add-child-pop-up-overlay {
+.add-child-pop-up-overlay, .delete-child-pop-up-overlay{
     position: fixed;
     top: 0;
     left: 0;
@@ -229,7 +229,7 @@ html, body {
     z-index: 1000;
 }
 
-.child-popup-content {
+.child-popup-content, .delete-popup-content {
     background-color: white;
     padding: 10px;
     border-radius: 10px;
@@ -271,6 +271,26 @@ html, body {
 .error-container p {
     margin: 15px 5px 0 5px;
     color: rgb(255, 101, 101);
+}
+
+.delete-popup-content .main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 3rem;
+}
+
+.delete-popup-content .main-container button {
+    margin-top: 0;
+}
+
+.delete-popup-content .main-container .delete-button {
+    color: rgb(255, 101, 101);
+}
+
+.delete-popup-content .main-container .delete-button:hover {
+    color: white;
+    background-color: rgb(255, 101, 101);
 }
 
 /* ---CSS for profile content--- */

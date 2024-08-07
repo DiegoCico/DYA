@@ -4,7 +4,7 @@ import ParentHubAddChildPopUp from "./ParentHubAddChildPopUp";
 import DeleteChildPopUp from "./DeleteChildPopUp";
 
 export default function ParentsHubDash(props) {
-    const { userId, children, getUserData, handleDeleteChild } = props
+    const { userId, children, getUserData, getChildData } = props
     const [showAddChildPopUp, setShowAddChildPopUp] = useState(false)
     const [showDeleteChildPopUp, setShowDeleteChildPopUp] = useState(false)
     const [childToDeleteID, setChildToDeleteID] = useState('')
@@ -15,6 +15,7 @@ export default function ParentsHubDash(props) {
 
     const handleDeletePopUp = (id) => {
         setShowDeleteChildPopUp(!showDeleteChildPopUp)
+        setChildToDeleteID(id)
     }
 
     return (
@@ -45,7 +46,7 @@ export default function ParentsHubDash(props) {
                             </div>
                             <div className="child-name-container">
                                 <p>{child.name}</p>
-                                <button onClick={handleDeletePopUp}><i className="fa-solid fa-trash"></i></button>
+                                <button onClick={() => handleDeletePopUp(child.uniqueId)}><i className="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
                     ))
@@ -65,7 +66,11 @@ export default function ParentsHubDash(props) {
             )}
 
             {showDeleteChildPopUp && (
-                <DeleteChildPopUp />
+                <div className="delete-child-pop-up-overlay" onClick={() => setShowDeleteChildPopUp(false)}>
+                    <div className="delete-popup-content" onClick={(e) => e.stopPropagation()}>
+                        <DeleteChildPopUp childID={childToDeleteID} userId={userId} setShowDeleteChildPopUp={setShowDeleteChildPopUp} getChildData={getChildData} getUserData={getUserData}/>
+                    </div>
+                </div>
             )}
         </div>
     )
