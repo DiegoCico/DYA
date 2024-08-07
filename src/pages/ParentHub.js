@@ -22,7 +22,6 @@ export default function ParentHub() {
         setProfileOpen(true)
         setDashOpen(false)
     }
-
     
     const getUserData = async() => {
         const userDocRef = doc(db, 'parents', userId)
@@ -37,6 +36,7 @@ export default function ParentHub() {
     }
     
     const getChildData = async(children) => {
+        if (children.length === 0) return
         let tempChildren = []
         for (let i=0; i<children.length; i++) {
             const q = query(collection(db, 'users'), where('uniqueId', '==', children[i]))
@@ -63,15 +63,15 @@ export default function ParentHub() {
             getData()
         }
     }, [userData])
-    
+
     return (
         <div className="parent-hub-page">
             <ParentHubSidebar openDash={openDash} openProfile={openProfile}/>
             { dashOpen && (
-                <ParentHubDash userId={userId} children={children}/>
+                <ParentHubDash userId={userId} children={children} setChildren={setChildren} getUserData={getUserData} getChildData={getChildData}/>
             )}
             { profileOpen && (
-                <ParentHubProfile />
+                <ParentHubProfile/>
             )}
         </div>
     )

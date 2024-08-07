@@ -200,6 +200,64 @@ html, body {
     opacity: 100%;
 }
 
+/* ---CSS for add child pop up--- */
+.add-child-pop-up-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.child-popup-content {
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-container input {
+    border: none;
+    background-color: #D9D9D9;
+    border-radius: 15px;
+    font-size:35px;
+    text-align: center;
+}
+
+.submit-button-container button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: large;
+    font-weight: bold;
+    border-radius: 15px;
+    padding: 5px 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.submit-button-container button:hover {
+    background-color: #3B48A8;
+    color:white;
+}
+
+.error-container p {
+    margin: 15px 5px 0 5px;
+    color: rgb(255, 101, 101);
+}
+
 /* ---CSS for profile content--- */
 .parent-hub-profile-main-container {
     background-color: none;
