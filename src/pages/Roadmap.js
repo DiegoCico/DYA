@@ -31,6 +31,13 @@ function Roadmap() {
           return;
         }
         const userData = userDocSnap.data();
+
+        // Check and set XP attribute if it doesn't exist
+        if (userData.xp === undefined) {
+          await updateDoc(userDocRef, { xp: 0 });
+          userData.xp = 0;
+        }
+
         setUserData(userData);
 
         // Check and set the current language
@@ -74,7 +81,7 @@ function Roadmap() {
 
     setTimeout(() => {
       fetchUserDataAndActivities();
-    }, 1000); // Adding a delay of 2000ms (2 seconds)
+    }, 1000); // Adding a delay of 1000ms (1 second)
   }, [uid]);
 
   if (loading) return <div className="loading">Loading...</div>;

@@ -11,7 +11,8 @@ import LanguageSlider from '../components/LanguageSlider';
 import MascotSection from '../components/MascotSection';
 import Lessons from "./Lessons";
 import ParentHub from "./ParentHub";
-import Pratice from "./Pratice"
+import Pratice from "./Pratice";
+import Ranking from "./Ranking"; 
 
 function App() {
   const navigate = useNavigate();
@@ -126,6 +127,7 @@ function App() {
         <Route path="/pratice/:uid" element={<Pratice />} />
         <Route path="/activity/:uid/:activityTitle/:activityOrder" element={<Activity />} />
         <Route path="/lessons/:uid/:language/:lessonTitle" element={<Lessons />} />
+        <Route path="/ranking/:uid" element={<Ranking />} /> {/* Add Ranking route */}
       </Routes>
     </div>
   );

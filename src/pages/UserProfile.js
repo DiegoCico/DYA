@@ -15,10 +15,10 @@ export default function UserProfile(props) {
         email: '',
         profilePicture: '',
         programmingLanguages: [],
-        currentActivity: 0
+        currentActivity: 0,
+        xp: 0 // Add xp attribute with default value 0
     });
     const [isEdit, setIsEdit] = useState(false);
-    const [test, setTest] = useState([])
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -27,14 +27,14 @@ export default function UserProfile(props) {
                 const userDocSnap = await getDoc(userDocRef);
                 if (userDocSnap.exists()) {
                     const userData = userDocSnap.data();
-                    // console.log(userData.programmingLanguages)
                     setUserFormData({
                         name: userData.name,
                         username: userData.username,
                         email: userData.email,
                         profilePicture: userData.profilePicture || `${process.env.PUBLIC_URL}/profile-avatar.png`,
                         programmingLanguages: userData.programmingLanguages || [],
-                        currentActivity: userData.currentActivity || 0
+                        currentActivity: userData.currentActivity || 0,
+                        xp: userData.xp || 0 // Fetch xp or set to 0 if it doesn't exist
                     });
                 }
             } catch (error) {
@@ -43,18 +43,16 @@ export default function UserProfile(props) {
         };
 
         const fetchTotalParts = async () => {
-            // console.log(userData.userData.programmingLanguages.length)
             try {
-                const parts = []
-                for (let i=0; i<userData.programmingLanguages.length; i++) {
-                    console.log(userData.programmingLanguages[i].langName)
+                const parts = [];
+                for (let i = 0; i < userData.programmingLanguages.length; i++) {
                     const activitiesRef = collection(db, `activities${userData.programmingLanguages[i].langName}`);
                     const activitiesSnapshot = await getDocs(activitiesRef);
                     const langSize = {
                         name: userData.programmingLanguages[i].langName,
                         totalSize: activitiesSnapshot.size
-                    }
-                    parts.push(langSize)
+                    };
+                    parts.push(langSize);
                 }
                 setTotalParts(parts);
             } catch (error) {
@@ -112,12 +110,13 @@ export default function UserProfile(props) {
     };
 
     const getLangLength = (name) => {
-        const language = totalParts.find(lang => lang.name === name)
-        return language ? language.totalSize : null
-    }
+        const language = totalParts.find(lang => lang.name === name);
+        return language ? language.totalSize : null;
+    };
+
     const getUserProgressPercent = (current, length) => {
-        return (current / length) * 100
-    }
+        return (current / length) * 100;
+    };
 
     return (
         <div className="profile-window-overlay">
@@ -163,7 +162,6 @@ export default function UserProfile(props) {
                     </div>
                     <div className="user-language-progress">
                         <h2>My progress in...</h2>
-
                         {userFormData.programmingLanguages.length > 0 ? (
                             userFormData.programmingLanguages.map((language, index) => (
                                 <div className="progress-container" key={index}>
@@ -177,6 +175,11 @@ export default function UserProfile(props) {
                         ) : (
                             <div>No languages found.</div>
                         )}
+                    </div>
+                    <div className="user-xp">
+                        <h2>My XP</h2>
+                        <div className="border-gray"></div>
+                        <p>{userFormData.xp}</p>
                     </div>
                 </div>
             </div>

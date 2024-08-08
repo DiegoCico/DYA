@@ -1,0 +1,149 @@
+/* Ranking Page */
+.ranking-page {
+    display: flex;
+  }
+  
+  .ranking-content {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+  }
+  
+  .ranking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+  }
+  
+  .timeframe-buttons {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .timeframe-buttons button {
+    margin: 0 3px;
+    background: none;
+    border: none;
+    color: #FF7F50; /* Coral */
+    font-size: 14px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s;
+  }
+  
+  .timeframe-buttons button:hover,
+  .timeframe-buttons button.active {
+    color: #FF6347; /* Tomato */
+  }
+  
+  .timeframe-buttons button::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -3px;
+    width: 0;
+    height: 2px;
+    background-color: #FF6347; /* Tomato */
+    transition: width 0.3s, left 0.3s;
+  }
+  
+  .timeframe-buttons button:hover::after,
+  .timeframe-buttons button.active::after {
+    width: 100%;
+    left: 0;
+  }
+  
+  .ranking-list {
+    margin-top: 10px;
+    max-height: 400px; /* Adjust as needed */
+    overflow-y: auto; /* Makes the list scrollable */
+    border: 1px solid #ccc; /* Add border to visually contain the list */
+    border-radius: 8px; /* Rounded corners */
+  }
+  
+  .ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    background-color: #fff;
+  }
+  
+  .ranking-item.highlight {
+    background-color: #FFFFE0; /* Light Yellow */
+  }
+  
+  .profile-pic {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
+    object-fit: cover; /* Ensure the image covers the entire area */
+  }
+  
+  /* Side Navigation */
+  .side-nav {
+    height: 100%;
+    width: 200px; /* Adjusted width for better spacing */
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #228B22; /* Forest Green */
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+  }
+  
+  .mascot-container {
+    background-color: #fff;
+    margin-bottom: 1rem;
+    border-radius: 50%;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    padding-bottom: 20px;
+  }
+  
+  .btn-container button {
+    width: 90%;
+    padding: 8px 15px; /* Increased padding for better click area */
+    font-size: 14px;
+    color: white;
+    background: #2E8B57; /* Sea Green */
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 8px;
+    margin-bottom: 8px; /* Increased margin for better spacing */
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  
+  .btn-container .logout-btn {
+    margin-top: auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .btn-container button:hover {
+    background-color: #006400; /* Dark Green */
+    transform: scale(1.05);
+  }
+  
