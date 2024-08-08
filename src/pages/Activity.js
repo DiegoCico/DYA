@@ -32,6 +32,19 @@ function Activity() {
   const [currentLanguage, setCurrentLanguage] = useState('Python'); // Default to Python
   const [slideDown, setSlideDown] = useState(false);
 
+  const addUserXP = async (xp) => {
+    const userDocRef = doc(db, 'users', uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      const currentXP = userData.xp || 0;
+      await setDoc(userDocRef, {
+        xp: currentXP + xp,
+      }, { merge: true });
+    }
+  };
+
   useEffect(() => {
     const fetchActivityAndUserProgress = async () => {
       try {
@@ -98,11 +111,13 @@ function Activity() {
         setTimeout(() => setFireworks(false), 1000);
         setCorrectCount(prevCount => prevCount + 1);
         updateUserProgress({ correctCount: correctCount + 1 });
+        
         if (correctCount + 1 === 5) {
           updateUserProgress({ completed: true });
           setShowAnimation(true);
           setCompleted(true);
           unlockNextActivity(); // Unlock the next activity
+          addUserXP(100); // Grant 100 XP for completing the activity
           setTimeout(() => {
             setShowAnimation(false);
             alert('Congratulations! You have completed this phase.');
