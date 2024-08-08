@@ -85,8 +85,8 @@ export default function UserProfileSidebar({ userData }) {
                 </div>
             </div>
             <div className="btn-container">
-            <button onClick={() => handleRouteClick(`/roadmap/${uid}`)}>Roadmap</button>
-                <button onClick={() => handleRouteClick(`/pratice/${uid}`)}>Pratice</button>
+                <button onClick={() => handleRouteClick(`/roadmap/${uid}`)}>Roadmap</button>
+                <button onClick={() => handleRouteClick(`/practice/${uid}`)}>Practice</button>
                 <button onClick={() => handleRouteClick(`/ranking/${uid}`)}>Ranking</button>
                 <button onClick={toggleUserProfile}>Profile</button>
                 <button className="logout-btn" onClick={handleSignOut}>
@@ -94,7 +94,7 @@ export default function UserProfileSidebar({ userData }) {
                 </button>
             </div>
             {showUserProfile && userData && (
-                <UserProfile userData={userData} close={toggleUserProfile} />
+                <UserProfile userData={{ ...userData, id: uid }} close={toggleUserProfile} isOwnProfile={true} />
             )}
         </div>
     );

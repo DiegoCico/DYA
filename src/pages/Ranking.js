@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import UserProfileSidebar from '../components/UserProfileSidebar';
+import UserProfile from './UserProfile';
 import { db } from '../firebase';
 import { collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
 import '../css/Ranking.css';
@@ -11,6 +12,7 @@ function Ranking() {
   const [rankingData, setRankingData] = useState([]);
   const [timeFrame, setTimeFrame] = useState('week');
   const [loading, setLoading] = useState(true);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -47,6 +49,14 @@ function Ranking() {
     setTimeFrame(newTimeFrame);
   };
 
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+  };
+
+  const handleCloseProfile = () => {
+    setSelectedUser(null);
+  };
+
   return (
     <div className="ranking-page">
       <UserProfileSidebar userData={userData} />
@@ -64,7 +74,7 @@ function Ranking() {
         ) : (
           <div className="ranking-list">
             {rankingData.map((user, index) => (
-              <div key={index} className={`ranking-item ${user.id === uid ? 'highlight' : ''}`}>
+              <div key={index} className={`ranking-item ${user.id === uid ? 'highlight' : ''}`} onClick={() => handleUserClick(user)}>
                 <img src={user.profilePicture || `${process.env.PUBLIC_URL}/profile-avatar.png`} alt="Profile" className="profile-pic" />
                 <p>{index + 1}. {user.username} - {user.xp} XP</p>
               </div>
@@ -72,6 +82,7 @@ function Ranking() {
           </div>
         )}
       </div>
+      {selectedUser && <UserProfile userData={selectedUser} close={handleCloseProfile} />}
     </div>
   );
 }

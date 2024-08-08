@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import '../css/UserProfile.css';
-import { useParams } from "react-router-dom";
+import { doc, getDoc, collection, getDocs, updateDoc } from "firebase/firestore";
 import { db, storage } from '../firebase';
-import { doc, getDoc, updateDoc, collection, getDocs } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function UserProfile(props) {
-    const { userData, close } = props;
-    const { uid } = useParams();
+    const { userData, close, isOwnProfile } = props;
     const [totalParts, setTotalParts] = useState([]);
     const [userFormData, setUserFormData] = useState({
         name: '',
@@ -16,53 +14,55 @@ export default function UserProfile(props) {
         profilePicture: '',
         programmingLanguages: [],
         currentActivity: 0,
-        xp: 0 // Add xp attribute with default value 0
+        xp: 0
     });
     const [isEdit, setIsEdit] = useState(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const userDocRef = doc(db, "users", uid);
+                const userDocRef = doc(db, "users", userData.id);
                 const userDocSnap = await getDoc(userDocRef);
                 if (userDocSnap.exists()) {
-                    const userData = userDocSnap.data();
+                    const fetchedUserData = userDocSnap.data();
                     setUserFormData({
-                        name: userData.name,
-                        username: userData.username,
-                        email: userData.email,
-                        profilePicture: userData.profilePicture || `${process.env.PUBLIC_URL}/profile-avatar.png`,
-                        programmingLanguages: userData.programmingLanguages || [],
-                        currentActivity: userData.currentActivity || 0,
-                        xp: userData.xp || 0 // Fetch xp or set to 0 if it doesn't exist
+                        name: fetchedUserData.name,
+                        username: fetchedUserData.username,
+                        email: fetchedUserData.email,
+                        profilePicture: fetchedUserData.profilePicture || `${process.env.PUBLIC_URL}/profile-avatar.png`,
+                        programmingLanguages: fetchedUserData.programmingLanguages || [],
+                        currentActivity: fetchedUserData.currentActivity || 0,
+                        xp: fetchedUserData.xp || 0
                     });
+                    fetchTotalParts(fetchedUserData.programmingLanguages);
                 }
             } catch (error) {
-                console.log(error);
+                console.error("Error fetching user data:", error);
             }
         };
 
-        const fetchTotalParts = async () => {
+        const fetchTotalParts = async (programmingLanguages) => {
             try {
                 const parts = [];
-                for (let i = 0; i < userData.programmingLanguages.length; i++) {
-                    const activitiesRef = collection(db, `activities${userData.programmingLanguages[i].langName}`);
+                for (let i = 0; i < programmingLanguages.length; i++) {
+                    const activitiesRef = collection(db, `activities${programmingLanguages[i].langName}`);
                     const activitiesSnapshot = await getDocs(activitiesRef);
                     const langSize = {
-                        name: userData.programmingLanguages[i].langName,
+                        name: programmingLanguages[i].langName,
                         totalSize: activitiesSnapshot.size
                     };
                     parts.push(langSize);
                 }
                 setTotalParts(parts);
             } catch (error) {
-                console.log(error);
+                console.error("Error fetching total parts:", error);
             }
         };
 
-        fetchUserData();
-        fetchTotalParts();
-    }, [uid]);
+        if (userData.id) {
+            fetchUserData();
+        }
+    }, [userData.id]);
 
     const handleEditClick = () => {
         setIsEdit(true);
@@ -77,14 +77,14 @@ export default function UserProfile(props) {
 
     const handleSaveData = async () => {
         try {
-            await updateDoc(doc(db, "users", uid), {
+            await updateDoc(doc(db, "users", userData.id), {
                 name: userFormData.name,
                 username: userFormData.username,
                 email: userFormData.email,
                 profilePicture: userFormData.profilePicture
             });
         } catch (error) {
-            console.log(error);
+            console.error("Error saving user data:", error);
         }
         setIsEdit(false);
     };
@@ -92,7 +92,7 @@ export default function UserProfile(props) {
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (file) {
-            const storageRef = ref(storage, `profilePictures/${uid}`);
+            const storageRef = ref(storage, `profilePictures/${userData.id}`);
             await uploadBytes(storageRef, file);
             const url = await getDownloadURL(storageRef);
             setUserFormData({
@@ -100,11 +100,11 @@ export default function UserProfile(props) {
                 profilePicture: url
             });
             try {
-                await updateDoc(doc(db, "users", uid), {
+                await updateDoc(doc(db, "users", userData.id), {
                     profilePicture: url
                 });
             } catch (error) {
-                console.log(error);
+                console.error("Error updating profile picture:", error);
             }
         }
     };
@@ -119,18 +119,18 @@ export default function UserProfile(props) {
     };
 
     return (
-        <div className="profile-window-overlay">
+        <div className="profile-window-overlay" onClick={close}>
             <div className="profile-window-content" onClick={(e) => e.stopPropagation()}>
                 <div className="user-data-container-left">
                     <button className="close-btn" onClick={close}>X</button>
                     <div className="user-picture">
-                        <img src={userFormData.profilePicture} alt="Profile Avatar" onClick={() => document.getElementById('fileInput').click()}></img>
+                        <img src={userFormData.profilePicture} alt="Profile Avatar" onClick={() => document.getElementById('fileInput').click()} />
                         <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleFileChange} />
                     </div>
                     <div className="user-data">
                         <div className="head">
-                            <h2>My profile</h2>
-                            {!isEdit && <i className="fa-solid fa-pen-to-square" onClick={handleEditClick}></i>}
+                            <h2>Profile</h2>
+                            {!isEdit && isOwnProfile && <i className="fa-solid fa-pen-to-square" onClick={handleEditClick}></i>}
                         </div>
                         {isEdit ? (
                             <>
@@ -147,21 +147,25 @@ export default function UserProfile(props) {
                                 <div className="border-gray"></div>
                                 <p className="data">{userFormData.username || 'data not found'}</p>
                                 <div className="border-gray"></div>
-                                <p className="data">{userFormData.email}</p>
+                                {isOwnProfile && <p className="data">{userFormData.email}</p>}
                             </>
                         )}
                     </div>
                 </div>
                 <div className="user-data-container-right">
                     <div className="user-languages-container">
-                        <h2>My languages</h2>
+                        <h2>Languages</h2>
                         <div className="border-gray"></div>
-                        {userFormData.programmingLanguages.map((language, index) => (
-                            <p key={index}>{language.langName}</p>
-                        ))}
+                        {userFormData.programmingLanguages.length > 0 ? (
+                            userFormData.programmingLanguages.map((language, index) => (
+                                <p key={index}>{language.langName}</p>
+                            ))
+                        ) : (
+                            <p>No languages found.</p>
+                        )}
                     </div>
                     <div className="user-language-progress">
-                        <h2>My progress in...</h2>
+                        <h2>Progress in...</h2>
                         {userFormData.programmingLanguages.length > 0 ? (
                             userFormData.programmingLanguages.map((language, index) => (
                                 <div className="progress-container" key={index}>
@@ -177,7 +181,7 @@ export default function UserProfile(props) {
                         )}
                     </div>
                     <div className="user-xp">
-                        <h2>My XP</h2>
+                        <h2>XP</h2>
                         <div className="border-gray"></div>
                         <p>{userFormData.xp}</p>
                     </div>
