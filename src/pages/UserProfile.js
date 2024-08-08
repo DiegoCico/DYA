@@ -18,6 +18,8 @@ export default function UserProfile(props) {
         currentActivity: 0
     });
     const [isEdit, setIsEdit] = useState(false);
+    const [test, setTest] = useState([])
+
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -25,7 +27,7 @@ export default function UserProfile(props) {
                 const userDocSnap = await getDoc(userDocRef);
                 if (userDocSnap.exists()) {
                     const userData = userDocSnap.data();
-                    // console.log(userData)
+                    // console.log(userData.programmingLanguages)
                     setUserFormData({
                         name: userData.name,
                         username: userData.username,
@@ -44,13 +46,13 @@ export default function UserProfile(props) {
             // console.log(userData.userData.programmingLanguages.length)
             try {
                 const parts = []
-                for (let i=0; i<userData.userData.programmingLanguages.length; i++) {
-                    const activitiesRef = collection(db, `activities${userData.userData.programmingLanguages[i].langName}`);
+                for (let i=0; i<userData.programmingLanguages.length; i++) {
+                    console.log(userData.programmingLanguages[i].langName)
+                    const activitiesRef = collection(db, `activities${userData.programmingLanguages[i].langName}`);
                     const activitiesSnapshot = await getDocs(activitiesRef);
-                    const totalPartsCount = activitiesSnapshot.size;
                     const langSize = {
-                        name: userData.userData.programmingLanguages[i].langName,
-                        totalSize: totalPartsCount
+                        name: userData.programmingLanguages[i].langName,
+                        totalSize: activitiesSnapshot.size
                     }
                     parts.push(langSize)
                 }
