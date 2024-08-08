@@ -84,22 +84,6 @@
     object-fit: cover; /* Ensure the image covers the entire area */
   }
   
-  /* Side Navigation */
-  .side-nav {
-    height: 100%;
-    width: 200px; /* Adjusted width for better spacing */
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #228B22; /* Forest Green */
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 10px;
-  }
-  
   .mascot-container {
     background-color: #fff;
     margin-bottom: 1rem;

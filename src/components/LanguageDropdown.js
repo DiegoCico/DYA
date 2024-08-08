@@ -71,7 +71,7 @@ function LanguageDropdown({ uid, onLanguageChange }) {
       setCurrentLanguage(language.name);
       setDropdownOpen(false);
       onLanguageChange(language.name); 
-        window.location.reload();
+      window.location.reload();
     } catch (err) {
       console.error('Error updating language:', err);
     }

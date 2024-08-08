@@ -84,6 +84,17 @@ function Roadmap() {
     }, 1000); // Adding a delay of 1000ms (1 second)
   }, [uid]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const roadmapPage = document.querySelector('.roadmap-page');
+      const scrollPosition = window.scrollY;
+      roadmapPage.style.backgroundPositionY = `${scrollPosition}px`;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
@@ -142,7 +153,7 @@ function Roadmap() {
       <UserProfileSidebar userData={userData} />
       <div className="roadmap-page">
         <div className="roadmap-header">
-          <h2 className="roadmap-title">{userData.username}'s Roadmap</h2>
+          <h2 className="roadmap-title">Roadmap</h2>
           <LanguageDropdown uid={uid} onLanguageChange={() => setFadeIn(false)} />
         </div>
         {showAnimation && <div className="unlock-animation">New Activity Unlocked!</div>}
@@ -151,20 +162,19 @@ function Roadmap() {
           <div className={`roadmap-container ${fadeIn ? 'fade-in' : ''}`}>
             {rowedActivities.map((row, rowIndex) => (
               <div className="roadmap-row" key={rowIndex}>
-                {(rowIndex % 2 === 1 ? row.reverse() : row).map((activity, index) => (
+                {row.map((activity, index) => (
                   <div className="activity-container" key={index}>
                     <div className="activity-title">
                       <h2>{activity.title}</h2>
                     </div>
-                    {activity.order > userData.currentActivity ? (
-                      <p className="locked-message">Locked</p>
-                    ) : (
+                    {activity.order <= userData.currentActivity ? (
                       <div className="activity-buttons">
                         <button onClick={() => handleLessonClick(activity.order, activity.title)}>Learn It!</button>
                         <button onClick={() => handleActivityClick(activity)}>Complete Task!</button>
                       </div>
+                    ) : (
+                      <p className="locked-message">Locked</p>
                     )}
-                    {!(rowIndex === rowedActivities.length - 1 && index === row.length - 1) && <div className={`connection ${getLineClass(rowIndex, index, row.length)}`}></div>}
                   </div>
                 ))}
               </div>
