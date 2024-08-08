@@ -11,7 +11,7 @@ import LanguageSlider from '../components/LanguageSlider';
 import MascotSection from '../components/MascotSection';
 import Lessons from "./Lessons";
 import ParentHub from "./ParentHub";
-import Pratice from "./Pratice";
+import Practice from "./Practice"; 
 import Ranking from "./Ranking"; 
 
 function App() {
@@ -124,7 +124,7 @@ function App() {
         <Route path='/signup/child' element={<ChildSignup handleRouteChange={handleRouteChange} />} />
         <Route path="/parenthub/:userId" element={<ParentHub />} />
         <Route path="/roadmap/:uid" element={<Roadmap />} />
-        <Route path="/pratice/:uid" element={<Pratice />} />
+        <Route path="/practice/:uid" element={<Practice />} /> {/* Corrected route */}
         <Route path="/activity/:uid/:activityTitle/:activityOrder" element={<Activity />} />
         <Route path="/lessons/:uid/:language/:lessonTitle" element={<Lessons />} />
         <Route path="/ranking/:uid" element={<Ranking />} /> {/* Add Ranking route */}
