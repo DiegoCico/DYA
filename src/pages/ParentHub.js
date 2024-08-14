@@ -12,6 +12,7 @@ export default function ParentHub() {
     const [profileOpen, setProfileOpen] = useState(false)
     const { userId } = useParams();
     const [children, setChildren] = useState([])
+    const [childrenID, setChildrenID] = useState([])
     const [userData, setUserData] = useState({})
 
     const openDash = () => {
@@ -59,6 +60,7 @@ export default function ParentHub() {
         if (userData.children && userData.children.length > 0) {
             const getData = async() => {
                 await getChildData(userData.children)
+                setChildrenID(userData.children)
             }
             getData()
         }
@@ -68,7 +70,7 @@ export default function ParentHub() {
         <div className="parent-hub-page">
             <ParentHubSidebar openDash={openDash} openProfile={openProfile}/>
             { dashOpen && (
-                <ParentHubDash userId={userId} children={children} getUserData={getUserData} getChildData={getChildData} />
+                <ParentHubDash userId={userId} children={children} getUserData={getUserData} getChildData={getChildData} childrenID={childrenID}/>
             )}
             { profileOpen && (
                 <ParentHubProfile/>

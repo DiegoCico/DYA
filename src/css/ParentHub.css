@@ -293,6 +293,23 @@ html, body {
     background-color: rgb(255, 101, 101);
 }
 
+/* ---CSS for Line Graph--- */
+.line-graph-container {
+
+}
+
+.line-graph-title {
+    color: #383838;
+    margin: 1rem 1rem 0 1rem;
+    display: flex;
+}
+
+.line-graph {
+    width: 800px;
+    /* height: 900px; */
+    position: relative;
+}
+
 /* ---CSS for profile content--- */
 .parent-hub-profile-main-container {
     background-color: none;

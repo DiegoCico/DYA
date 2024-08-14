@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
-import { doc, getDoc, collection, getDocs, setDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, setDoc, updateDoc } from 'firebase/firestore';
 import '../css/Activity.css';
 import CodeEditor from '../components/CodeEditor';
 import axios from 'axios';
@@ -29,6 +29,8 @@ function Practice() {
   const [fireworks, setFireworks] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('Python'); // Default to Python
   const [slideDown, setSlideDown] = useState(false);
+  const days = ['Sunday', 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+  const date = new Date()
 
   const updateUserProgress = useCallback(async (progressUpdates) => {
     if (activity) {
@@ -58,6 +60,17 @@ function Practice() {
   const addUserXP = useCallback(async (xp) => {
     const userDocRef = doc(db, 'users', uid);
     const userDocSnap = await getDoc(userDocRef);
+    const today = date.toISOString().split('T')[0]
+
+    const userActivityDocRef = doc(db, 'userActivity', uid)
+    const docSnap = await getDoc(userActivityDocRef)
+    const userLoginData = docSnap.data().loginData
+    let currentDay = userLoginData.find(date => date.day === today)
+    const currentDayXP = currentDay.xp
+    console.log(currentDayXP)
+    currentDay.xp = currentDayXP + xp
+
+    console.log(currentDay)
 
     if (userDocSnap.exists()) {
       const userData = userDocSnap.data();
@@ -65,6 +78,9 @@ function Practice() {
       await setDoc(userDocRef, {
         xp: currentXP + xp,
       }, { merge: true });
+      await updateDoc(userActivityDocRef, {
+        loginData: userLoginData
+      })
     }
   }, [uid]);
 
