@@ -3,6 +3,7 @@ import '../css/ParentHub.css';
 import ParentHubAddChildPopUp from "./ParentHubAddChildPopUp";
 import DeleteChildPopUp from "./DeleteChildPopUp";
 import LineGraph from "./LineGraph";
+import Leaderboard from "./Leaderboard";
 
 export default function ParentsHubDash(props) {
     const { userId, children, getUserData, getChildData, childrenID } = props
@@ -71,8 +72,8 @@ export default function ParentsHubDash(props) {
                     <div className="table-title">
                         <h3>Leaderboard</h3>
                     </div>
-                    <div className="table">
-
+                    <div className="table-container">
+                        <Leaderboard children={children}/>
                     </div>
                 </div>
             </div>

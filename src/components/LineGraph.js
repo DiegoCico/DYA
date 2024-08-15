@@ -19,8 +19,6 @@ export default function LineGraph(props) {
         const splitDate = dateStr.split('-')
         const date = new Date(splitDate[0], splitDate[1]-1, splitDate[2])
         const dayName = date.toLocaleDateString('en-US', {weekday: 'long'})
-        console.log(dateStr)
-        console.log(dayName)
         const todayIndex = days.indexOf(dayName)
         let xLabel = []
         if (dayOne) {
@@ -70,7 +68,6 @@ export default function LineGraph(props) {
                     
                 })
             }
-            console.log('Longest user', tempChildProgress.datasets)
             tempChildProgress.datasets.push(dataset)
 
             let parentData = []
@@ -104,7 +101,6 @@ export default function LineGraph(props) {
                 const childQ = query(collection(db, 'users'), where('uniqueId', '==', childrenID[i]))
                 const childQSnap = await getDocs(childQ)
                 qSnap.forEach(doc => {
-                    console.log(doc.data().loginData)
                     if (doc.data().uniqueId !== longestLoginUserID) {
                         let data = {
                             borderColor: `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`
@@ -131,7 +127,6 @@ export default function LineGraph(props) {
                         childQSnap.forEach(doc => {
                             childLabel = doc.data().name
                         })
-                        console.log('Updated data', updatedData)
                         data.label = childLabel
                         data.data = updatedData.map(day => day.xp)
                         tempChildProgress.datasets.push(data)
@@ -139,36 +134,12 @@ export default function LineGraph(props) {
                 })
             }
 
-            console.log(parentData)
             setLineData(tempChildProgress)
         } catch(error) {
             console.log(error.message)
         }
     }
 
-    const userProgress = {
-        labels: [
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-            'Sunday',
-        ],
-        datasets: [
-            {
-                label: 'Child 1 Name',
-                data: [20, 10, 0, 10, 30, 30, 10],
-                borderColor: 'rgb(75, 192, 192)'
-            },
-            {
-                label: 'Child 2 Name',
-                data: [40, 20, 30, 20, 20, 10, 50],
-                borderColor: 'red',
-            },
-        ]
-    }
     const options = {
 
     }
@@ -183,9 +154,6 @@ export default function LineGraph(props) {
 
         getData()
     }, [childrenID])
-
-    // consoling out
-    console.log(lineData)
 
     return (
         <>
