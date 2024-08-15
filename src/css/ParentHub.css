@@ -292,13 +292,16 @@ html, body {
     color: white;
     background-color: rgb(255, 101, 101);
 }
-
+/* ---CSS for data container--- */
+.data-container {
+    display: flex;
+}
 /* ---CSS for Line Graph--- */
 .line-graph-container {
 
 }
 
-.line-graph-title {
+.line-graph-title, .table-title {
     color: #383838;
     margin: 1rem 1rem 0 1rem;
     display: flex;

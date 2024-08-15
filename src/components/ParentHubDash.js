@@ -58,12 +58,22 @@ export default function ParentsHubDash(props) {
                     <button onClick={handleChildPopUp}><i className="fa-solid fa-plus"></i></button>
                 </div>
             </div>
-            <div className="line-graph-container">
-                <div className="line-graph-title">
-                    <h3>Line Graph</h3>
+            <div className="data-container">
+                <div className="line-graph-container">
+                    <div className="line-graph-title">
+                        <h3>XP Graph</h3>
+                    </div>
+                    <div className="line-graph">
+                        <LineGraph childrenID={childrenID}/>
+                    </div>
                 </div>
-                <div className="line-graph">
-                    <LineGraph childrenID={childrenID} children={children}/>
+                <div className="table-container">
+                    <div className="table-title">
+                        <h3>Leaderboard</h3>
+                    </div>
+                    <div className="table">
+
+                    </div>
                 </div>
             </div>
             {showAddChildPopUp && (
