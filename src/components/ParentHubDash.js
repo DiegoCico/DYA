@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import '../css/ParentHub.css';
 import ParentHubAddChildPopUp from "./ParentHubAddChildPopUp";
 import DeleteChildPopUp from "./DeleteChildPopUp";
+import LineGraph from "./LineGraph";
+import Leaderboard from "./Leaderboard";
 
 export default function ParentsHubDash(props) {
-    const { userId, children, getUserData, getChildData } = props
+    const { userId, children, getUserData, getChildData, childrenID } = props
     const [showAddChildPopUp, setShowAddChildPopUp] = useState(false)
     const [showDeleteChildPopUp, setShowDeleteChildPopUp] = useState(false)
     const [childToDeleteID, setChildToDeleteID] = useState('')
@@ -55,6 +57,24 @@ export default function ParentsHubDash(props) {
                 )}
                 <div className="add-child-button">
                     <button onClick={handleChildPopUp}><i className="fa-solid fa-plus"></i></button>
+                </div>
+            </div>
+            <div className="data-container">
+                <div className="line-graph-container">
+                    <div className="line-graph-title">
+                        <h3>XP Graph</h3>
+                    </div>
+                    <div className="line-graph">
+                        <LineGraph childrenID={childrenID}/>
+                    </div>
+                </div>
+                <div className="table-container">
+                    <div className="table-title">
+                        <h3>Leaderboard</h3>
+                    </div>
+                    <div className="table-container">
+                        <Leaderboard children={children}/>
+                    </div>
                 </div>
             </div>
             {showAddChildPopUp && (

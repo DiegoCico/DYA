@@ -292,9 +292,83 @@ html, body {
     color: white;
     background-color: rgb(255, 101, 101);
 }
+/* ---CSS for data container--- */
+.data-container {
+    display: flex;
+}
+
+/* ---CSS for table container--- */
+table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    text-align: left;
+    overflow-x: auto;
+}
+
+th, td {
+    padding: 12px 15px;
+    border: 1px solid #dddddd5f;
+    
+  }
+  
+  th {
+    color: #383838;
+    background-color: white;
+    font-weight: bold;
+  }
+  
+  @media (max-width: 600px) {
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+  
+    thead tr {
+      display: none;
+    }
+  
+    tr {
+      margin-bottom: 15px;
+    }
+  
+    td {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      border: none;
+      border-bottom: 1px solid #ddd;
+      position: relative;
+      padding-left: 50%;
+    }
+  
+    td::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 0;
+      width: 50%;
+      padding-left: 15px;
+      font-weight: bold;
+      background-color: #f7f7f7;
+    }
+  }
+/* ---CSS for Line Graph--- */
+.line-graph-title, .table-title {
+    color: #383838;
+    margin: 1rem 1rem 0 1rem;
+    display: flex;
+}
+
+.line-graph {
+    width: 800px;
+    /* height: 900px; */
+    position: relative;
+}
 
 /* ---CSS for profile content--- */
 .parent-hub-profile-main-container {
     background-color: none;
-    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

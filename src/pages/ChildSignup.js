@@ -85,6 +85,8 @@ export default function ChildSignup(props) {
     };
 
     const handleCompleteSignUp = async (language) => {
+        const days = ['Sunday', 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+        const date = new Date()
         try {
             const userDocRef = doc(db, 'users', userId);
             const userDocSnap = await getDoc(userDocRef);
@@ -105,6 +107,17 @@ export default function ChildSignup(props) {
                 ],
                 currentLanguage: language
             }, { merge: true });
+
+            await setDoc(doc(db, 'userActivity', userId), {
+                accountCreated: date.toISOString().split('T')[0],
+                uniqueId: userData.uniqueId,
+                loginData: [
+                    {
+                        day: date.toISOString().split('T')[0],
+                        xp: 0
+                    }
+                ]
+            })
 
             console.log('Programming language saved successfully');
             navigate(`/roadmap/${userId}`);
