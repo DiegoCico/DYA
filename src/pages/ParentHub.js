@@ -73,7 +73,7 @@ export default function ParentHub() {
                 <ParentHubDash userId={userId} children={children} getUserData={getUserData} getChildData={getChildData} childrenID={childrenID}/>
             )}
             { profileOpen && (
-                <ParentHubProfile/>
+                <ParentHubProfile userId={userId} children={children}/>
             )}
         </div>
     )

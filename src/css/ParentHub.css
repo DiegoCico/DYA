@@ -353,10 +353,6 @@ th, td {
     }
   }
 /* ---CSS for Line Graph--- */
-.line-graph-container {
-
-}
-
 .line-graph-title, .table-title {
     color: #383838;
     margin: 1rem 1rem 0 1rem;
@@ -372,5 +368,7 @@ th, td {
 /* ---CSS for profile content--- */
 .parent-hub-profile-main-container {
     background-color: none;
-    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

@@ -31,130 +31,112 @@ export default function LineGraph(props) {
         return xLabel
     }
 
-    const getChildrenProgress = async(childrenID) => {
+    const getChildrenProgress = async (childrenID) => {
         try {
             let tempChildProgress = {
                 labels: [],
                 datasets: []
             }
-
+    
             const activityCollection = collection(db, 'userActivity')
             let longestLoginUserID = ''
             let largestLogins = 0
-            let dataset = {
-                borderColor: `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`
-            }
-            let childData = []
-            for (let i = 0; i<childrenID.length; i++) {
+            let parentData = []
+    
+            // Find the child with the most logins and prepare the datasets
+            for (let i = 0; i < childrenID.length; i++) {
                 const q = query(activityCollection, where('uniqueId', '==', childrenID[i]))
                 const qSnap = await getDocs(q)
                 const childQ = query(collection(db, 'users'), where('uniqueId', '==', childrenID[i]))
                 const childQSnap = await getDocs(childQ)
+    
                 qSnap.forEach(doc => {
                     const data = doc.data()
                     const loginData = data.loginData
-                    let childLabel = ''
-                    // getting largest num of logins
+    
                     if (loginData.length > largestLogins) {
                         largestLogins = loginData.length
                         longestLoginUserID = data.uniqueId
-                        childData = loginData.map(day => day.xp)
-                        childQSnap.forEach(doc => {
-                            childLabel = doc.data().name
+                        parentData = loginData
+    
+                        childQSnap.forEach(childDoc => {
+                            const dataset = {
+                                label: childDoc.data().name,
+                                data: loginData.map(day => day.xp),
+                                borderColor: `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`
+                            }
+                            tempChildProgress.datasets.push(dataset)
                         })
-                        dataset.label = childLabel
-                        dataset.data = childData
                     }
-                    
                 })
             }
-            tempChildProgress.datasets.push(dataset)
-
-            let parentData = []
+    
             if (longestLoginUserID) {
-                console.log('Longest userID is', longestLoginUserID, 'with', largestLogins, 'logins')
-                const q = query(activityCollection, where('uniqueId', '==', longestLoginUserID))
-                const qSnap = await getDocs(q)
                 let days = []
-                
-                if (!qSnap.empty) {
-                    qSnap.forEach(doc => {
-                        const loginData = doc.data().loginData
-                        parentData = loginData
-                        if (loginData.length < 7) {
-                            days = getUpdatedDays(loginData[0].day, true)
-                        } else {
-                            days = getUpdatedDays(loginData[loginData.length - 1].day, false)
-                        }
-                    })
-                    tempChildProgress.labels = days
+                if (parentData.length < 7) {
+                    days = getUpdatedDays(parentData[0].day, true)
                 } else {
-                    console.log('Longest login user is not found')
+                    days = getUpdatedDays(parentData[parentData.length - 1].day, false)
                 }
+                tempChildProgress.labels = days
+            } else {
+                console.log('Longest login user is not found')
             }
-
-            // adjust data points and fill missed days
-            for (let i = 0; i<childrenID.length; i++) {
+    
+            // Adjust data points for other children
+            for (let i = 0; i < childrenID.length; i++) {
                 const q = query(activityCollection, where('uniqueId', '==', childrenID[i]))
                 const qSnap = await getDocs(q)
-
                 const childQ = query(collection(db, 'users'), where('uniqueId', '==', childrenID[i]))
                 const childQSnap = await getDocs(childQ)
+    
                 qSnap.forEach(doc => {
                     if (doc.data().uniqueId !== longestLoginUserID) {
-                        let data = {
-                            borderColor: `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`
-                        }
-                        const updatedData = [...doc.data().loginData]
-                        const toCheckDays = new Set(doc.data().loginData.map(item => item.day))
-
+                        let updatedData = [...doc.data().loginData]
+                        const toCheckDays = new Set(updatedData.map(item => item.day))
+    
                         parentData.forEach(item => {
                             if (!toCheckDays.has(item.day)) {
-                                updatedData.push({day: item.day, xp: 0})
+                                updatedData.push({ day: item.day, xp: 0 })
                             }
                         })
-
-                        updatedData.sort((a, b) => {
-                            const [yearA, monthA, dayA] = a.day.split('-').map(Number);
-                            const [yearB, monthB, dayB] = b.day.split('-').map(Number);
-                    
-                            const dateA = new Date(yearA, monthA - 1, dayA);
-                            const dateB = new Date(yearB, monthB - 1, dayB);
-                    
-                            return dateA - dateB;
+    
+                        updatedData.sort((a, b) => new Date(a.day) - new Date(b.day))
+    
+                        childQSnap.forEach(childDoc => {
+                            const data = {
+                                label: childDoc.data().name,
+                                data: updatedData.map(day => day.xp),
+                                borderColor: `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`
+                            }
+                            tempChildProgress.datasets.push(data)
                         })
-                        let childLabel = ''
-                        childQSnap.forEach(doc => {
-                            childLabel = doc.data().name
-                        })
-                        data.label = childLabel
-                        data.data = updatedData.map(day => day.xp)
-                        tempChildProgress.datasets.push(data)
                     }
                 })
             }
-
+    
             setLineData(tempChildProgress)
-        } catch(error) {
+        } catch (error) {
             console.log(error.message)
         }
     }
-
+    
     const options = {
-
+        responsive: true,
     }
+    
     useEffect(() => {
-        const getData = async() => {
+        const getData = async () => {
             setLineData({
                 labels: [],
                 datasets: []
             })
             await getChildrenProgress(childrenID)
         }
-
+    
         getData()
     }, [childrenID])
-
+    
     return (
         <>
             {lineData.datasets.length > 0 ? (
@@ -164,4 +146,5 @@ export default function LineGraph(props) {
             )}
         </>
     )
+    
 }
