@@ -4,12 +4,14 @@ import ParentHubAddChildPopUp from "./ParentHubAddChildPopUp";
 import DeleteChildPopUp from "./DeleteChildPopUp";
 import LineGraph from "./LineGraph";
 import Leaderboard from "./Leaderboard";
+import ChildCard from "./ChildCard";
 
 export default function ParentsHubDash(props) {
     const { userId, children, getUserData, getChildData, childrenID } = props
     const [showAddChildPopUp, setShowAddChildPopUp] = useState(false)
     const [showDeleteChildPopUp, setShowDeleteChildPopUp] = useState(false)
     const [childToDeleteID, setChildToDeleteID] = useState('')
+    const [selectedChild, setSelectedChild] = useState(null)
 
     const handleChildPopUp = () => {
         setShowAddChildPopUp(!showAddChildPopUp)
@@ -20,6 +22,14 @@ export default function ParentsHubDash(props) {
         setChildToDeleteID(id)
     }
 
+    const handleChildCardClick = (child) => {
+        setSelectedChild(child)
+    }
+
+    const closeChildCard = () => {
+        setSelectedChild(null)
+    }
+
     return (
         <div className="parent-hub-main-container">
             <div className="children-title">
@@ -28,7 +38,7 @@ export default function ParentsHubDash(props) {
             <div className='children-container'>
                 {children && children.length > 0 ? ( 
                     children.map((child, index) => (
-                        <div className='child-container' key={index}>
+                        <div className='child-container' key={index} onClick={() => handleChildCardClick(child)}>
                             <div className="child-profile-pic">
                                 {child.profilePicture ? (
                                     <img src={child.profilePicture} alt="profile-pic" />
@@ -91,6 +101,10 @@ export default function ParentsHubDash(props) {
                         <DeleteChildPopUp childID={childToDeleteID} userId={userId} setShowDeleteChildPopUp={setShowDeleteChildPopUp} getChildData={getChildData} getUserData={getUserData}/>
                     </div>
                 </div>
+            )}
+
+            {selectedChild && (
+                <ChildCard child={selectedChild} close={closeChildCard}/>
             )}
         </div>
     )

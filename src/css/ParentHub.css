@@ -97,6 +97,7 @@ html, body {
 .children-container {
     display: flex;
     gap: 1rem;
+    cursor: pointer;
 }
 
 .child-container {
@@ -371,4 +372,82 @@ th, td {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* ---CSS for child card pop up--- */
+.child-card-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.child-card-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 90%;
+    position: relative;
+    text-align: center;
+}
+
+.child-card-content h3 {
+    margin-bottom: 15px;
+    font-size: 24px;
+    color: #333;
+}
+
+.child-card-content p {
+    margin: 10px 0;
+    font-size: 18px;
+    color: #555;
+}
+
+.child-card-content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    }
+
+.content-left {
+    grid-area: 1 / 1 / 2 / 2;
+    /* background-color: #3B48A8; */
+}
+.content-right {
+    grid-area: 1 / 2 / 2 / 4;
+    /* background-color:aqua; */
+}
+
+.languages-list-container {
+    margin: 20px 0;
+    text-align: left;
+}
+
+.languages {
+    display: flex;
+    gap: 15px;
+}
+
+.language-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+}
+
+.language-icon img {
+    width: 40px; /* Adjust the size as needed */
+    height: auto;
+    margin-bottom: 5px;
 }
