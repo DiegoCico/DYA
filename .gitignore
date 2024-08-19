@@ -130,4 +130,4 @@ celerybeat.pid
 dmypy.json
 
 # Firebase configuration
-src/firebase.js
+firebase.js
