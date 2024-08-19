@@ -4,7 +4,7 @@ import '../css/LanguageSlider.css';
 const languages = [
   { name: 'Java', image: `${process.env.PUBLIC_URL}/java.png`, info: 'Learn Java with fun activities and games.' },
   { name: 'Python', image: `${process.env.PUBLIC_URL}/python.png`, info: 'Learn Python with fun activities and games.' },
-  { name: 'Javascript', image: `${process.env.PUBLIC_URL}/html.png`, info: 'Learn HTML/CSS with fun activities and games.' },
+  { name: 'Javascript', image: `${process.env.PUBLIC_URL}/js-icon.png`, info: 'Learn HTML/CSS with fun activities and games.' },
   // Add more languages as needed
 ];
 
