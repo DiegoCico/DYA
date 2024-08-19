@@ -81,7 +81,7 @@ function Roadmap() {
 
     setTimeout(() => {
       fetchUserDataAndActivities();
-    }, 1000); // Adding a delay of 1000ms (1 second)
+    }, 1300); // Adding a delay of 1000ms (1 second)
   }, [uid]);
 
   useEffect(() => {
@@ -132,20 +132,6 @@ function Roadmap() {
     return row;
   };
 
-  const getLineClass = (rowIndex, index, rowLength) => {
-    if (rowIndex % 2 === 0) {
-      if (index < rowLength - 1) {
-        return "right";
-      }
-      return "down";
-    } else {
-      if (index > 0) {
-        return "left";
-      }
-      return "down";
-    }
-  };
-
   const rowedActivities = groupActivitiesByRow(activities, 3);
 
   return (
@@ -153,7 +139,7 @@ function Roadmap() {
       <UserProfileSidebar userData={userData} />
       <div className="roadmap-page">
         <div className="roadmap-header">
-          <h2 className="roadmap-title">Roadmap</h2>
+          <h2 className="roadmap-title"></h2>
           <LanguageDropdown uid={uid} onLanguageChange={() => setFadeIn(false)} />
         </div>
         {showAnimation && <div className="unlock-animation">New Activity Unlocked!</div>}

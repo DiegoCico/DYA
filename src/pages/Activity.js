@@ -120,8 +120,7 @@ function Activity() {
           addUserXP(100); // Grant 100 XP for completing the activity
           setTimeout(() => {
             setShowAnimation(false);
-            alert('Congratulations! You have completed this phase.');
-            setCurrentQuestionIndex(shuffledQuestions.length); // to end the activity
+            setCurrentQuestionIndex(shuffledQuestions.length); 
           }, 3000); // duration of the animation
         } else {
           setCurrentQuestionIndex(prevIndex => prevIndex + 1);
@@ -216,8 +215,8 @@ function Activity() {
         userId: uid,
         questionId: currentQuestion.id,
         userCode: userCode,
-        language: currentLanguage, // Pass the current language to the backend
-        testCount // Pass the number of tests to run
+        language: currentLanguage, 
+        testCount 
       };
 
       // Send the payload to the backend
@@ -299,14 +298,6 @@ function Activity() {
     } catch (error) {
       setServerStatus('Error: Unable to reach the server.');
     }
-  };
-
-  const handleLanguageChange = (newLanguage) => {
-    setSlideDown(true);
-    setTimeout(() => {
-      setCurrentLanguage(newLanguage);
-      setSlideDown(false);
-    }, 300);
   };
 
   if (loading) return <div className="loading">Loading...</div>;
