@@ -101,8 +101,8 @@ function App() {
                     <p>Engage in exciting and educational games designed for kids.</p>
                   </div>
                   <div className="feature feature-videos">
-                    <h3>Videos</h3>
-                    <p>Watch fun and educational videos that keep you entertained.</p>
+                    <h3>Interactive</h3>
+                    <p>Everything is fun and interactive making it easier to learn!</p>
                   </div>
                   <div className="feature feature-activities">
                     <h3>Activities</h3>
@@ -110,7 +110,7 @@ function App() {
                   </div>
                 </section>
 
-                <MascotSection />
+                {/* <MascotSection /> */}
 
                 <LanguageSlider />
 

@@ -71,7 +71,7 @@ export default function UserProfileSidebar({ userData }) {
 
     return (
         <div className="side-nav">
-            <div className="calendar-container">
+            {/* <div className="calendar-container">
                 <Calendar
                     tileClassName={({ date, view }) => {
                         if (loginData.find(d => new Date(d).setHours(0, 0, 0, 0) === date.setHours(0, 0, 0, 0))) {
@@ -84,7 +84,7 @@ export default function UserProfileSidebar({ userData }) {
                     <p>Current Streak: {streak} days</p>
                     <p>Logins This Month: {monthlyLogins}</p>
                 </div>
-            </div>
+            </div> */}
             <div className="btn-container">
                 <button onClick={() => handleRouteClick(`/roadmap/${uid}`)}>Roadmap</button>
                 <button onClick={() => handleRouteClick(`/practice/${uid}`)}>Practice</button>
