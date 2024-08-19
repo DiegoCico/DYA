@@ -30,15 +30,64 @@ function Ranking() {
     const fetchRankingData = async () => {
       try {
         const rankingCollectionRef = collection(db, 'users');
-        const rankingQuery = query(rankingCollectionRef, orderBy('xp', 'desc'));
-        const rankingSnapshot = await getDocs(rankingQuery);
-        const ranking = rankingSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const rankingSnapshot = await getDocs(rankingCollectionRef);
+        const ranking = await Promise.all(
+          rankingSnapshot.docs.map(async (userDoc) => {
+            const userData = userDoc.data();
+            const userActivityDocRef = doc(db, 'userActivity', userDoc.id);
+            const userActivityDocSnap = await getDoc(userActivityDocRef);
+
+            let filteredXP = 0;
+
+            if (userActivityDocSnap.exists()) {
+              const loginData = userActivityDocSnap.data().loginData;
+              filteredXP = calculateFilteredXP(loginData);
+            }
+
+            return {
+              id: userDoc.id,
+              username: userData.username,
+              xp: filteredXP,
+              profilePicture: userData.profilePicture,
+            };
+          })
+        );
+
+        ranking.sort((a, b) => b.xp - a.xp);
         setRankingData(ranking);
       } catch (error) {
         console.error('Error fetching ranking data:', error);
       } finally {
         setLoading(false);
       }
+    };
+
+    const calculateFilteredXP = (loginData) => {
+      const now = new Date();
+      let filteredXP = 0;
+
+      loginData.forEach((entry) => {
+        const loginDate = new Date(entry.day);
+        let isWithinTimeFrame = false;
+
+        if (timeFrame === 'week') {
+          const startOfWeek = new Date(now);
+          startOfWeek.setDate(now.getDate() - now.getDay()); 
+          isWithinTimeFrame = loginDate >= startOfWeek && loginDate <= now;
+        } else if (timeFrame === 'month') {
+          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); 
+          isWithinTimeFrame = loginDate >= startOfMonth && loginDate <= now;
+        } else if (timeFrame === 'year') {
+          const startOfYear = new Date(now.getFullYear(), 0, 1); 
+          isWithinTimeFrame = loginDate >= startOfYear && loginDate <= now;
+        }
+
+        if (isWithinTimeFrame) {
+          filteredXP += entry.xp;
+        }
+      });
+
+      return filteredXP;
     };
 
     fetchUserData();

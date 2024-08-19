@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import '../css/Signup.css';
 
 export default function NewLogin(props) {
     const { handleRouteChange, toggleSignUpPopUp, toggleLoginPopUp } = props;
-    let days = ['Sunday', 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [showSignUpForm, setShowSignUpForm] = useState(false);
     const [showGoogleErrorPopup, setShowGoogleErrorPopup] = useState(false);
-    const date = new Date()
+    const date = new Date();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -36,19 +35,19 @@ export default function NewLogin(props) {
             if (userData.isParent) {
                 handleRouteChange(`/parenthub/${user.uid}`);
             } else {
-                handleRouteChange(`/roadmap/${user.uid}`)
-                const userActivityDocRef = doc(db, 'userActivity', user.uid)
-                const docSnap = await getDoc(userActivityDocRef)
-                let userLogInData = docSnap.data().loginData || []
-                // get today date in YYYY-MM-DD format
-                const today = date.toISOString().split('T')[0]
-                const lastLoginDay = userLogInData[userLogInData.length-1]
-                // const testDay = '2024-08-20' // for testing
+                handleRouteChange(`/roadmap/${user.uid}`);
+                await initializeUserActivity(user.uid); 
+                const userActivityDocRef = doc(db, 'userActivity', user.uid);
+                const docSnap = await getDoc(userActivityDocRef);
+                let userLogInData = docSnap.data().loginData || [];
+                const today = date.toISOString().split('T')[0];
+                const lastLoginDay = userLogInData[userLogInData.length - 1]?.day;
+
                 if (today !== lastLoginDay) {
-                    console.log('New login on', today)
-                    updateUserLoginData(user.uid, today, 0)
+                    console.log('New login on', today);
+                    await updateUserLoginData(user.uid, today, 0);
                 } else {
-                    console.log('User already logged in today')
+                    console.log('User already logged in today');
                 }
             }
         } catch (error) {
@@ -56,48 +55,26 @@ export default function NewLogin(props) {
         }
     };
 
-    async function updateUserLoginData(userID, newLoginDay, newXP) {
-        const userActivityDocRef = doc(db, 'userActivity', userID)
-        const docSnap = await getDoc(userActivityDocRef)
-        let userLogInData = docSnap.data().loginData || []
+    async function initializeUserActivity(userID) {
+        const userActivityDocRef = doc(db, 'userActivity', userID);
+        const docSnap = await getDoc(userActivityDocRef);
 
-        userLogInData.sort((a,b) => new Date(a.day) - new Date(b.day))
-
-        if (userLogInData.length > 0) {
-            const lastLoginDate = userLogInData[userLogInData.length - 1].day
-            userLogInData = fillMissedDays(userLogInData, lastLoginDate, newLoginDay)
+        if (!docSnap.exists()) {
+            await setDoc(userActivityDocRef, { loginData: [] });
+            console.log(`UserActivity created for user: ${userID}`);
         }
-
-        userLogInData.push({ day: newLoginDay, xp: newXP })
-
-        if (userLogInData.length > 7) {
-            userLogInData = userLogInData.slice(-7)
-        }
-
-        await updateDoc(userActivityDocRef, {
-            loginData: userLogInData
-        })
     }
 
-    function fillMissedDays(userLoginData, lastLoginDate, newLoginDay) {
-        const currentDate = new Date(lastLoginDate)
-        const targetDate = new Date(newLoginDay)
+    async function updateUserLoginData(userID, newLoginDay, newXP) {
+        const userActivityDocRef = doc(db, 'userActivity', userID);
+        const docSnap = await getDoc(userActivityDocRef);
+        let userLogInData = docSnap.data().loginData || [];
 
-        while (currentDate < targetDate) {
-            currentDate.setDate(currentDate.getDate() + 1)
-            const nextDate = currentDate.toISOString().split('T')[0]
+        userLogInData.push({ day: newLoginDay, xp: newXP });
 
-            if (nextDate !== newLoginDay) {
-                console.log('Adding missing day', nextDate)
-                userLoginData.push({ day: nextDate, xp: 0 })
-            }
-
-            if (userLoginData.length > 7) {
-                userLoginData.shift()
-            }
-        }
-
-        return userLoginData
+        await updateDoc(userActivityDocRef, {
+            loginData: userLogInData,
+        });
     }
 
     const handleGoogleSignIn = async () => {
@@ -117,7 +94,7 @@ export default function NewLogin(props) {
                 toggleLoginPopUp(); 
                 setTimeout(() => {
                     toggleSignUpPopUp(); // Open the signup popup
-                }, 300); // Adding a delay to ensure the login popup fully closes before opening signup
+                }, 300);
             } else {
                 let fetchedData;
                 if (parentDocSnap.exists()) {
@@ -130,18 +107,18 @@ export default function NewLogin(props) {
                     handleRouteChange(`/parenthub/${user.uid}`);
                 } else {
                     handleRouteChange(`/roadmap/${user.uid}`);
-                    const userActivityDocRef = doc(db, 'userActivity', user.uid)
-                    const docSnap = await getDoc(userActivityDocRef)
-                    let userLogInData = docSnap.data().loginData || []
-                    // get today date in YYYY-MM-DD format
-                    const today = date.toISOString().split('T')[0]
-                    const lastLoginDay = userLogInData[userLogInData.length-1]
-                    // const testDay = '2024-08-20' // for testing
+                    await initializeUserActivity(user.uid); // Initialize user activity if it doesn't exist
+                    const userActivityDocRef = doc(db, 'userActivity', user.uid);
+                    const docSnap = await getDoc(userActivityDocRef);
+                    let userLogInData = docSnap.data().loginData || [];
+                    const today = date.toISOString().split('T')[0];
+                    const lastLoginDay = userLogInData[userLogInData.length - 1]?.day;
+
                     if (today !== lastLoginDay) {
-                        console.log('New login on', today)
-                        updateUserLoginData(user.uid, today, 0)
+                        console.log('New login on', today);
+                        await updateUserLoginData(user.uid, today, 0);
                     } else {
-                        console.log('User already logged in today')
+                        console.log('User already logged in today');
                     }
                 }
             }

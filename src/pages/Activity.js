@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
-import { doc, getDoc, collection, getDocs, setDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, setDoc, updateDoc } from 'firebase/firestore';
 import '../css/Activity.css';
 import CodeEditor from '../components/CodeEditor';
 import axios from 'axios';
@@ -32,16 +32,40 @@ function Activity() {
   const [currentLanguage, setCurrentLanguage] = useState('Python'); // Default to Python
   const [slideDown, setSlideDown] = useState(false);
 
+  const date = new Date();
+
   const addUserXP = async (xp) => {
     const userDocRef = doc(db, 'users', uid);
     const userDocSnap = await getDoc(userDocRef);
 
+    const today = date.toISOString().split('T')[0];
+
+    const userActivityDocRef = doc(db, 'userActivity', uid);
+    const docSnap = await getDoc(userActivityDocRef);
+    const userLoginData = docSnap.data().loginData;
+
+    let currentDay = userLoginData.find((date) => date.day === today);
+    if (!currentDay) {
+      // If the current day is not found, add a new entry
+      currentDay = { day: today, xp: 0 };
+      userLoginData.push(currentDay);
+    }
+
+    currentDay.xp += xp;
+
     if (userDocSnap.exists()) {
       const userData = userDocSnap.data();
       const currentXP = userData.xp || 0;
-      await setDoc(userDocRef, {
-        xp: currentXP + xp,
-      }, { merge: true });
+      await setDoc(
+        userDocRef,
+        {
+          xp: currentXP + xp,
+        },
+        { merge: true }
+      );
+      await updateDoc(userActivityDocRef, {
+        loginData: userLoginData,
+      });
     }
   };
 
@@ -65,9 +89,11 @@ function Activity() {
 
         const activitiesCollection = collection(db, `activities${userData.currentLanguage}`);
         const activitiesSnapshot = await getDocs(activitiesCollection);
-        const activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const activitiesData = activitiesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
-        const activity = activitiesData.find(act => act.title.replace(/\s+/g, '-') === activityTitle && act.order.toString() === activityOrder);
+        const activity = activitiesData.find(
+          (act) => act.title.replace(/\s+/g, '-') === activityTitle && act.order.toString() === activityOrder
+        );
         if (!activity) {
           setError('Activity not found');
           return;
@@ -84,7 +110,7 @@ function Activity() {
           const progressData = progressDocSnap.data();
           setCorrectCount(progressData.correctCount || 0);
           setIncorrectCount(progressData.incorrectCount || 0);
-          
+
           // If the activity was completed, reset progress
           if (progressData.completed) {
             resetProgress();
@@ -105,13 +131,13 @@ function Activity() {
       console.log('Received test results:', data);
       setTestResults(data.testResults || []);
       setResult(data.success ? 'Success! You got it right.' : `Incorrect output:\n${data.message}`);
-      
+
       if (data.success && isSubmitting) {
         setFireworks(true);
         setTimeout(() => setFireworks(false), 1000);
-        setCorrectCount(prevCount => prevCount + 1);
+        setCorrectCount((prevCount) => prevCount + 1);
         updateUserProgress({ correctCount: correctCount + 1 });
-        
+
         if (correctCount + 1 === 5) {
           updateUserProgress({ completed: true });
           setShowAnimation(true);
@@ -120,16 +146,16 @@ function Activity() {
           addUserXP(100); // Grant 100 XP for completing the activity
           setTimeout(() => {
             setShowAnimation(false);
-            setCurrentQuestionIndex(shuffledQuestions.length); 
+            setCurrentQuestionIndex(shuffledQuestions.length);
           }, 3000); // duration of the animation
         } else {
-          setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+          setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
           setResult(null);
         }
       } else if (!data.success && isSubmitting) {
         setShake(true);
         setTimeout(() => setShake(false), 1000);
-        setIncorrectCount(prevCount => prevCount + 1);
+        setIncorrectCount((prevCount) => prevCount + 1);
         updateUserProgress({ incorrectCount: incorrectCount + 1 });
         if (incorrectCount + 1 === 3) {
           alert('You have 3 incorrect answers. Restarting...');
@@ -182,13 +208,19 @@ function Activity() {
       const newActivityOrder = parseInt(activityOrder) + 1;
 
       const currentLanguage = userData.currentLanguage;
-      const updatedProgrammingLanguages = userData.programmingLanguages.map(lang => lang.langName === currentLanguage ? {...lang, currentActivity: newActivityOrder} : lang);
+      const updatedProgrammingLanguages = userData.programmingLanguages.map((lang) =>
+        lang.langName === currentLanguage ? { ...lang, currentActivity: newActivityOrder } : lang
+      );
 
-      await setDoc(userDocRef, {
-        ...userData,
-        currentActivity: newActivityOrder,
-        programmingLanguages: updatedProgrammingLanguages
-      }, { merge: true });
+      await setDoc(
+        userDocRef,
+        {
+          ...userData,
+          currentActivity: newActivityOrder,
+          programmingLanguages: updatedProgrammingLanguages,
+        },
+        { merge: true }
+      );
 
       console.log(`Next activity unlocked: ${newActivityOrder}`);
     }
@@ -215,15 +247,15 @@ function Activity() {
         userId: uid,
         questionId: currentQuestion.id,
         userCode: userCode,
-        language: currentLanguage, 
-        testCount 
+        language: currentLanguage,
+        testCount,
       };
 
       // Send the payload to the backend
       await axios.post('http://localhost:5002/test-function', payload, {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
     } catch (error) {
       console.error(`Error testing ${funcName}:`, error);
@@ -242,10 +274,13 @@ function Activity() {
       }
 
       // Save the user's code to Firestore
-      await setDoc(doc(db, 'users', uid, 'activities', currentLanguage, 'activityOrder', activityOrder, 'questions', currentQuestion.id), {
-        functionName: funcName,
-        userCode: userCode,
-      });
+      await setDoc(
+        doc(db, 'users', uid, 'activities', currentLanguage, 'activityOrder', activityOrder, 'questions', currentQuestion.id),
+        {
+          functionName: funcName,
+          userCode: userCode,
+        }
+      );
 
       // Create the JSON payload
       const payload = {
@@ -255,14 +290,14 @@ function Activity() {
         questionId: currentQuestion.id,
         userCode: userCode,
         language: currentLanguage,
-        testCount 
+        testCount,
       };
 
       // Send the payload to the backend
       await axios.post('http://localhost:5002/test-function', payload, {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
     } catch (error) {
       console.error(`Error testing ${funcName}:`, error);
@@ -345,8 +380,8 @@ function Activity() {
             <div className="status incorrect-count">Incorrect: {incorrectCount}</div>
           </div>
           <div className={`activities-container ${slideDown ? 'slide-down' : ''}`}>
-            <CodeEditor 
-              currentQuestion={currentQuestion} 
+            <CodeEditor
+              currentQuestion={currentQuestion}
               onCodeSubmit={handleCodeSubmit}
               onRunTests={handleRunTests}
               onCodeChange={handleCodeChange}

@@ -5,7 +5,7 @@ import { signOut } from "firebase/auth";
 import UserProfile from "../pages/UserProfile";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function UserProfileSidebar({ userData }) {
     const { uid } = useParams();
@@ -19,13 +19,14 @@ export default function UserProfileSidebar({ userData }) {
         const fetchLoginData = async () => {
             if (!uid) return;
 
-            const loginDataRef = collection(db, 'users', uid, 'logins');
-            const loginDataSnapshot = await getDocs(query(loginDataRef, orderBy('date', 'asc')));
-
-            const loginDates = loginDataSnapshot.docs.map(doc => doc.data().date.toDate());
-            setLoginData(loginDates);
-            calculateStreak(loginDates);
-            calculateMonthlyLogins(loginDates);
+            const userActivityDocRef = doc(db, 'userActivity', uid);
+            const docSnap = await getDoc(userActivityDocRef);
+            if (docSnap.exists()) {
+                const loginData = docSnap.data().loginData.map(entry => entry.day);
+                setLoginData(loginData);
+                calculateStreak(loginData);
+                calculateMonthlyLogins(loginData);
+            }
         };
 
         fetchLoginData();
@@ -34,11 +35,11 @@ export default function UserProfileSidebar({ userData }) {
     const calculateStreak = (dates) => {
         let streak = 0;
         let today = new Date().setHours(0, 0, 0, 0);
-        for (let i = 0; i < dates.length; i++) {
+        for (let i = dates.length - 1; i >= 0; i--) {
             const date = new Date(dates[i]).setHours(0, 0, 0, 0);
             if (date === today) {
                 streak++;
-                today -= 86400000;
+                today -= 86400000; // Subtract one day
             } else {
                 break;
             }
