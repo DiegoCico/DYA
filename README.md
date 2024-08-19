@@ -1,15 +1,18 @@
 DYA
 
 **Overview**
+
 DYA (Develop Your Abilities) is an educational website dedicated to teaching kids and beginners how to code. It provides an interactive and engaging platform designed to make learning programming fun and accessible. The platform leverages game-like elements, visual programming languages, and step-by-step tutorials to help young learners and adults develop their coding skills in a supportive environment.
 
 **Audience**
+
 _Primary Audience:_
 Young Children (Ages 6-12): DYA targets young children who are curious about technology and programming. The platform is designed to cater to their cognitive and learning      abilities, with a focus on visual programming and interactive activities.
 _Secondary Audience:_
 Teenagers and Adults (Beginners): While the primary focus is on children, DYA also serves as a valuable resource for teenagers and adults who are new to coding. The content is structured to be beginner-friendly, ensuring that learners of all ages can benefit from the platform.
 
 **Goal**
+
 The primary goal of DYA is to provide an educational resource that simplifies the coding learning process, especially for kids and beginners. By offering a user-friendly interface, interactive tutorials, and game-based learning modules, DYA aims to:
 - Make Coding Accessible: DYA lowers the barriers to entry for coding by using visual programming languages and intuitive design, making it easier for young learners to grasp programming concepts.
 - Enhance Engagement: Through interactive lessons, challenges, and games, DYA keeps learners engaged, making the learning process enjoyable and motivating.
