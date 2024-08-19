@@ -128,3 +128,6 @@ celerybeat.pid
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Firebase configuration
+firebase.js
