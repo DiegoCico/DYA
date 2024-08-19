@@ -85,14 +85,20 @@ function Roadmap() {
   }, [uid]);
 
   useEffect(() => {
+    const roadmapPage = document.querySelector('.roadmap-page');
+
+    if (!roadmapPage) return;
+  
     const handleScroll = () => {
-      const roadmapPage = document.querySelector('.roadmap-page');
-      const scrollPosition = window.scrollY;
+      const scrollPosition = roadmapPage.scrollTop;
       roadmapPage.style.backgroundPositionY = `${scrollPosition}px`;
     };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+  
+    roadmapPage.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      roadmapPage.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   if (loading) return <div className="loading">Loading...</div>;

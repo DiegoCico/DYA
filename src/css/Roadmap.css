@@ -21,11 +21,16 @@
   background-image: url('../../public/ROADMAPB.png'); /* Background image from public folder */
   background-size: cover; /* Ensure the image covers the entire area */
   background-repeat: repeat-y; /* Ensure the image repeats vertically */
-  background-attachment: scroll; /* Ensure the background scrolls with the content */
+  background-position: center top; /* Align the background image */
   font-family: Arial, Helvetica, sans-serif;
-  position: relative;
-  height: 100vh;
-  overflow: auto;
+  min-height: 100vh; /* Ensure it expands with content */
+  overflow-y: scroll; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+html, body {
+  height: 100%; /* Ensure full page height */
+  overflow: auto; /* Prevent scrolling on the body */
 }
 
 .mascot-container {
