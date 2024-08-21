@@ -32,13 +32,12 @@ function Roadmap() {
         }
         const userData = userDocSnap.data();
 
-        // Check and set XP attribute if it doesn't exist
-        if (userData.xp === undefined) {
-          await updateDoc(userDocRef, { xp: 0 });
-          userData.xp = 0;
-        }
+        // Calculate and update total XP
+        const totalXP = await calculateTotalXP(uid);
+        await updateDoc(userDocRef, { xp: totalXP });
 
-        setUserData(userData);
+        // Update local state with the updated user data
+        setUserData({ ...userData, xp: totalXP });
 
         // Check and set the current language
         if (!userData.currentLanguage) {
@@ -179,3 +178,14 @@ function Roadmap() {
 }
 
 export default Roadmap;
+
+async function calculateTotalXP(userID) {
+  const userActivityDocRef = doc(db, 'userActivity', userID);
+  const docSnap = await getDoc(userActivityDocRef);
+  const userLogInData = docSnap.data().loginData || [];
+
+  // Calculate total XP
+  const totalXP = userLogInData.reduce((total, entry) => total + entry.xp, 0);
+  
+  return totalXP;
+}

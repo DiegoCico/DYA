@@ -14,7 +14,8 @@ export default function UserProfile(props) {
         profilePicture: '',
         programmingLanguages: [],
         currentActivity: 0,
-        xp: 0
+        xp: 0,
+        uniqueId: ''
     });
     const [isEdit, setIsEdit] = useState(false);
 
@@ -32,7 +33,8 @@ export default function UserProfile(props) {
                         profilePicture: fetchedUserData.profilePicture || `${process.env.PUBLIC_URL}/profile-avatar.png`,
                         programmingLanguages: fetchedUserData.programmingLanguages || [],
                         currentActivity: fetchedUserData.currentActivity || 0,
-                        xp: fetchedUserData.xp || 0
+                        xp: fetchedUserData.xp || 0,
+                        uniqueId: fetchedUserData.uniqueId || ''
                     });
                     fetchTotalParts(fetchedUserData.programmingLanguages);
                 }
@@ -124,8 +126,14 @@ export default function UserProfile(props) {
                 <div className="user-data-container-left">
                     <button className="close-btn" onClick={close}>X</button>
                     <div className="user-picture">
-                        <img src={userFormData.profilePicture} alt="Profile Avatar" onClick={() => document.getElementById('fileInput').click()} />
-                        <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleFileChange} />
+                        {isOwnProfile ? (
+                            <>
+                                <img src={userFormData.profilePicture} alt="Profile Avatar" onClick={() => document.getElementById('fileInput').click()} />
+                                <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleFileChange} />
+                            </>
+                        ) : (
+                            <img src={userFormData.profilePicture} alt="Profile Avatar" />
+                        )}
                     </div>
                     <div className="user-data">
                         <div className="head">
@@ -186,7 +194,13 @@ export default function UserProfile(props) {
                         <p>{userFormData.xp}</p>
                     </div>
                 </div>
+                {isOwnProfile && (
+                    <div className="user-id-section">
+                        <p>Child ID: {userFormData.uniqueId}</p>
+                    </div>
+                )}
             </div>
         </div>
     );
 }
+    

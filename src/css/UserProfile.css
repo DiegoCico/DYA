@@ -145,3 +145,15 @@
     transition: background-color 0.3s;
     margin: 0 10px;
 }
+
+.user-id-section {
+    position: absolute;
+    bottom: 20px;
+    margin-left: 30px;
+    text-align: left;
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #333;
+}
