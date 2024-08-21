@@ -27,7 +27,7 @@ export default function ParentHubSidebar(props) {
             <div className="sidebar-buttons-container">
                 <button className="sidebar-button" onClick={openDash}>
                     <i className="fa-solid fa-table-columns"></i>
-                    <h3>Dash</h3>
+                    <h3>Dashboard</h3>
                 </button>
                 <button className="sidebar-button" onClick={openProfile}>
                     <i className="fa-solid fa-user"></i>
