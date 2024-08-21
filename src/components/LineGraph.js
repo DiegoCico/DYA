@@ -45,7 +45,7 @@ export default function LineGraph(props) {
             const thisWeek = getUpdatedDays(thisWeekMonday)
             
             let tempChildProgress = {
-                labels: thisWeek,
+                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
                 datasets: []
             }
     
