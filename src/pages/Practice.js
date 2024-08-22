@@ -29,8 +29,8 @@ function Practice() {
   const [fireworks, setFireworks] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('Python'); // Default to Python
   const [slideDown, setSlideDown] = useState(false);
-  const days = ['Sunday', 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
-  const date = new Date()
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const date = new Date();
 
   const updateUserProgress = useCallback(async (progressUpdates) => {
     if (activity) {
@@ -60,17 +60,17 @@ function Practice() {
   const addUserXP = useCallback(async (xp) => {
     const userDocRef = doc(db, 'users', uid);
     const userDocSnap = await getDoc(userDocRef);
-    const today = date.toISOString().split('T')[0]
+    const today = date.toISOString().split('T')[0];
 
-    const userActivityDocRef = doc(db, 'userActivity', uid)
-    const docSnap = await getDoc(userActivityDocRef)
-    const userLoginData = docSnap.data().loginData
-    let currentDay = userLoginData.find(date => date.day === today)
-    const currentDayXP = currentDay.xp
-    console.log(currentDayXP)
-    currentDay.xp = currentDayXP + xp
+    const userActivityDocRef = doc(db, 'userActivity', uid);
+    const docSnap = await getDoc(userActivityDocRef);
+    const userLoginData = docSnap.data().loginData;
+    let currentDay = userLoginData.find((date) => date.day === today);
+    const currentDayXP = currentDay.xp;
+    console.log(currentDayXP);
+    currentDay.xp = currentDayXP + xp;
 
-    console.log(currentDay)
+    console.log(currentDay);
 
     if (userDocSnap.exists()) {
       const userData = userDocSnap.data();
@@ -79,8 +79,8 @@ function Practice() {
         xp: currentXP + xp,
       }, { merge: true });
       await updateDoc(userActivityDocRef, {
-        loginData: userLoginData
-      })
+        loginData: userLoginData,
+      });
     }
   }, [uid]);
 
@@ -104,7 +104,7 @@ function Practice() {
 
         const activitiesCollection = collection(db, `activities${userData.currentLanguage}`);
         const activitiesSnapshot = await getDocs(activitiesCollection);
-        const activitiesData = activitiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const activitiesData = activitiesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
         if (activitiesData.length === 0) {
           setError('No activities found');
@@ -113,7 +113,7 @@ function Practice() {
 
         // Select a random activity
         const randomActivity = activitiesData[Math.floor(Math.random() * activitiesData.length)];
-        
+
         setActivity(randomActivity);
         setShuffledQuestions(shuffleArray(randomActivity.questions));
         setCurrentQuestionIndex(0);
@@ -125,7 +125,7 @@ function Practice() {
           const progressData = progressDocSnap.data();
           setCorrectCount(progressData.correctCount || 0);
           setIncorrectCount(progressData.incorrectCount || 0);
-          
+
           // If the activity was completed, reset progress
           if (progressData.completed) {
             resetProgress(randomActivity.order.toString());
@@ -149,18 +149,18 @@ function Practice() {
       console.log('Received test results:', data);
       setTestResults(data.testResults || []);
       setResult(data.success ? 'Success! You got it right.' : `Incorrect output:\n${data.message}`);
-      
+
       if (data.success && isSubmitting) {
         setFireworks(true);
         setTimeout(() => setFireworks(false), 1000);
-        setCorrectCount(prevCount => prevCount + 1);
+        setCorrectCount((prevCount) => prevCount + 1);
         updateUserProgress({ correctCount: correctCount + 1 });
         addUserXP(shuffledQuestions[currentQuestionIndex].xp); // Add XP
         setResult(null);
       } else if (!data.success && isSubmitting) {
         setShake(true);
         setTimeout(() => setShake(false), 1000);
-        setIncorrectCount(prevCount => prevCount + 1);
+        setIncorrectCount((prevCount) => prevCount + 1);
         updateUserProgress({ incorrectCount: incorrectCount + 1 });
         setResult(null);
       }
@@ -195,14 +195,14 @@ function Practice() {
         questionId: currentQuestion.id,
         userCode: userCode,
         language: currentLanguage, // Pass the current language to the backend
-        testCount // Pass the number of tests to run
+        testCount, // Pass the number of tests to run
       };
 
       // Send the payload to the backend
       await axios.post('http://localhost:5002/test-function', payload, {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
     } catch (error) {
       console.error(`Error testing ${funcName}:`, error);
@@ -221,10 +221,13 @@ function Practice() {
       }
 
       // Save the user's code to Firestore
-      await setDoc(doc(db, 'users', uid, 'activities', currentLanguage, 'activityOrder', activity.order.toString(), 'questions', currentQuestion.id), {
-        functionName: funcName,
-        userCode: userCode,
-      });
+      await setDoc(
+        doc(db, 'users', uid, 'activities', currentLanguage, 'activityOrder', activity.order.toString(), 'questions', currentQuestion.id),
+        {
+          functionName: funcName,
+          userCode: userCode,
+        }
+      );
 
       // Create the JSON payload
       const payload = {
@@ -234,14 +237,14 @@ function Practice() {
         questionId: currentQuestion.id,
         userCode: userCode,
         language: currentLanguage,
-        testCount 
+        testCount,
       };
 
       // Send the payload to the backend
       await axios.post('http://localhost:5002/test-function', payload, {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
     } catch (error) {
       console.error(`Error testing ${funcName}:`, error);
@@ -299,16 +302,22 @@ function Practice() {
             <button onClick={handleBackClick} className='back-btn'>
               <i className="fa-solid fa-arrow-left"></i>
             </button>
-            <h2 className="activity-title">Pratice</h2>
+            <h2 className="activity-title">Practice</h2>
           </div>
           <p className="activity-description">{activity.description}</p>
           <div className="status-section">
-            <div className="status correct-count">Correct: {correctCount}</div>
-            <div className="status incorrect-count">Incorrect: {incorrectCount}</div>
+            <div className="level-xp">
+              <p>Level: {currentQuestion.difficulty}</p>
+              <p>XP: {currentQuestion.xp}</p>
+            </div>
+            <div className="status">
+              <div className="status-content correct">{correctCount}</div>
+              <div className="status-content incorrect">{incorrectCount}</div>
+            </div>
           </div>
           <div className={`activities-container ${slideDown ? 'slide-down' : ''}`}>
-            <CodeEditor 
-              currentQuestion={currentQuestion} 
+            <CodeEditor
+              currentQuestion={currentQuestion}
               onCodeSubmit={handleCodeSubmit}
               onRunTests={handleRunTests}
               onCodeChange={handleCodeChange}
@@ -317,10 +326,6 @@ function Practice() {
               activityOrder={activity.order.toString()}
               setOutput={() => {}}
             />
-            <div className="question-info">
-              <p>Level: {currentQuestion.difficulty}</p>
-              <p>XP: {currentQuestion.xp}</p>
-            </div>
           </div>
           {result && <div className="result-section"><pre>{result}</pre></div>}
           {isSubmitting && <div className="loading">Submitting...</div>}

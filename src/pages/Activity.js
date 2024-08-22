@@ -376,9 +376,11 @@ function Activity() {
           </div>
           <p className="activity-description">{activity.description}</p>
           <div className="status-section">
-            <div className="status correct-count">Correct: {correctCount}</div>
-            <div className="status incorrect-count">Incorrect: {incorrectCount}</div>
-          </div>
+            <div className="status">
+               <div className="status-content correct">{correctCount}</div>
+               <div className="status-content incorrect">{incorrectCount}</div>
+             </div>
+            </div>
           <div className={`activities-container ${slideDown ? 'slide-down' : ''}`}>
             <CodeEditor
               currentQuestion={currentQuestion}

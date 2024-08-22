@@ -62,9 +62,9 @@ const CodeEditor = ({ currentQuestion, onCodeSubmit, onRunTests, onCodeChange, u
     <div className="coding-section">
       <p className="coding-question">{currentQuestion.codingQuestion}</p>
       <div ref={setContainer} className="code-editor" />
-      <button className='code-editor-button' onClick={restartCode}>Restart</button>
-      <button className='code-editor-button' onClick={runTests}>Run Tests</button>
-      <button className='code-editor-button' onClick={() => onCodeSubmit(userCode, 50)}>Submit</button> {/* Pass 50 as the number of tests to run */}
+      <button className="code-editor-button" onClick={restartCode}>Restart</button>
+      <button className="code-editor-button" onClick={runTests}>Run Tests</button>
+      <button className="code-editor-button" onClick={() => onCodeSubmit(userCode, 50)}>Submit</button>
     </div>
   );
 };
