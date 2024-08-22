@@ -138,9 +138,9 @@ export const initializeLessons = async () => {
   }
 };
 
-initializeActivitiesPython();
-initializeActivitiesJava();
-initializeActivitiesJavaScript(); 
-initializeLessons();
+// initializeActivitiesPython();
+// initializeActivitiesJava();
+// initializeActivitiesJavaScript(); 
+// initializeLessons();
 
 export default app;
