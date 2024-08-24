@@ -122,8 +122,11 @@ function Roadmap() {
       return;
     }
     const lessonTitleUrl = title.replace(/\s+/g, '-');
+    const testLessonTitle = 'Data-types-in-Python'
     if (order <= userData.currentActivity) {
-      navigate(`/lessons/${uid}/${userData.currentLanguage}/${lessonTitleUrl}`);
+      // navigate(`/lessons/${uid}/${userData.currentLanguage}/${lessonTitleUrl}`);
+
+      navigate(`/lessonTest/${userData.currentLanguage}/${testLessonTitle}`);
     } else {
       alert('You need to complete the previous activities first!');
     }

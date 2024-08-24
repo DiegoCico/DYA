@@ -13,6 +13,7 @@ import Lessons from "./Lessons";
 import ParentHub from "./ParentHub";
 import Practice from "./Practice"; 
 import Ranking from "./Ranking"; 
+import Lesson from './Lesson';
 
 function App() {
   const navigate = useNavigate();
@@ -128,6 +129,7 @@ function App() {
         <Route path="/activity/:uid/:activityTitle/:activityOrder" element={<Activity />} />
         <Route path="/lessons/:uid/:language/:lessonTitle" element={<Lessons />} />
         <Route path="/ranking/:uid" element={<Ranking />} /> {/* Add Ranking route */}
+        <Route path="/lessonTest/:language/:title" element={<Lesson />} />
       </Routes>
     </div>
   );
