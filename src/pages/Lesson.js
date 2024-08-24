@@ -25,8 +25,10 @@ export default function Lesson() {
             const qSnap = await getDocs(q)
             qSnap.forEach(doc => {
                 const data = doc.data()
-                lessonData.unitTitle = data.unitTitle
-                lessonData.description = data.lessonDesc
+                // console.log(data)
+                lessonData = {
+                    ...data
+                }
             })
         } catch(error) {
             console.log(error.message)
@@ -41,7 +43,7 @@ export default function Lesson() {
         getData()
 
     }, [lessonTitle])
-
+    // console.log(lesson)
     return (
         <>
             {lesson && (

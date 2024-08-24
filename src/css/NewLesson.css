@@ -73,6 +73,8 @@
     grid-column-gap: 0px;
     grid-row-gap: 0px;
     margin-top: 2rem;
+    background-color: #98c27a;
+    height:85vh
 }
 
 .sidebar-container {
@@ -114,7 +116,7 @@
 
 .lesson-container {
     /* background-color: aqua; */
-    margin: 1rem 15rem 1rem 12rem;
+    margin: 1rem 20rem 1rem 17rem;
 }
 
 .desc-container {
@@ -122,15 +124,133 @@
     margin: 2rem;
     padding: 2rem;
     border-radius: 10px;
+    font-size: 20px;
 }
 
 .example-container {
     background-color: #D9D9D9;
     margin: 2rem;
-    padding: 15rem 2rem 15rem 2rem;
+    padding: 10rem 2rem 10rem 2rem;
     border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.code-item {
+    margin-bottom: 10px;
+    background-color: #f5f5f5; /* Light gray background */
+    padding: 10px;
+    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace; /* Monospace font for code */
+    color: #333; /* Dark color for the text */
+    border: 1px solid #ddd; /* Light border around the code block */
+}
+
+.explanation-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    color: #333;
+}
+
+.continue-button-container {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin: 0 32px 0 32px;
+}
+
+.continue-button-container button {
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    background-color: #E6735A;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.continue-button-container button:hover {
+    background-color: #dc4523;
 }
 
 .practice-container {
-    background-color: aqua;
+    margin: 1rem 20rem 1rem 17rem;
+    height:81.9vh
 }
+
+.task-container, .options-container{
+    background-color: #D9D9D9;
+    margin: 2rem;
+    padding: 2rem;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between options */
+    margin-top: 20px;
+}
+
+.option-label {
+    display: inline-block;
+    width: 80%;
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    background-color: #f0f0f0;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    text-align: center;
+    user-select: none; /* Prevent text selection */
+}
+
+.option-label:hover {
+    background-color: #e0e0e0;
+    border-color: #bbb;
+}
+
+input[type="radio"] {
+    display: none; /* Hide the default radio buttons */
+}
+
+input[type="radio"]:checked + .option-label {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+.feedback {
+    margin-top: 20px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    font-size: 25px;
+}
+
+.correct-feedback {
+    color: green;
+}
+
+.incorrect-feedback {
+    color: red;
+}
+
+.submit-button {
+    padding: 10px 20px;
+    background-color: #E6735A;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #dc4523;
+}
+
