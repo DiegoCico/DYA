@@ -10,6 +10,14 @@ import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:5002');
 
+/**
+ * Practice Component
+ * 
+ * The `Practice` component is designed for users to practice coding by working on random activities. It fetches a random activity
+ * from Firestore, shuffles the questions, and allows the user to submit their code for testing. The component also tracks the user's
+ * progress, including correct and incorrect answers, and updates their XP.
+ */
+
 function Practice() {
   const { uid } = useParams();
   const navigate = useNavigate();
@@ -29,9 +37,14 @@ function Practice() {
   const [fireworks, setFireworks] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('Python'); // Default to Python
   const [slideDown, setSlideDown] = useState(false);
-  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const date = new Date();
 
+  /**
+   * updateUserProgress
+   * 
+   * @description Updates the user's progress in Firestore, including correct and incorrect answer counts.
+   * @param {object} progressUpdates - The progress updates to be saved.
+   */
   const updateUserProgress = useCallback(async (progressUpdates) => {
     if (activity) {
       const progressDocRef = doc(db, 'users', uid, 'activities', currentLanguage, 'activityOrder', activity.order.toString());
@@ -45,6 +58,12 @@ function Practice() {
     }
   }, [activity, currentLanguage, uid]);
 
+  /**
+   * resetProgress
+   * 
+   * @description Resets the user's progress for the current activity in Firestore.
+   * @param {string} activityOrder - The order of the activity to reset.
+   */
   const resetProgress = useCallback(async (activityOrder) => {
     const progressDocRef = doc(db, 'users', uid, 'activities', currentLanguage, 'activityOrder', activityOrder);
     await setDoc(progressDocRef, {
@@ -57,6 +76,12 @@ function Practice() {
     setIncorrectCount(0);
   }, [currentLanguage, uid]);
 
+  /**
+   * addUserXP
+   * 
+   * @description Adds XP to the user's account for correctly answering a question.
+   * @param {number} xp - The amount of XP to add.
+   */
   const addUserXP = useCallback(async (xp) => {
     const userDocRef = doc(db, 'users', uid);
     const userDocSnap = await getDoc(userDocRef);
@@ -66,11 +91,7 @@ function Practice() {
     const docSnap = await getDoc(userActivityDocRef);
     const userLoginData = docSnap.data().loginData;
     let currentDay = userLoginData.find((date) => date.day === today);
-    const currentDayXP = currentDay.xp;
-    console.log(currentDayXP);
-    currentDay.xp = currentDayXP + xp;
-
-    console.log(currentDay);
+    currentDay.xp += xp;
 
     if (userDocSnap.exists()) {
       const userData = userDocSnap.data();
@@ -84,6 +105,11 @@ function Practice() {
     }
   }, [uid]);
 
+  /**
+   * useEffect - Fetch Activity and User Progress
+   * 
+   * @description Fetches a random activity and the user's progress for that activity.
+   */
   useEffect(() => {
     const fetchRandomActivityAndUserProgress = async () => {
       try {
@@ -144,6 +170,11 @@ function Practice() {
     fetchRandomActivityAndUserProgress();
   }, [uid, resetProgress]);
 
+  /**
+   * useEffect - Socket.io Listener for Test Results
+   * 
+   * @description Listens for test results from the server and updates the UI based on the results.
+   */
   useEffect(() => {
     socket.on('test_results', (data) => {
       console.log('Received test results:', data);
@@ -173,10 +204,23 @@ function Practice() {
     };
   }, [correctCount, incorrectCount, shuffledQuestions, isSubmitting, addUserXP, currentQuestionIndex, updateUserProgress]);
 
+  /**
+   * handleCodeChange
+   * 
+   * @description Handles changes to the user's code input.
+   * @param {string} newCode - The updated code from the code editor.
+   */
   const handleCodeChange = (newCode) => {
     setUserCode(newCode);
   };
 
+  /**
+   * handleRunTests
+   * 
+   * @description Sends the user's code to the backend for testing against predefined test cases.
+   * @param {string} userCode - The user's code to be tested.
+   * @param {number} testCount - The number of tests to run.
+   */
   const handleRunTests = async (userCode, testCount) => {
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
     const funcName = currentQuestion.functionName;
@@ -209,6 +253,13 @@ function Practice() {
     }
   };
 
+  /**
+   * handleCodeSubmit
+   * 
+   * @description Submits the user's code and saves it in Firestore.
+   * @param {string} userCode - The user's code to be saved and tested.
+   * @param {number} testCount - The number of tests to run.
+   */
   const handleCodeSubmit = async (userCode, testCount) => {
     setIsSubmitting(true);
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
@@ -252,6 +303,13 @@ function Practice() {
     }
   };
 
+  /**
+   * shuffleArray
+   * 
+   * @description Shuffles the order of questions in an array.
+   * @param {Array} array - The array of questions to be shuffled.
+   * @returns {Array} - The shuffled array of questions.
+   */
   const shuffleArray = (array) => {
     const shuffledArray = array.slice();
     for (let i = shuffledArray.length - 1; i > 0; i--) {
@@ -261,15 +319,30 @@ function Practice() {
     return shuffledArray;
   };
 
+  /**
+   * randomizeQuestion
+   * 
+   * @description Randomly selects a new question from the shuffled questions array.
+   */
   const randomizeQuestion = () => {
     const newIndex = Math.floor(Math.random() * shuffledQuestions.length);
     setCurrentQuestionIndex(newIndex);
   };
 
+  /**
+   * handleBackClick
+   * 
+   * @description Navigates the user back to the previous page.
+   */
   const handleBackClick = () => {
     navigate(-1);
   };
 
+  /**
+   * checkServerStatus
+   * 
+   * @description Checks the status of the backend server.
+   */
   const checkServerStatus = async () => {
     try {
       const response = await axios.get('http://localhost:5002/ping');

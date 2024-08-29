@@ -5,6 +5,15 @@ import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } f
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * ChildSignup Component
+ * 
+ * The `ChildSignup` component handles the sign-up process for children.
+ * It supports both email/password sign-up and Google sign-up, and guides the user through multiple steps,
+ * including entering personal information and selecting a programming language. The component ensures that 
+ * new users are properly initialized in the Firebase database.
+ */
+
 const generateUniqueId = () => {
     return Math.random().toString(36).substring(2, 12);
 };
@@ -20,11 +29,16 @@ export default function ChildSignup(props) {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [age, setAge] = useState('');
-    // const [programmingLanguage, setProgrammingLanguage] = useState('');
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
 
+    /**
+     * handleNext
+     * 
+     * @description Handles the transition to the next step in the signup process, validating the current step's input.
+     * @param {string} lang - The programming language selected by the user (used only in the final step).
+     */
     const handleNext = (lang) => {
         if (step === 2 && !name) {
             setError('Please enter your name.');
@@ -46,8 +60,19 @@ export default function ChildSignup(props) {
         }
     };
 
+    /**
+     * handlePrev
+     * 
+     * @description Handles the transition to the previous step in the signup process.
+     */
     const handlePrev = () => setStep(step - 1);
 
+    /**
+     * initializeUser
+     * 
+     * @description Initializes a new user in the Firebase Firestore with default values.
+     * @param {object} user - The user object obtained after successful signup.
+     */
     const initializeUser = async (user) => {
         const uniqueId = generateUniqueId();
         await setDoc(doc(db, 'users', user.uid), {
@@ -60,6 +85,12 @@ export default function ChildSignup(props) {
         }, { merge: true });
     };
 
+    /**
+     * handleSubmit
+     * 
+     * @description Handles the submission of the email/password signup form. It creates a new user and initializes their data in Firebase Firestore.
+     * @param {object} e - The event object.
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -84,16 +115,22 @@ export default function ChildSignup(props) {
         }
     };
 
+    /**
+     * handleCompleteSignUp
+     * 
+     * @description Completes the signup process by updating the user's data with their selected programming language and personal details.
+     * @param {string} language - The programming language selected by the user.
+     */
     const handleCompleteSignUp = async (language) => {
-        const days = ['Sunday', 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
-        const date = new Date()
+        const days = ['Sunday', 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        const date = new Date();
         try {
             const userDocRef = doc(db, 'users', userId);
             const userDocSnap = await getDoc(userDocRef);
             const userData = userDocSnap.data();
 
-            const existingLanguage = userData.programmingLanguages.find((lang) => lang.langName === language)
-            const existingCurrentActivity = existingLanguage ? existingLanguage.currentActivity : 0
+            const existingLanguage = userData.programmingLanguages.find((lang) => lang.langName === language);
+            const existingCurrentActivity = existingLanguage ? existingLanguage.currentActivity : 0;
             await setDoc(doc(db, 'users', userId), {
                 name,
                 username,
@@ -117,7 +154,7 @@ export default function ChildSignup(props) {
                         xp: 0
                     }
                 ]
-            })
+            });
 
             console.log('Programming language saved successfully');
             navigate(`/roadmap/${userId}`);
@@ -126,6 +163,11 @@ export default function ChildSignup(props) {
         }
     };
 
+    /**
+     * handleGoogleSignUp
+     * 
+     * @description Handles the Google sign-up process, initializing the user in Firebase Firestore if they are new.
+     */
     const googleProvider = new GoogleAuthProvider();
     googleProvider.setCustomParameters({ prompt: 'select_account' });
     const handleGoogleSignUp = async () => {
@@ -155,6 +197,7 @@ export default function ChildSignup(props) {
                     <div className="child-signup-container">
                         <div className="title">
                             <h1>Let's get started</h1>
+                            <p>Welcome to our coding platform! We're excited to help you start your journey into programming. Let's begin by creating your account.</p>
                         </div>
                         <div className="signup-login-container">
                             <h3>Already joined?</h3>
@@ -250,6 +293,21 @@ export default function ChildSignup(props) {
     );
 }
 
+/**
+ * InfoStep Component
+ * 
+ * The `InfoStep` component is used for displaying input forms for various steps in the signup process,
+ * including name, username, and age input. In the final step, it allows the user to choose a programming language.
+ * 
+ * @param {number} step - The current step in the signup process.
+ * @param {string} type - The type of input (text, number, etc.).
+ * @param {number} length - The maximum length for the input field.
+ * @param {string} placeholder - The placeholder text for the input field.
+ * @param {string} dataValue - The value of the input field.
+ * @param {function} setDataValue - The function to update the input value.
+ * @param {function} handleNext - The function to proceed to the next step.
+ * @param {string} error - Any error message to display.
+ */
 function InfoStep({ step, type, length, placeholder, dataValue, setDataValue, handleNext, error }) {
     return (
         <div className="main-container info">

@@ -3,17 +3,27 @@ import { useParams } from 'react-router-dom';
 import UserProfileSidebar from '../components/UserProfileSidebar';
 import UserProfile from './UserProfile';
 import { db } from '../firebase';
-import { collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import '../css/Ranking.css';
+
+/**
+ * Ranking Component
+ * 
+ * The `Ranking` component displays a leaderboard of users based on their XP within a selected time frame
+ * (week, month, or year). It allows users to view and compare their ranking with others and view user profiles.
+ */
 
 function Ranking() {
   const { uid } = useParams();
   const [userData, setUserData] = useState(null);
   const [rankingData, setRankingData] = useState([]);
-  const [timeFrame, setTimeFrame] = useState('week');
+  const [timeFrame, setTimeFrame] = useState('week'); // Default time frame is set to 'week'
   const [loading, setLoading] = useState(true);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null); // Stores the user data for the selected user
 
+  /**
+   * Fetches the user data for the logged-in user.
+   */
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -27,6 +37,9 @@ function Ranking() {
       }
     };
 
+    /**
+     * Fetches the ranking data for all users and calculates their XP based on the selected time frame.
+     */
     const fetchRankingData = async () => {
       try {
         const rankingCollectionRef = collection(db, 'users');
@@ -53,7 +66,7 @@ function Ranking() {
           })
         );
 
-        ranking.sort((a, b) => b.xp - a.xp);
+        ranking.sort((a, b) => b.xp - a.xp); // Sort the ranking by XP in descending order
         setRankingData(ranking);
       } catch (error) {
         console.error('Error fetching ranking data:', error);
@@ -62,6 +75,11 @@ function Ranking() {
       }
     };
 
+    /**
+     * Calculates the filtered XP for a user based on the selected time frame.
+     * @param {Array} loginData - An array of login data entries containing day and XP values.
+     * @returns {number} - The total XP within the selected time frame.
+     */
     const calculateFilteredXP = (loginData) => {
       const now = new Date();
       let filteredXP = 0;
@@ -72,13 +90,13 @@ function Ranking() {
 
         if (timeFrame === 'week') {
           const startOfWeek = new Date(now);
-          startOfWeek.setDate(now.getDate() - now.getDay()); 
+          startOfWeek.setDate(now.getDate() - now.getDay());
           isWithinTimeFrame = loginDate >= startOfWeek && loginDate <= now;
         } else if (timeFrame === 'month') {
-          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); 
+          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
           isWithinTimeFrame = loginDate >= startOfMonth && loginDate <= now;
         } else if (timeFrame === 'year') {
-          const startOfYear = new Date(now.getFullYear(), 0, 1); 
+          const startOfYear = new Date(now.getFullYear(), 0, 1);
           isWithinTimeFrame = loginDate >= startOfYear && loginDate <= now;
         }
 
@@ -94,14 +112,25 @@ function Ranking() {
     fetchRankingData();
   }, [uid, timeFrame]);
 
+  /**
+   * Handles the change of the time frame for the ranking (week, month, year).
+   * @param {string} newTimeFrame - The new time frame to be set.
+   */
   const handleTimeFrameChange = (newTimeFrame) => {
     setTimeFrame(newTimeFrame);
   };
 
+  /**
+   * Handles the selection of a user from the ranking list to view their profile.
+   * @param {object} user - The user object containing their data.
+   */
   const handleUserClick = (user) => {
     setSelectedUser(user);
   };
 
+  /**
+   * Handles the closing of the user profile view.
+   */
   const handleCloseProfile = () => {
     setSelectedUser(null);
   };

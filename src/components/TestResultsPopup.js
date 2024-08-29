@@ -2,10 +2,36 @@ import React, { useEffect, useRef, useState } from 'react';
 import '../css/Popup.css';
 import { diffWords } from 'diff';
 
+/**
+ * TestResultsPopup Component
+ *
+ * This component displays a popup with the test results for code submissions. 
+ * It highlights the differences between the expected and actual output for each test.
+ *
+ * Props:
+ * - results (Array): An array of result objects containing the following keys:
+ *   - inputs: The inputs used for the test case.
+ *   - expected: The expected output for the test case.
+ *   - actual: The actual output produced by the user's code.
+ *   - passed: A boolean indicating whether the test passed or failed.
+ * - onClose (Function): A function to close the popup.
+ *
+ * State:
+ * - selectedResult (Number): The index of the currently selected test result.
+ *
+ * The component uses the `diffWords` function from the `diff` library to highlight differences
+ * between the expected and actual outputs.
+ */
+
 function TestResultsPopup({ results, onClose }) {
   const [selectedResult, setSelectedResult] = useState(null);
   const popupRef = useRef(null);
 
+  /**
+   * Handles clicks outside the popup to close it.
+   * 
+   * @param {Event} event - The click event.
+   */
   const handleOutsideClick = (event) => {
     if (popupRef.current && !popupRef.current.contains(event.target)) {
       onClose();
@@ -19,10 +45,22 @@ function TestResultsPopup({ results, onClose }) {
     };
   }, []);
 
+  /**
+   * Handles clicks on a test result to expand or collapse it.
+   * 
+   * @param {Number} index - The index of the clicked test result.
+   */
   const handleResultClick = (index) => {
     setSelectedResult(index === selectedResult ? null : index);
   };
 
+  /**
+   * Highlights the differences between the actual and expected outputs.
+   * 
+   * @param {String} actual - The actual output.
+   * @param {String} expected - The expected output.
+   * @returns {Object} - An object containing the highlighted strings for expected and actual outputs.
+   */
   const highlightDifferences = (actual, expected) => {
     const actualString = actual.toString();
     const expectedString = expected.toString();

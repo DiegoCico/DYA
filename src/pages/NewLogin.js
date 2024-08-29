@@ -4,6 +4,14 @@ import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import '../css/Signup.css';
 
+/**
+ * NewLogin Component
+ * 
+ * The `NewLogin` component provides a login interface for users, allowing them to sign in using either
+ * email/password or Google authentication. It handles user authentication, checks if the user exists in the
+ * database, and initializes user activity if necessary.
+ */
+
 export default function NewLogin(props) {
     const { handleRouteChange, toggleSignUpPopUp, toggleLoginPopUp } = props;
     const [email, setEmail] = useState('');
@@ -13,6 +21,13 @@ export default function NewLogin(props) {
     const [showGoogleErrorPopup, setShowGoogleErrorPopup] = useState(false);
     const date = new Date();
 
+    /**
+     * handleSubmit
+     * 
+     * @description Handles the submission of the login form using email and password. It checks if the user exists
+     * in the database, initializes user activity if necessary, and redirects the user based on their role (parent or child).
+     * @param {object} e - The event object.
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -55,6 +70,12 @@ export default function NewLogin(props) {
         }
     };
 
+    /**
+     * initializeUserActivity
+     * 
+     * @description Initializes the user activity data in Firestore if it does not exist.
+     * @param {string} userID - The unique ID of the user.
+     */
     async function initializeUserActivity(userID) {
         const userActivityDocRef = doc(db, 'userActivity', userID);
         const docSnap = await getDoc(userActivityDocRef);
@@ -65,6 +86,14 @@ export default function NewLogin(props) {
         }
     }
 
+    /**
+     * updateUserLoginData
+     * 
+     * @description Updates the user's login data with the current date and XP value.
+     * @param {string} userID - The unique ID of the user.
+     * @param {string} newLoginDay - The current date in ISO format.
+     * @param {number} newXP - The XP value to log for the current day.
+     */
     async function updateUserLoginData(userID, newLoginDay, newXP) {
         const userActivityDocRef = doc(db, 'userActivity', userID);
         const docSnap = await getDoc(userActivityDocRef);
@@ -77,6 +106,13 @@ export default function NewLogin(props) {
         });
     }
 
+    /**
+     * handleGoogleSignIn
+     * 
+     * @description Handles the login process using Google authentication. It checks if the user exists in the database,
+     * and redirects them to the appropriate page based on their role (parent or child). If the user does not exist,
+     * it prompts them to sign up.
+     */
     const handleGoogleSignIn = async () => {
         const googleProvider = new GoogleAuthProvider();
         googleProvider.setCustomParameters({ prompt: 'select_account' });

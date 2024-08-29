@@ -4,18 +4,34 @@ import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * ParentHubSidebar Component
+ *
+ * The `ParentHubSidebar` component provides a sidebar navigation menu for the Parent Hub dashboard.
+ * It includes navigation buttons for the dashboard, profile, and a sign-out button to log the user out.
+ *
+ * Props:
+ * - openDash (Function): A function to navigate to the dashboard view.
+ * - openProfile (Function): A function to navigate to the profile view.
+ */
+
 export default function ParentHubSidebar(props) {
-    const { openDash, openProfile } = props
+    const { openDash, openProfile } = props;
+    const navigate = useNavigate();
 
-    const navigate = useNavigate()
-
+    /**
+     * Handles the sign-out process.
+     * Signs the user out using Firebase authentication and navigates them back to the homepage.
+     * 
+     * @param {Object} auth - The Firebase authentication object.
+     */
     const handleSignOut = (auth) => {
         signOut(auth).then(() => {
-            navigate('/')
+            navigate('/');
         }).catch((error) => {
-            <p className="error">{error.message}</p>
-        })
-    }
+            <p className="error">{error.message}</p>;
+        });
+    };
 
     return (
         <div className="parent-hub-sidebar-container">
@@ -39,5 +55,5 @@ export default function ParentHubSidebar(props) {
                 </button>
             </div>
         </div>
-    )
+    );
 }

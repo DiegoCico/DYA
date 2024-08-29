@@ -1,3 +1,10 @@
+/**
+ * Activity Component
+ * 
+ * The `Activity` component is responsible for displaying and managing a coding activity.
+ * Users can write and test code, track their progress, and earn XP upon successful completion of tasks.
+ * The component integrates with Firebase for data persistence and communicates with a backend server to run code tests.
+ */
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
@@ -34,6 +41,12 @@ function Activity() {
 
   const date = new Date();
 
+  /**
+   * addUserXP
+   * 
+   * @description Adds XP to the user's account and updates their daily login activity.
+   * @param {number} xp - The amount of XP to add.
+   */
   const addUserXP = async (xp) => {
     const userDocRef = doc(db, 'users', uid);
     const userDocSnap = await getDoc(userDocRef);
@@ -70,6 +83,11 @@ function Activity() {
   };
 
   useEffect(() => {
+    /**
+     * fetchActivityAndUserProgress
+     * 
+     * @description Fetches the current activity data and user progress from the database.
+     */
     const fetchActivityAndUserProgress = async () => {
       try {
         if (!uid || !activityTitle || !activityOrder) {
@@ -127,6 +145,11 @@ function Activity() {
   }, [uid, activityTitle, activityOrder]);
 
   useEffect(() => {
+    /**
+     * Socket Listener
+     * 
+     * @description Listens for test results from the backend and updates the state accordingly.
+     */
     socket.on('test_results', (data) => {
       console.log('Received test results:', data);
       setTestResults(data.testResults || []);
@@ -175,6 +198,12 @@ function Activity() {
     };
   }, [correctCount, incorrectCount, shuffledQuestions, isSubmitting]);
 
+  /**
+   * updateUserProgress
+   * 
+   * @description Updates the user's progress for the current activity in the database.
+   * @param {Object} progressUpdates - The progress updates to save.
+   */
   const updateUserProgress = async (progressUpdates) => {
     const progressDocRef = doc(db, 'users', uid, 'activities', currentLanguage, 'activityOrder', activityOrder);
     const progressDocSnap = await getDoc(progressDocRef);
@@ -186,6 +215,11 @@ function Activity() {
     });
   };
 
+  /**
+   * resetProgress
+   * 
+   * @description Resets the user's progress for the current activity.
+   */
   const resetProgress = async () => {
     const progressDocRef = doc(db, 'users', uid, 'activities', currentLanguage, 'activityOrder', activityOrder);
     await setDoc(progressDocRef, {
@@ -199,6 +233,11 @@ function Activity() {
     setCompleted(false);
   };
 
+  /**
+   * unlockNextActivity
+   * 
+   * @description Unlocks the next activity for the user and updates their progress.
+   */
   const unlockNextActivity = async () => {
     const userDocRef = doc(db, 'users', uid);
     const userDocSnap = await getDoc(userDocRef);
@@ -226,10 +265,23 @@ function Activity() {
     }
   };
 
+  /**
+   * handleCodeChange
+   * 
+   * @description Updates the userCode state when the code in the editor changes.
+   * @param {string} newCode - The new code entered by the user.
+   */
   const handleCodeChange = (newCode) => {
     setUserCode(newCode);
   };
 
+  /**
+   * handleRunTests
+   * 
+   * @description Sends the user's code to the backend to run tests.
+   * @param {string} userCode - The code entered by the user.
+   * @param {number} testCount - The number of tests to run.
+   */
   const handleRunTests = async (userCode, testCount) => {
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
     const funcName = currentQuestion.functionName;
@@ -262,6 +314,13 @@ function Activity() {
     }
   };
 
+  /**
+   * handleCodeSubmit
+   * 
+   * @description Submits the user's code to Firestore and sends it to the backend for testing.
+   * @param {string} userCode - The code entered by the user.
+   * @param {number} testCount - The number of tests to run.
+   */
   const handleCodeSubmit = async (userCode, testCount) => {
     setIsSubmitting(true);
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
@@ -305,6 +364,13 @@ function Activity() {
     }
   };
 
+  /**
+   * shuffleArray
+   * 
+   * @description Randomly shuffles an array of questions.
+   * @param {Array} array - The array to shuffle.
+   * @returns {Array} - The shuffled array.
+   */
   const shuffleArray = (array) => {
     const shuffledArray = array.slice();
     for (let i = shuffledArray.length - 1; i > 0; i--) {
@@ -314,18 +380,38 @@ function Activity() {
     return shuffledArray;
   };
 
+  /**
+   * handleBackClick
+   * 
+   * @description Navigates the user back to the previous page.
+   */
   const handleBackClick = () => {
     navigate(-1);
   };
 
+  /**
+   * handleNextActivity
+   * 
+   * @description Navigates the user to the next activity.
+   */
   const handleNextActivity = () => {
     navigate(`/activities/${uid}/${activityTitle}/${parseInt(activityOrder) + 1}`);
   };
 
+  /**
+   * handleMainMenu
+   * 
+   * @description Navigates the user to the main menu (roadmap).
+   */
   const handleMainMenu = () => {
     navigate(`/roadmap/${uid}`);
   };
 
+  /**
+   * checkServerStatus
+   * 
+   * @description Checks the status of the backend server.
+   */
   const checkServerStatus = async () => {
     try {
       const response = await axios.get('http://localhost:5002/ping');

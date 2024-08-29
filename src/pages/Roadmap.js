@@ -6,6 +6,14 @@ import '../css/Roadmap.css';
 import UserProfileSidebar from '../components/UserProfileSidebar';
 import LanguageDropdown from '../components/LanguageDropdown';
 
+/**
+ * Roadmap Component
+ * 
+ * The `Roadmap` component displays a user's learning roadmap, including their progress through various activities
+ * and lessons. It fetches user data and activities based on the user's current language and displays them in a
+ * grid layout. Users can navigate to specific activities or lessons based on their progress.
+ */
+
 function Roadmap() {
   const { uid } = useParams();
   const [userData, setUserData] = useState(null);
@@ -16,6 +24,9 @@ function Roadmap() {
   const [fadeIn, setFadeIn] = useState(false);
   const navigate = useNavigate();
 
+  /**
+   * useEffect - Fetches user data and activities from Firestore when the component mounts.
+   */
   useEffect(() => {
     const fetchUserDataAndActivities = async () => {
       try {
@@ -24,6 +35,7 @@ function Roadmap() {
           return;
         }
 
+        // Fetch user data
         const userDocRef = doc(db, 'users', uid);
         const userDocSnap = await getDoc(userDocRef);
         if (!userDocSnap.exists()) {
@@ -39,7 +51,7 @@ function Roadmap() {
         // Update local state with the updated user data
         setUserData({ ...userData, xp: totalXP });
 
-        // Check and set the current language
+        // Check and set the current language if not already set
         if (!userData.currentLanguage) {
           const programmingLanguagesCollection = collection(db, 'programmingLanguages');
           const programmingLanguagesQuery = query(programmingLanguagesCollection, orderBy('name'));
@@ -59,6 +71,7 @@ function Roadmap() {
 
         setActivities(activitiesData);
         
+        // Unlock the first activity if it hasn't been unlocked yet
         if (userData.currentActivity === 1 && activitiesData.length > 0) {
           const firstActivity = activitiesData[0];
           if (!firstActivity.unlocked) {
@@ -80,9 +93,12 @@ function Roadmap() {
 
     setTimeout(() => {
       fetchUserDataAndActivities();
-    }, 1300); // Adding a delay of 1000ms (1 second)
+    }, 1300); // Adding a delay of 1.3 seconds to simulate loading
   }, [uid]);
 
+  /**
+   * useEffect - Adds a scroll event listener to the roadmap page for a parallax effect.
+   */
   useEffect(() => {
     const roadmapPage = document.querySelector('.roadmap-page');
 
@@ -103,6 +119,10 @@ function Roadmap() {
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
+  /**
+   * Handles clicks on activities, navigating the user to the selected activity if it's unlocked.
+   * @param {object} activity - The activity object containing details about the activity.
+   */
   const handleActivityClick = (activity) => {
     if (!activity || !activity.title) {
       console.error("Activity or activity title is undefined.");
@@ -117,21 +137,30 @@ function Roadmap() {
     }
   };
 
+  /**
+   * Handles clicks on lessons, navigating the user to the selected lesson if it's unlocked.
+   * @param {number} order - The order number of the lesson.
+   * @param {string} title - The title of the lesson.
+   */
   const handleLessonClick = (order, title) => {
     if (!title) {
       return;
     }
     const lessonTitleUrl = title.replace(/\s+/g, '-');
-    const testLessonTitle = 'Data-types-in-Python'
+    const testLessonTitle = 'Data-types-in-Python';
     if (order <= userData.currentActivity) {
-      // navigate(`/lessons/${uid}/${userData.currentLanguage}/${lessonTitleUrl}`);
-
       navigate(`/lessonTest/${userData.currentLanguage}/${testLessonTitle}`);
     } else {
       alert('You need to complete the previous activities first!');
     }
   };
 
+  /**
+   * Groups activities into rows of a specified size for display in the roadmap.
+   * @param {Array} acts - The array of activities to be grouped.
+   * @param {number} rowSize - The number of activities per row.
+   * @returns {Array} - An array of activity rows.
+   */
   const groupActivitiesByRow = (acts, rowSize) => {
     const row = [];
     for (let i = 0; i < acts.length; i += rowSize) {
@@ -182,6 +211,13 @@ function Roadmap() {
 
 export default Roadmap;
 
+/**
+ * calculateTotalXP
+ * 
+ * @description Calculates the total XP earned by a user based on their login data.
+ * @param {string} userID - The ID of the user for whom the XP is being calculated.
+ * @returns {number} - The total XP earned by the user.
+ */
 async function calculateTotalXP(userID) {
   const userActivityDocRef = doc(db, 'userActivity', userID);
   const docSnap = await getDoc(userActivityDocRef);

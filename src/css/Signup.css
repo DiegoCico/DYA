@@ -23,27 +23,28 @@
   display: block;
   width: 80%;
   height: auto;
-  opacity: 75%;
+  opacity: 0.75;
   margin: auto;
 }
 
 .overlay-left, .overlay-right {
   position: absolute;
   bottom: 0;
-  right: 0;
+  top: 0; /* Fixed height issues */
   background-color: #008CBA;
   overflow: hidden;
   width: 0;
-  height: 100%;
-  transition: .5s ease;
+  transition: width 0.5s ease;
 }
 
 .overlay-left {
   left: 100%;
+  right: auto; /* Fix position for left overlay */
 }
 
 .overlay-right {
-  left: 0;
+  right: 0;
+  left: auto; /* Fix position for right overlay */
 }
 
 .container:hover .overlay-left {
@@ -53,6 +54,7 @@
 
 .container:hover .overlay-right {
   width: 100%;
+  right: 0;
 }
 
 .desc {
@@ -61,14 +63,11 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   white-space: nowrap;
-  display:grid;
+  display: grid;
   justify-content: center;
   align-items: center;
-  margin: auto;
 }
 
 .overlay-btn {
@@ -80,15 +79,13 @@
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  margin: auto;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .overlay-btn:hover {
   background-color: #ed5826;
 }
-
-/*-------------------------------------*/
 
 .child-signup-container {
   display: flex;
@@ -144,7 +141,7 @@
 .signup-input {
   margin: 10px 0;
   padding: 10px;
-  width: 450px;
+  width: 100%;
   max-width: 500px;
   height: 40px;
   border: 1px solid #ccc;
@@ -154,7 +151,6 @@
 
 .signup-form-buttons {
   display: flex;
-  flex-direction:row;
   align-items: center;
 }
 
@@ -170,13 +166,12 @@
   font-weight: bold;
 }
 
-.signup-form-submit-btn button {
-  margin: 0;
-  padding: 0%;
+.signup-form-submit-btn.step:hover {
+  background-color: #69544c;
 }
 
 .signup-form-or {
-  font-size:large;
+  font-size: large;
 }
 
 .signup-form-google-btn {
@@ -193,18 +188,15 @@
   margin-right: 10px;
 }
 
-/* ---CSS for parent sign up--- */
 .parent-signup-container {
   width: 95%;
 }
 
 .info-input-container {
-  display:flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
-/*-------------------------------------*/
 
 .main-container.info {
   background-color: #ffffff;
@@ -224,20 +216,10 @@
   padding: 50px 50px;
 }
 
-.signup-form-submit-btn.step {
-  background-color: #eb6134;
-  margin: 0;
-}
-
-.signup-form-submit-btn.step:hover {
-  background-color: #69544c;
-}
-
 .info-input {
   margin: 20px 0;
   padding: 10px;
   width: 80%;
-  /* max-width: 500px; */
   height: 40px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -259,5 +241,5 @@
 }
 
 .info-form {
-  padding: 0%;
+  padding: 0;
 }

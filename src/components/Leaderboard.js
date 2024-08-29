@@ -1,10 +1,22 @@
-// this is leaderboard table for the parent dashboard
-
 import React from "react";
 import '../css/ParentHub.css';
 
+/**
+ * Leaderboard Component
+ * 
+ * The `Leaderboard` component displays a table of children, showing each child's name, total XP, and current programming language.
+ * This component is typically used in the parent dashboard to track the progress of multiple children.
+ * 
+ * Props:
+ * - children: An array of child objects, where each object contains the name, XP, and current programming language of a child.
+ * 
+ * Structure:
+ * - The component conditionally renders either a loading message or the leaderboard table based on the presence of child data.
+ */
+
 export default function Leaderboard(props) {
-    const { children } = props
+    const { children } = props;
+
     return (
         <>
             {children ? (
@@ -30,5 +42,5 @@ export default function Leaderboard(props) {
                 <p>Loading...</p>
             )}
         </>
-    )
+    );
 }

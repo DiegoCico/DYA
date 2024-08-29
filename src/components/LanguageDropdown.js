@@ -3,6 +3,27 @@ import { db } from '../firebase';
 import { collection, getDocs, query, orderBy, doc, updateDoc, getDoc } from 'firebase/firestore';
 import '../css/LanguageDropdown.css';
 
+/**
+ * LanguageDropdown Component
+ * 
+ * This component allows users to select and switch between different programming languages in their learning dashboard.
+ * The currently selected language is stored in the user's document in Firestore, and the component also updates the user's
+ * progress in that language.
+ * 
+ * Props:
+ * - uid: The unique ID of the user currently logged in.
+ * - onLanguageChange: A callback function that triggers when the user selects a different language.
+ * 
+ * State:
+ * - languages: An array of available programming languages fetched from Firestore.
+ * - currentLanguage: The language currently selected by the user.
+ * - dropdownOpen: A boolean indicating whether the dropdown menu is open.
+ * - offeredLanguages: A list of default languages offered by the platform (Java, Python, JavaScript).
+ * 
+ * useRef:
+ * - dropdownRef: A reference to the dropdown menu element, used for positioning adjustments.
+ */
+
 function LanguageDropdown({ uid, onLanguageChange }) {
   const [languages, setLanguages] = useState([]);
   const [currentLanguage, setCurrentLanguage] = useState(null);
@@ -10,6 +31,13 @@ function LanguageDropdown({ uid, onLanguageChange }) {
   const [offeredLanguages] = useState(["Java", "Python", "JavaScript"]);
   const dropdownRef = useRef(null);
 
+  /**
+   * useEffect Hook
+   * 
+   * Fetches the user's current language and the list of available languages from Firestore when the component mounts.
+   * 
+   * Dependencies: uid
+   */
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
@@ -32,6 +60,13 @@ function LanguageDropdown({ uid, onLanguageChange }) {
     fetchLanguages();
   }, [uid]);
 
+  /**
+   * useEffect Hook
+   * 
+   * Adjusts the positioning of the dropdown menu if it exceeds the viewport boundaries.
+   * 
+   * Dependencies: dropdownOpen
+   */
   useEffect(() => {
     if (dropdownOpen && dropdownRef.current) {
       const dropdownRect = dropdownRef.current.getBoundingClientRect();
@@ -46,6 +81,14 @@ function LanguageDropdown({ uid, onLanguageChange }) {
     }
   }, [dropdownOpen]);
 
+  /**
+   * handleLanguageChange
+   * 
+   * Updates the user's selected language in Firestore, along with their progress in that language.
+   * The current language is updated locally, and the dropdown menu is closed.
+   * 
+   * @param {Object} language - The selected language object containing `id` and `name`.
+   */
   const handleLanguageChange = async (language) => {
     try {
       const userDocRef = doc(db, 'users', uid);

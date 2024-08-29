@@ -1,29 +1,50 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import '../css/Lessons.css'
-import { collection, getDocs, query, orderBy, where } from 'firebase/firestore';
+import '../css/Lessons.css';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
 
-export default function Lessons() {
-    const { uid, language, lessonTitle } = useParams()
-    const navigate = useNavigate()
-    const [error, setError] = useState()
-    const [lessons, setLessons] = useState([]);
-    const [openLesson, setOpenLesson] = useState('Introduction')
-    const [openLessonTitle, setOpenLessonTitle] = useState('')
-    const [openLessonSteps, setOpenLessonSteps] = useState('')
-    const [sectionTitle, setSectionTitle] = useState(lessonTitle.replace(/-/g, ' '))
-    const [sectionLessons, setSectionLessons] = useState([])
+/**
+ * Lessons Component
+ * 
+ * The `Lessons` component is responsible for displaying a specific set of lessons under a particular title.
+ * The lessons are fetched from Firebase Firestore based on the selected language and lesson title provided in the URL parameters.
+ * The component allows users to navigate between different lesson sections and view the associated content.
+ */
 
+export default function Lessons() {
+    const { uid, language, lessonTitle } = useParams();
+    const navigate = useNavigate();
+    const [error, setError] = useState();
+    const [lessons, setLessons] = useState([]);
+    const [openLesson, setOpenLesson] = useState('Introduction');
+    const [sectionTitle, setSectionTitle] = useState(lessonTitle.replace(/-/g, ' '));
+    const [sectionLessons, setSectionLessons] = useState([]);
+
+    /**
+     * handleBackClick
+     * 
+     * @description Navigates the user back to the previous page.
+     */
     const handleBackClick = () => {
         navigate(-1);
     };
 
+    /**
+     * handleLessonChange
+     * 
+     * @description Handles the change of the currently selected lesson tab.
+     * @param {string} title - The title of the lesson to display.
+     */
     const handleLessonChange = (title) => {
-        setOpenLesson(title)
+        setOpenLesson(title);
+    };
 
-    }
-    
+    /**
+     * useEffect
+     * 
+     * @description Fetches lesson data from Firestore when the component mounts or when the dependencies change.
+     */
     useEffect(() => {
         const fetchLessonsData = async () => {
             try {
@@ -52,9 +73,7 @@ export default function Lessons() {
         fetchLessonsData();
     }, [uid, language, lessonTitle, sectionTitle]);
 
-    console.log(lessons)
-
-    const currentLesson = sectionLessons.find(lesson => lesson.title === openLesson)
+    const currentLesson = sectionLessons.find(lesson => lesson.title === openLesson);
 
     return (
         <>
@@ -68,19 +87,19 @@ export default function Lessons() {
                 <div className="lesson-content-container">
                     <div className="lesson-tabs">
                         <button
-                            className={`tablinks ${openLesson === 'Introduction' ? 'active':''}`}
+                            className={`tablinks ${openLesson === 'Introduction' ? 'active' : ''}`}
                             onClick={() => handleLessonChange('Introduction')}
                         >
                             Introduction
                         </button>
                         {sectionLessons.map((lesson, index) => (
                             <button
-                            key={index}
-                            className={`tablinks ${openLesson === lesson.title ? 'active' : ''}`}
-                            onClick={() => handleLessonChange(lesson.title)}
-                        >
-                            {lesson.title}
-                         </button>
+                                key={index}
+                                className={`tablinks ${openLesson === lesson.title ? 'active' : ''}`}
+                                onClick={() => handleLessonChange(lesson.title)}
+                            >
+                                {lesson.title}
+                            </button>
                         ))}
                     </div>
                     <div className="lesson-main">
@@ -93,13 +112,13 @@ export default function Lessons() {
                         ) : (
                             <>
                                 <h2>{openLesson}</h2>
-                                <h3>{currentLesson.instruction}</h3>
-                                <p>{currentLesson.steps}</p>
+                                <h3>{currentLesson?.instruction}</h3>
+                                <p>{currentLesson?.steps}</p>
                             </>
                         )}
                     </div>
                 </div>
             </div>
         </>
-    )
+    );
 }

@@ -1,3 +1,11 @@
+/**
+ * App Component
+ * 
+ * The `App` component serves as the main entry point for the application. It manages the routing for different pages
+ * such as the home page, login, signup, and various educational sections. It also controls the display of popups
+ * for login and signup, and handles navigation between different routes.
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import '../css/App.css';
@@ -18,6 +26,12 @@ import Lesson from './Lesson';
 function App() {
   const navigate = useNavigate();
 
+  /**
+   * handleRouteChange
+   * 
+   * @description Navigates to the specified route.
+   * @param {string} route - The route to navigate to.
+   */
   const handleRouteChange = (route) => {
     if (route) {
       navigate(route);
@@ -31,21 +45,41 @@ function App() {
   const [showLoginPopUp, setShowLoginPopUp] = useState(false);
 
   useEffect(() => {
+    /**
+     * useEffect
+     * 
+     * @description Resets the state of popups when the route changes.
+     */
     setShowSignUpPopUp(false);
     setShowSignUpForm(false);
     setShowLoginPopUp(false);
   }, [navigate]);
 
+  /**
+   * toggleSignUpPopUp
+   * 
+   * @description Toggles the visibility of the sign-up popup.
+   */
   const toggleSignUpPopUp = () => {
     setShowSignUpPopUp(!showSignUpPopUp);
     setShowSignUpForm(false);
     setShowLoginPopUp(false);
   };
 
+  /**
+   * toggleSignUpForm
+   * 
+   * @description Shows the sign-up form within the popup.
+   */
   const toggleSignUpForm = () => {
     setShowSignUpForm(true);
   };
 
+  /**
+   * toggleLoginPopUp
+   * 
+   * @description Toggles the visibility of the login popup.
+   */
   const toggleLoginPopUp = () => {
     setShowSignUpPopUp(false);
     setShowLoginPopUp(!showLoginPopUp);
@@ -111,8 +145,6 @@ function App() {
                   </div>
                 </section>
 
-                {/* <MascotSection /> */}
-
                 <LanguageSlider />
 
               </div>
@@ -125,10 +157,10 @@ function App() {
         <Route path='/signup/child' element={<ChildSignup handleRouteChange={handleRouteChange} />} />
         <Route path="/parenthub/:userId" element={<ParentHub />} />
         <Route path="/roadmap/:uid" element={<Roadmap />} />
-        <Route path="/practice/:uid" element={<Practice />} /> {/* Corrected route */}
+        <Route path="/practice/:uid" element={<Practice />} />
         <Route path="/activity/:uid/:activityTitle/:activityOrder" element={<Activity />} />
         <Route path="/lessons/:uid/:language/:lessonTitle" element={<Lessons />} />
-        <Route path="/ranking/:uid" element={<Ranking />} /> {/* Add Ranking route */}
+        <Route path="/ranking/:uid" element={<Ranking />} />
         <Route path="/lessonTest/:language/:title" element={<Lesson />} />
       </Routes>
     </div>

@@ -3,46 +3,77 @@ import '../css/ParentHub.css';
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 
+/**
+ * ChildCard Component
+ * 
+ * The `ChildCard` component displays a modal with detailed information about a child's progress in learning programming languages. 
+ * The component fetches data on the total number of activities for each programming language and calculates the child's progress.
+ * 
+ * Props:
+ * - child: An object containing the child's data, including name, profile picture, and programming languages.
+ * - close: A function to close the modal.
+ */
 export default function ChildCard(props) {
-    const {child, close} = props
-    const [totalParts, setTotalParts] = useState([])
-    const [currentLang, setCurrentLang] = useState({})
+    const { child, close } = props;
+    const [totalParts, setTotalParts] = useState([]);
+    const [currentLang, setCurrentLang] = useState({});
 
+    /**
+     * fetchTotalParts - Fetches the total number of activities for each programming language the child is learning.
+     * 
+     * @param {Array} programmingLanguages - Array of programming languages the child is learning.
+     */
     const fetchTotalParts = async (programmingLanguages) => {
         try {
-            const parts = []
+            const parts = [];
             for (let i = 0; i < programmingLanguages.length; i++) {
-                const activitiesRef = collection(db, `activities${programmingLanguages[i].langName}`)
-                const activitiesSnapshot = await getDocs(activitiesRef)
+                const activitiesRef = collection(db, `activities${programmingLanguages[i].langName}`);
+                const activitiesSnapshot = await getDocs(activitiesRef);
                 const langSize = {
                     name: programmingLanguages[i].langName,
                     totalSize: activitiesSnapshot.size
-                }
-                parts.push(langSize)
+                };
+                parts.push(langSize);
             }
-            setTotalParts(parts)
+            setTotalParts(parts);
         } catch (error) {
-            console.error("Error fetching total parts:", error)
+            console.error("Error fetching total parts:", error);
         }
-    }
+    };
 
+    /**
+     * getLangLength - Retrieves the total number of activities for a given programming language.
+     * 
+     * @param {string} name - The name of the programming language.
+     * @returns {number|null} - The total number of activities, or null if not found.
+     */
     const getLangLength = (name) => {
-        const language = totalParts.find(lang => lang.name === name)
-        return language ? language.totalSize : null
-    }
+        const language = totalParts.find(lang => lang.name === name);
+        return language ? language.totalSize : null;
+    };
 
+    /**
+     * getUserProgressPercent - Calculates the child's progress in a programming language as a percentage.
+     * 
+     * @param {number} current - The number of activities the child has completed.
+     * @param {number} length - The total number of activities for the programming language.
+     * @returns {number} - The child's progress as a percentage.
+     */
     const getUserProgressPercent = (current, length) => {
-        return (current / length) * 100
-    }
-    
+        return (current / length) * 100;
+    };
+
+    /**
+     * useEffect - Fetches total parts data when the component mounts or when the child's programming languages change.
+     */
     useEffect(() => {
-        const getData = async() => {
+        const getData = async () => {
             if (child.programmingLanguages) {
-                await fetchTotalParts(child.programmingLanguages)
+                await fetchTotalParts(child.programmingLanguages);
             }
-        }
-        getData()
-    }, [child.programmingLanguages])
+        };
+        getData();
+    }, [child.programmingLanguages]);
 
     return (
         <div className="child-card-overlay" onClick={close}>
@@ -64,19 +95,19 @@ export default function ChildCard(props) {
                         <p>Currently learning</p>
                         <div className="languages">
                             {child.programmingLanguages.map((lang, index) => {
-                                let icon
+                                let icon;
                                 if (lang.langName === 'Python') {
-                                    icon = 'python-icon.png'
+                                    icon = 'python-icon.png';
                                 } else if (lang.langName === 'JavaScript') {
-                                    icon = 'js-icon.png'
+                                    icon = 'js-icon.png';
                                 } else if (lang.langName === 'Java') {
-                                    icon = 'java-icon.png'
+                                    icon = 'java-icon.png';
                                 }
                                 return (
                                     <div key={index} className="language-icon" onClick={() => setCurrentLang(lang)}>
-                                        <img src={`${process.env.PUBLIC_URL}/${icon}`}/>
+                                        <img src={`${process.env.PUBLIC_URL}/${icon}`} alt={`${lang.langName} icon`} />
                                     </div>
-                                )
+                                );
                             })}
                         </div>
                         {currentLang.langName && (
@@ -91,5 +122,5 @@ export default function ChildCard(props) {
                 </div>
             </div>
         </div>
-    )
+    );
 }

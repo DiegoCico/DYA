@@ -6,52 +6,74 @@ import LessonContent from "../components/LessonContent";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 
+/**
+ * Lesson Component
+ * 
+ * The `Lesson` component is responsible for displaying a specific lesson based on the language and title provided in the URL parameters.
+ * It fetches the lesson data from Firebase Firestore and renders it using the `LessonHeader` and `LessonContent` components.
+ */
+
 export default function Lesson() {
-    const {language, title} = useParams()
-    const [lessonTitle, setLessonTitle] = useState(title.replace(/-/g, ' '))
-    const [lesson, setLesson] = useState({})
+    // Extracting URL parameters for language and lesson title
+    const { language, title } = useParams();
+    const [lessonTitle, setLessonTitle] = useState(title.replace(/-/g, ' '));
+    const [lesson, setLesson] = useState({});
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
+    /**
+     * handleBackClick
+     * 
+     * @description Navigates the user back to the previous page.
+     */
     const handleBackClick = () => {
-        navigate(-1)
-    }
+        navigate(-1);
+    };
 
-    const getLessonData = async(lessonTitle) => {
+    /**
+     * getLessonData
+     * 
+     * @description Fetches lesson data from Firestore based on the lesson title and language.
+     * @param {string} lessonTitle - The title of the lesson to fetch.
+     */
+    const getLessonData = async (lessonTitle) => {
         let lessonData = {
-            title:lessonTitle
-        }
+            title: lessonTitle
+        };
         try {
-            const q = query(collection(db, `Lesson${language}`), where('title', '==', lessonTitle))
-            const qSnap = await getDocs(q)
+            // Query the Firestore collection based on language and lesson title
+            const q = query(collection(db, `Lesson${language}`), where('title', '==', lessonTitle));
+            const qSnap = await getDocs(q);
             qSnap.forEach(doc => {
-                const data = doc.data()
-                // console.log(data)
+                const data = doc.data();
                 lessonData = {
                     ...data
-                }
-            })
-        } catch(error) {
-            console.log(error.message)
+                };
+            });
+        } catch (error) {
+            console.log(error.message);
         }
-        setLesson(lessonData)
-    }
+        setLesson(lessonData);
+    };
 
+    // Fetch the lesson data when the component mounts or the lessonTitle changes
     useEffect(() => {
-        const getData = async() => {
-            await getLessonData(lessonTitle)
-        }
-        getData()
+        const getData = async () => {
+            await getLessonData(lessonTitle);
+        };
+        getData();
+    }, [lessonTitle]);
 
-    }, [lessonTitle])
-    // console.log(lesson)
     return (
         <>
             {lesson && (
                 <>
+                    {/* Render the lesson header with back button */}
                     <LessonHeader lessonTitle={lesson.title} unitTitle={lesson.unitTitle} handleBackClick={handleBackClick} />
-                    <LessonContent lesson={lesson}/>
+                    {/* Render the lesson content */}
+                    <LessonContent lesson={lesson} />
                 </>
             )}
         </>
-    )
+    );
 }
