@@ -58,8 +58,8 @@ export default function LanguageSlider() {
         ))}
       </div>
       {selectedLanguage && (
-        <div className="popup-overlay" onClick={closePopup}>
-          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+        <div className="lang-popup-overlay" onClick={closePopup}>
+          <div className="lang-popup-content" onClick={(e) => e.stopPropagation()}>
             <h3>{selectedLanguage.name}</h3>
             <p>{selectedLanguage.info}</p>
             <button onClick={closePopup}>Close</button>

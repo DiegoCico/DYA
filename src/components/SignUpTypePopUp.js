@@ -42,7 +42,7 @@ export default function SignUpTypePopUp(props) {
     const handleCloseChildSignup = () => setShowChildSignup(false);
 
     return (
-        <div className="main-container">
+        <div className="sign-up-main-container">
             <AccountType
                 title='Parents, over here!'
                 imgSrc={`${process.env.PUBLIC_URL}/user.png`}
@@ -99,7 +99,7 @@ export default function SignUpTypePopUp(props) {
 function AccountType({ title, imgSrc, overlayClass, desc, handleRouteChange }) {
     return (
         <div>
-            <h2 className="container-title">{title}</h2>
+            <h2 className="sign-up-container-title">{title}</h2>
             <div className="container">
                 <img src={imgSrc} alt={title} className="image" />
                 <div className={overlayClass}>

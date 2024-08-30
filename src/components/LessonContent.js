@@ -85,7 +85,7 @@ export default function LessonContent(props) {
     };
 
     return (
-        <div className="main-container">
+        <div className="lesson-main-container">
             <div className="sidebar-container">
                 <LessonSidebar lessonPageClick={lessonPageClick} practicePageClick={practicePageClick} lessonRead={lessonRead}/>
             </div>

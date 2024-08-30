@@ -64,7 +64,7 @@
 }
 
 /* ---Lesson content css--- */
-.main-container {
+.lesson-main-container {
     all: unset;
     width: 100%;
     display: grid;
