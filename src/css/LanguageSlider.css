@@ -46,7 +46,7 @@
   margin-bottom: 10px;
 }
 
-.popup-overlay {
+.lang-popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -59,7 +59,7 @@
   z-index: 5;
 }
 
-.popup-content {
+.lang-popup-content {
   background: white;
   padding: 20px;
   border-radius: 10px;
@@ -68,7 +68,7 @@
   text-align: center;
 }
 
-.popup-content h3 {
+.lang-popup-content h3 {
   margin-top: 0;
 }
 
