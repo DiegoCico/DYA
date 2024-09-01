@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/DYA/static/css/main.f36a21b4.css",
-    "main.js": "/DYA/static/js/main.017f03b1.js",
+    "main.css": "/DYA/static/css/main.f6d79ba7.css",
+    "main.js": "/DYA/static/js/main.525e5f03.js",
     "static/js/845.416237cf.chunk.js": "/DYA/static/js/845.416237cf.chunk.js",
     "static/media/ROADMAPB.png": "/DYA/static/media/ROADMAPB.26429f11886291cdf3b1.png",
     "static/media/homepage-banner.jpeg": "/DYA/static/media/homepage-banner.9485d6cc9c672326a7e7.jpeg",
     "index.html": "/DYA/index.html",
-    "main.f36a21b4.css.map": "/DYA/static/css/main.f36a21b4.css.map",
-    "main.017f03b1.js.map": "/DYA/static/js/main.017f03b1.js.map",
+    "main.f6d79ba7.css.map": "/DYA/static/css/main.f6d79ba7.css.map",
+    "main.525e5f03.js.map": "/DYA/static/js/main.525e5f03.js.map",
     "845.416237cf.chunk.js.map": "/DYA/static/js/845.416237cf.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f36a21b4.css",
-    "static/js/main.017f03b1.js"
+    "static/css/main.f6d79ba7.css",
+    "static/js/main.525e5f03.js"
   ]
 }
